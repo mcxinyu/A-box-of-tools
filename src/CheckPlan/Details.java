@@ -27,9 +27,9 @@ public class Details extends JDialog{
         super(owner, title, modal); //调用父类的构造方法
 
         //查询语句
-        String sql = "select cell_name 小区名,CELL 小区号,bcchno,bsic,TCH,tchnum from cdd_internal where 1=?";
+        String sql = "select cell_name 小区名,CELL 小区号,bcchno,bsic,TCH,tchnum from cdd_internal where cell_name like ?";
 //        String sql = "select top 30 * from cdd_internal where 1=?";
-        String [] paras = {"1"};
+        String [] paras = {"财富%"};
         //查询数据
         dm = new CPModel();
         dm.query(sql,paras);

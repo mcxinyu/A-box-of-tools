@@ -17,7 +17,7 @@ import javax.swing.*;
 
 public class Home extends JFrame implements ActionListener{
     WelcomeArea welcome;
-    HomeFunctionBtn checkPlanBtn,placeholderBtn1,placeholderBtn2,placeholderBtn3;
+    HomeFunctionBtn checkPlanBtn,cdd2forteBtn,placeholderBtn2,placeholderBtn3;
     JPanel functionalArea;
     JFrame j1,j2;
 
@@ -29,17 +29,16 @@ public class Home extends JFrame implements ActionListener{
         welcome =new WelcomeArea("images/boxtool_64.png","  欢迎使用 一箱工具 应用");
 
         checkPlanBtn = new HomeFunctionBtn("images/check_128.png","变频方案检查表","  现网 cdd/cdd_Channel 与变频      方案生成网优之家检查表",200,0);
-        placeholderBtn1 = new HomeFunctionBtn("images/ad_128.png","广告位出租","                    上广告",400,0);
+        cdd2forteBtn = new HomeFunctionBtn("images/cdd2forte.png","cdd2forte","  使用 cdd-log 生成 forte 环境",400,0);
         placeholderBtn2 = new HomeFunctionBtn("images/ad_128.png","广告位出租","                    上广告",200,200);
         placeholderBtn3 = new HomeFunctionBtn("images/ad_128.png","广告位出租","                    上广告",400,200);
-        placeholderBtn1.button.setEnabled(false);
         placeholderBtn2.button.setEnabled(false);
         placeholderBtn3.button.setEnabled(false);
 
         functionalArea = new JPanel(null);
         functionalArea.setBackground(new Color(230,230,230));
         functionalArea.add(checkPlanBtn);
-        functionalArea.add(placeholderBtn1);
+        functionalArea.add(cdd2forteBtn);
         functionalArea.add(placeholderBtn2);
         functionalArea.add(placeholderBtn3);
 
@@ -48,8 +47,8 @@ public class Home extends JFrame implements ActionListener{
 //        checkPlan.setActionCommand("checkPlan");
         checkPlanBtn.button.addActionListener(this);
 //        checkPlan.addActionListener(this);
-        placeholderBtn1.button.setActionCommand("placeholderBtn1");
-        placeholderBtn1.button.addActionListener(this);
+        cdd2forteBtn.button.setActionCommand("placeholderBtn1");
+        cdd2forteBtn.button.addActionListener(this);
         placeholderBtn2.button.setActionCommand("placeholderBtn2");
         placeholderBtn2.button.addActionListener(this);
         placeholderBtn3.button.setActionCommand("placeholderBtn3");
