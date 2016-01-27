@@ -1,8 +1,10 @@
-package CheckPlan;
+package View.CheckPlanView;
 /**
  * Created by 跃峰 on 2015/11/25.
- * CheckPlan 的第一步，导入数据：现网cdd与cdd_Channel、方案
+ * View.CheckPlanView 的第一步，导入数据：现网cdd与cdd_Channel、方案
  */
+import View.HomeView.MyTools;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -110,12 +112,7 @@ public class CheckPlanStep1 extends JPanel implements ItemListener,ActionListene
     }
 
     public void selectFile (String title,FileItem btnName){
-        try {
-            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-//            SwingUtilities.updateComponentTreeUI(this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        MyTools.windowsFeel();
         //用于新建一个打开文件的窗口
         // 数据名称、按钮名称
         JFileChooser jfc = new JFileChooser();

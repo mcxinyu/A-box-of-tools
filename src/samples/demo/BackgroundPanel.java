@@ -1,4 +1,4 @@
-package demo;
+package samples.demo;
 
 import java.awt.*;
 import javax.swing.*;

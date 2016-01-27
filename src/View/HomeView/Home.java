@@ -1,12 +1,12 @@
-package Home;
+package View.HomeView;
 /**
  * Created by 跃峰 on 2015/11/19.
- * CheckPlan 的主界面，承载了主要功能按钮
+ * View.CheckPlanView 的主界面，承载了主要功能按钮
  * 版本号：0.1.0
  * a.b.c a++UI改动，b++功能增加，c++小修改
  */
-import CheckPlan.CheckPlan;
-import CheckPlan.WelcomeArea;
+import View.CheckPlanView.CheckPlan;
+import View.CheckPlanView.WelcomeArea;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;

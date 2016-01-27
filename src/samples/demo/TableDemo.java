@@ -1,4 +1,4 @@
-package demo;
+package samples.demo;
 
 /**
  * Created by 跃峰 on 2015/12/11.
@@ -6,8 +6,6 @@ package demo;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.JScrollPane;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 import javax.swing.JOptionPane;
 import java.awt.*;
 import java.awt.event.*;

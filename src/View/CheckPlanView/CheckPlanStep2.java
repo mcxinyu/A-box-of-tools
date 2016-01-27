@@ -1,9 +1,8 @@
-package CheckPlan;
+package View.CheckPlanView;
 /**
  * Created by 跃峰 on 2015/11/25.
- * CheckPlan 的第二步，简单检查后导出方案检查表
+ * View.CheckPlanView 的第二步，简单检查后导出方案检查表
  */
-import Model.CPModel.*;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;

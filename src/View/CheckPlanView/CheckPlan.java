@@ -1,8 +1,10 @@
-package CheckPlan;
+package View.CheckPlanView;
 /**
  * Created by 跃峰 on 2015/11/25.
- * CheckPlan 的界面承载
+ * View.CheckPlanView 的界面承载
  */
+import View.HomeView.MyTools;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,11 +20,7 @@ public class CheckPlan extends JFrame implements ActionListener{
     }
 
     public CheckPlan(){
-        try {
-            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        MyTools.windowsFeel();
 
         //欢迎栏
         welcomeArea =new WelcomeArea("images/boxtool_64.png","  一箱工具 - 变频方案检查表");

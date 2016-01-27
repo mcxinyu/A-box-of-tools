@@ -1,4 +1,4 @@
-package CheckPlan;
+package View.CheckPlanView;
 /**
  * Created by 跃峰 on 2015/12/21.
  * 简单检查后的检查结果呈现界面
@@ -6,7 +6,6 @@ package CheckPlan;
  */
 import javax.swing.*;
 import java.awt.*;
-import java.util.Vector;
 
 public class Result extends JPanel{
     JPanel list1,list2,list3,list4,list5;

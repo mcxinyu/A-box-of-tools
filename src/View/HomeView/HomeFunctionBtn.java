@@ -1,4 +1,4 @@
-package Home;
+package View.HomeView;
 /**
  * Created by 跃峰 on 2015/12/8.
  * 主页功能按钮界面布局

@@ -1,10 +1,10 @@
-package CheckPlan;
+package View.CheckPlanView;
 /**
  * Created by 跃峰 on 2015/12/8.
  * 导入文件区域的显示界面，文件列表
  * 步骤一里面使用的
  */
-import Home.MyTools;
+import View.HomeView.MyTools;
 import javax.swing.*;
 import java.awt.*;
 

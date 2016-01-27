@@ -1,4 +1,4 @@
-package CheckPlan;
+package View.CheckPlanView;
 /**
  * Created by 跃峰 on 2015/12/26.
  *控制 上一步、下一步、完成、取消 的按钮

@@ -1,4 +1,4 @@
-package CheckPlan;
+package View.CheckPlanView;
 /**
  * Created by 跃峰 on 2015/12/26.
  * 显示 details 数据

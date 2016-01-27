@@ -1,9 +1,9 @@
-package CheckPlan;
+package View.CheckPlanView;
 /**
  * Created by 跃峰 on 2015/12/8.
- * CheckPlan 的欢迎栏区域
+ * View.CheckPlanView 的欢迎栏区域
  */
-import Home.MyTools;
+import View.HomeView.MyTools;
 import javax.swing.*;
 import java.awt.*;
 //欢迎栏区域
