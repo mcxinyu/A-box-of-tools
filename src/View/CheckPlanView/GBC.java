@@ -12,7 +12,7 @@ public class GBC extends GridBagConstraints {
         this.gridy = gridy;
     }
 
-    //初始化左上角位置和所占行数和列数
+    //初始化左上角位置和所占行数和列数，从0开始
     public GBC(int gridx, int gridy, int gridwidth, int gridheight) {
         this.gridx = gridx;
         this.gridy = gridy;

@@ -7,7 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 
 
-class ControlBtnArea extends JPanel {
+public class ControlBtnArea extends JPanel {
     //控制 上一步、下一步、完成、取消 的按钮
     JButton backBtn,nextBtn,okBtn,cancelBtn;
     public ControlBtnArea(JButton backBtn, JButton nextBtn, JButton okBtn, JButton cancelBtn){

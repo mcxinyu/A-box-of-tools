@@ -23,7 +23,8 @@ public class CheckPlan extends JFrame implements ActionListener{
         MyTools.windowsFeel();
 
         //欢迎栏
-        welcomeArea =new WelcomeArea("images/boxtool_64.png","  一箱工具 - 变频方案检查表");
+        welcomeArea =new WelcomeArea("images/CheckPlan_64.png","  一箱工具 - 变频方案检查表");
+
         //内容栏
         checkPlanStep1 = new CheckPlanStep1();
         checkPlanStep2 = new CheckPlanStep2();
@@ -70,9 +71,6 @@ public class CheckPlan extends JFrame implements ActionListener{
         checkPlan.setLocationRelativeTo(null);//打开时相对window居中
         checkPlan.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         checkPlan.setVisible(true);
-//        checkPlan.pack();
-//        System.out.println(checkPlan.getHeight()-checkPlanStep1.getHeight()-this.getContentPane().getHeight());
-//        System.out.println(contentsArea.getHeight()-checkPlanStep1.getHeight());
     }
 
     @Override
