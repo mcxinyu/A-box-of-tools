@@ -5,6 +5,7 @@ package View.HomeView;
  * 版本号：0.1.0
  * a.b.c a++UI改动，b++功能增加，c++小修改
  */
+import View.Cdd2ForteView.Cdd2Forte;
 import View.CheckPlanView.CheckPlan;
 import View.CheckPlanView.WelcomeArea;
 
@@ -28,8 +29,8 @@ public class Home extends JFrame implements ActionListener{
 
         welcome =new WelcomeArea("images/boxtool_64.png","  欢迎使用 一箱工具 应用");
 
-        checkPlanBtn = new HomeFunctionBtn("images/CheckPlan_128.png","变频方案检查表","  现网 cdd/cdd_Channel 与变频      方案生成网优之家检查表",200,0);
-        cdd2forteBtn = new HomeFunctionBtn("images/cdd2forte_128.png","cdd2forte","   使用 cdd-log 生成 forte 环境          （目前只支持爱立信设备）",400,0);
+        cdd2forteBtn = new HomeFunctionBtn("images/cdd2forte_128.png","cdd2forte","   使用 cdd-log 生成 forte 环境          （目前只支持爱立信设备）",200,0);
+        checkPlanBtn = new HomeFunctionBtn("images/CheckPlan_128.png","变频方案检查表","  现网 cdd/cdd_Channel 与变频      方案生成网优之家检查表",400,0);
         placeholderBtn2 = new HomeFunctionBtn("images/ad_128.png","广告位出租","                    上广告",200,200);
         placeholderBtn3 = new HomeFunctionBtn("images/ad_128.png","广告位出租","                    上广告",400,200);
         placeholderBtn2.button.setEnabled(false);
@@ -37,18 +38,16 @@ public class Home extends JFrame implements ActionListener{
 
         functionalArea = new JPanel(null);
         functionalArea.setBackground(new Color(230,230,230));
-        functionalArea.add(checkPlanBtn);
         functionalArea.add(cdd2forteBtn);
+        functionalArea.add(checkPlanBtn);
         functionalArea.add(placeholderBtn2);
         functionalArea.add(placeholderBtn3);
 
         //注册监听
-        checkPlanBtn.button.setActionCommand("checkPlanBtn");
-//        checkPlan.setActionCommand("checkPlan");
-        checkPlanBtn.button.addActionListener(this);
-//        checkPlan.addActionListener(this);
-        cdd2forteBtn.button.setActionCommand("placeholderBtn1");
+        cdd2forteBtn.button.setActionCommand("cdd2forteBtn");
         cdd2forteBtn.button.addActionListener(this);
+        checkPlanBtn.button.setActionCommand("checkPlanBtn");
+        checkPlanBtn.button.addActionListener(this);
         placeholderBtn2.button.setActionCommand("placeholderBtn2");
         placeholderBtn2.button.addActionListener(this);
         placeholderBtn3.button.setActionCommand("placeholderBtn3");
@@ -72,16 +71,16 @@ public class Home extends JFrame implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals("checkPlanBtn")){
-            j1.setVisible(false);
+//            j1.setVisible(false);
             j2 = new CheckPlan();
             j2.addWindowListener(new WindowAdapter(){
                 public void windowClosing(WindowEvent e){
-                        j1.setVisible(true);
+                    j1.setVisible(true);
                 }
             });
-        }else if (e.getActionCommand().equals("placeholderBtn1")){
-            j1.setVisible(false);
-            j2 = new CheckPlan();
+        }else if (e.getActionCommand().equals("cdd2forteBtn")){
+//            j1.setVisible(false);
+            j2 = new Cdd2Forte();
             j2.addWindowListener(new WindowAdapter(){
                 public void windowClosing(WindowEvent e){
                     j1.setVisible(true);
