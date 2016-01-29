@@ -14,7 +14,8 @@ public class ReadCdd {
     public static void main(String[] args) {
         File f = new File("D:\\SZ\\变频工作\\数据采集\\CDD\\20160122\\SZ01A.Log");
         ReadCdd rc = new ReadCdd();
-        rc.processorSingleLog(f);
+//        String[] ss = rc.readSingleLog(f,1);
+        rc.processorSingleLog(f,1);
     }
 
     public ReadCdd(){
@@ -23,7 +24,7 @@ public class ReadCdd {
     }
 
     /**
-     * 读取单个 cdd-log 文件
+     * 读取单个 cdd-log 文件，返回一个 HashMap<Integer,String>
      * @param logFile cdd-log 文件路径
      * @return 返回一个 HashMap<Integer,String>
      */
@@ -33,7 +34,6 @@ public class ReadCdd {
         FileInputStream fis = null;
         InputStreamReader isr = null;
         BufferedReader br = null;
-        StringBuffer str = new StringBuffer("");
         HashMap<Integer,String> logContent = new HashMap<Integer, String>();
 
         try {
@@ -60,6 +60,10 @@ public class ReadCdd {
         return logContent;
     }
 
+    /**
+     * 失败的案例
+     * @param logFile
+     */
     public void processorSingleLog(File logFile){
         HashMap<Integer,String> logContent = readSingleLog(logFile);
 //        Iterator iter = logContent.entrySet().iterator();
@@ -70,20 +74,15 @@ public class ReadCdd {
         String bscName = "";
 
         int i = 1;
-        String s = logContent.get(i);
-        System.out.println(s);
         while (i<mapSize){
-            i++;
+            String s = logContent.get(i);
             if (s.contains("Connected")){
                 bscName = s.substring(17,23);
-                System.out.println(bscName);
             }
-
-//            if (s.contains("RLDEP")){
-//                System.out.println(i);
-//            }
+            i++;
+            if (s.contains("RLDEP")&&!s.contains("EXT")){
+            }
         }
-
 
 //        for (int i=1;i<=mapSize;i++){
 ////            System.out.println(logContent.get(i));
@@ -106,6 +105,121 @@ public class ReadCdd {
         long endTime=System.currentTimeMillis();    //获取结束时间
         System.out.println("程序运行时间： "+(endTime-startTime)+"ms");
     }
+
+    /**
+     * 读取单个 cdd-log 文件，通过“<”分列文件，并返回一个数组
+     * @param logFile cdd-log 文件路径
+     * @param a 随便
+     * @return 返回一个数组
+     */
+    public String[] readSingleLog(File logFile,int a) {
+        FileInputStream fis = null;
+        Long filelength = logFile.length();    //获取文件长度
+        String fileName = logFile.getName();   //文件名
+        byte[] fileContent = new byte[filelength.intValue()];
+        try {
+            fis = new FileInputStream(logFile);
+            fis.read(fileContent);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                fis.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        String s = new String(fileContent);
+        String[] ss = s.split("<");
+        return ss;
+    }
+
+    public void processorSingleLog(File logFile,int a){
+        String[] logContent = readSingleLog(logFile,1);
+//        HashMap<Integer,String> hsm = new HashMap<Integer, String>();
+        int lineNumber = 0;
+        int endLineNumber = 0;
+
+        String bscName = "";
+        String RLDEPsector = "";
+        String lac = "";
+        String ci = "";
+        String bsic = "";
+        String bcch = "";
+        String band = "";
+        String RLCFPsector = "";
+
+
+//        System.out.println("logContent"+logContent.length);
+        for (int i=0;i<logContent.length;i++){
+            String[] ss = logContent[i].split("\\r|\\n");
+
+
+//            System.out.println("ss"+ss.length);
+
+            for (int j=0;j<ss.length;j++){
+
+                String lineContent = ss[j];
+
+                lineNumber++;
+//                System.out.println("正在处理第："+lineNumber+"行");
+//                System.out.println(lineContent);
+
+                if (lineContent.contains("Connected")){
+                    //开始位置，并读取 bscName;
+                    bscName = lineContent.substring(16,22);
+//                    System.out.println(j+""+bscName);
+                }
+
+                if (lineContent.contains("RLDEP")&&!lineContent.contains("EXT")){
+                    // 读取小区基础信息：sector、lac、ci、bsic、bcch、band
+//                    System.out.println(lineContent);
+                    int k=j;
+//                    System.out.println("k"+k+" < end "+endLineNumber);
+
+                    while (k<endLineNumber){
+                        if (ss[k]!=null && ss[k].contains("CGI")){
+                            RLDEPsector = ss[k+1].substring(0,7);
+                            lac = ss[k+1].substring(16,20);
+                            ci = ss[k+1].substring(21,26).trim();
+                            bsic = ss[k+1].substring(30,32);
+                            bcch = ss[k+1].substring(36,43).trim();
+                            band = ss[k+4].substring(52,ss[k+4].length());
+//                            System.out.println(sector+"-"+lac+"-"+ci+"-"+bsic+"-"+bcch+"-"+band);
+                        }
+                        k++;
+                    }
+                }
+
+                if (lineContent.contains("RLCFP")){
+                    int k=j;
+                    while (k<endLineNumber){
+                        if (ss[k]!=null && ss[k].contains("CHGR") && !ss[k].contains("FREQUENCY")){
+                            RLCFPsector = ss[k-2].substring(0,7);
+                            ??
+
+                            System.out.println(RLCFPsector);
+                        }
+                        k++;
+                    }
+                }
+
+                if (lineContent.contains("Disconnected")){
+                    System.out.println("处理最后一行： "+lineNumber);
+                }
+            }
+
+            //结束位置；
+            endLineNumber = ss.length;
+//            System.out.println(endLineNumber);
+        }
+
+    }
+
+
+
+
 
     /**
      * 读取文件夹
