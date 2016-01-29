@@ -1,19 +1,18 @@
 package Control.C2FControl;
 
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
-
 import java.io.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
+ * 用于读取、处理 cdd 文本文件，得到 cdd 参数
  * Created by 跃峰 on 2016/1/27.
- * 用于读取cdd文本文件
  */
 public class ReadCdd {
-    File cdd;
-    String cddContent;
 
     public static void main(String[] args) {
-        File f = new File("/Users/huangyuefeng/Downloads/CDD/SZ01A.Log");
+        File f = new File("D:\\SZ\\变频工作\\数据采集\\CDD\\20160122\\SZ01A.Log");
         ReadCdd rc = new ReadCdd();
         rc.processorSingleLog(f);
     }
@@ -24,17 +23,18 @@ public class ReadCdd {
     }
 
     /**
-     * 读取并解析单个 cdd-log 文件
+     * 读取单个 cdd-log 文件
      * @param logFile cdd-log 文件路径
-     * @return
+     * @return 返回一个 HashMap<Integer,String>
      */
-    private void processorSingleLog(File logFile){
+    public HashMap readSingleLog(File logFile){
         int len = 0;
         String line = "";
         FileInputStream fis = null;
         InputStreamReader isr = null;
         BufferedReader br = null;
         StringBuffer str = new StringBuffer("");
+        HashMap<Integer,String> logContent = new HashMap<Integer, String>();
 
         try {
             fis = new FileInputStream(logFile);
@@ -42,60 +42,76 @@ public class ReadCdd {
             br = new BufferedReader(isr);
 
             while((line=br.readLine())!=null){
-//                if(len != 0){   // 处理换行符的问题
-//                    str.append("\r\n"+line);
-//                }
-//                else{
-//                    str.append(line);
-//                }
-
-
-                if (line.substring(3)=="***"){
-                    len++;
-                    System.out.println(len);
-                }
+                len++;
+                logContent.put(len,line);
             }
+//            System.out.println(len);
+//            System.out.println(logContent.size());
         } catch (Exception e) {
             e.printStackTrace();
         }finally {
             try {
-                br.close();
-                isr.close();
-                fis.close();
+                if (br != null) br.close();
+                if (isr != null) isr.close();
             }catch (Exception e){
                 e.printStackTrace();
             }
-
         }
+        return logContent;
+    }
+
+    public void processorSingleLog(File logFile){
+        HashMap<Integer,String> logContent = readSingleLog(logFile);
+//        Iterator iter = logContent.entrySet().iterator();
+        int mapSize = logContent.size();
+
+        long startTime=System.currentTimeMillis();  //获取开始时间
+
+        String bscName = "";
+
+        int i = 1;
+        String s = logContent.get(i);
+        System.out.println(s);
+        while (i<mapSize){
+            i++;
+            if (s.contains("Connected")){
+                bscName = s.substring(17,23);
+                System.out.println(bscName);
+            }
+
+//            if (s.contains("RLDEP")){
+//                System.out.println(i);
+//            }
+        }
+
+
+//        for (int i=1;i<=mapSize;i++){
+////            System.out.println(logContent.get(i));
+//            String s = logContent.get(i);
+//            if (s.contains("Connected")){
+//                bscName = s.substring(17,23);
+//            }else if (s.contains("RLDEP")&&!s.contains("EXT")){
+//            }
+//        }
+
+//        while (iter.hasNext()){
+//            HashMap.Entry entry = (HashMap.Entry) iter.next();
+////            Object key = entry.getKey();
+////            Object val = entry.getValue();
+////            System.out.println(entry.getValue());
+//        }
+
+//        System.out.println(logContent.get(mapSize));
+
+        long endTime=System.currentTimeMillis();    //获取结束时间
+        System.out.println("程序运行时间： "+(endTime-startTime)+"ms");
     }
 
     /**
-     * 用于读取单个文本文件，返回文本内容；
-     * @param logFile cdd-log 路径地址
+     * 读取文件夹
+     * @param folderPath
      * @return
      */
-    public String readSingleLog(File logFile) {
-        FileInputStream fis = null;
-        Long filelength = logFile.length();    //获取文件长度
-        String fileName = logFile.getName();   //文件名
-//    String fileType = fileName.substring(fileName.lastIndexOf("."));    //文件后缀
-        byte[] fileContent = new byte[filelength.intValue()];
-        try {
-            fis = new FileInputStream(logFile);
-            fis.read(fileContent);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }finally {
-            try {
-                fis.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return new String(fileContent); //返回文件内容,默认编码
-    }
-
     public String textFolderToString(String folderPath) {
         File[] files = new File(folderPath).listFiles();
         String connect ="";
@@ -111,7 +127,6 @@ public class ReadCdd {
         }else {
             System.out.println("未找到文件");
         }
-
         return connect;
     }
 
