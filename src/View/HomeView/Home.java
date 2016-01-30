@@ -1,4 +1,4 @@
-package View.HomeView;
+﻿package View.HomeView;
 /**
  * Created by 跃峰 on 2015/11/19.
  * View.CheckPlanView 的主界面，承载了主要功能按钮
@@ -8,7 +8,6 @@ package View.HomeView;
 import View.Cdd2ForteView.Cdd2Forte;
 import View.CheckPlanView.CheckPlan;
 import View.CheckPlanView.WelcomeArea;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
