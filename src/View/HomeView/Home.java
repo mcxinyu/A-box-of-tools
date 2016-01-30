@@ -48,6 +48,8 @@ public class Home extends JFrame implements ActionListener{
         cdd2forteBtn.button.addActionListener(this);
         checkPlanBtn.button.setActionCommand("checkPlanBtn");
         checkPlanBtn.button.addActionListener(this);
+//        checkPlan.setActionCommand("checkPlan");
+//        checkPlan.addActionListener(this);
         placeholderBtn2.button.setActionCommand("placeholderBtn2");
         placeholderBtn2.button.addActionListener(this);
         placeholderBtn3.button.setActionCommand("placeholderBtn3");
@@ -70,15 +72,7 @@ public class Home extends JFrame implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals("checkPlanBtn")){
-//            j1.setVisible(false);
-            j2 = new CheckPlan();
-            j2.addWindowListener(new WindowAdapter(){
-                public void windowClosing(WindowEvent e){
-                    j1.setVisible(true);
-                }
-            });
-        }else if (e.getActionCommand().equals("cdd2forteBtn")){
+        if (e.getActionCommand().equals("cdd2forteBtn")){
 //            j1.setVisible(false);
             j2 = new Cdd2Forte();
             j2.addWindowListener(new WindowAdapter(){
@@ -86,8 +80,16 @@ public class Home extends JFrame implements ActionListener{
                     j1.setVisible(true);
                 }
             });
+        }else if (e.getActionCommand().equals("checkPlanBtn")){
+//            j1.setVisible(false);
+            j2 = new CheckPlan();
+            j2.addWindowListener(new WindowAdapter(){
+                public void windowClosing(WindowEvent e){
+                    j1.setVisible(true);
+                }
+            });
         }else if (e.getActionCommand().equals("placeholderBtn2")){
-            j1.setVisible(false);
+//            j1.setVisible(false);
             j2 = new CheckPlan();
             j2.addWindowListener(new WindowAdapter(){
                 public void windowClosing(WindowEvent e){
@@ -95,7 +97,7 @@ public class Home extends JFrame implements ActionListener{
                 }
             });
         }else if (e.getActionCommand().equals("placeholderBtn3")){
-            j1.setVisible(false);
+//            j1.setVisible(false);
             j2 = new CheckPlan();
             j2.addWindowListener(new WindowAdapter(){
                 public void windowClosing(WindowEvent e){
