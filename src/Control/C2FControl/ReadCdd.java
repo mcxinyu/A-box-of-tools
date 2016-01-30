@@ -1,9 +1,10 @@
 package Control.C2FControl;
 
+import com.sun.org.apache.bcel.internal.generic.SWITCH;
+
 import java.io.*;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+
 
 /**
  * 用于读取、处理 cdd 文本文件，得到 cdd 参数
@@ -11,6 +12,11 @@ import java.util.Map;
  */
 public class ReadCdd {
 
+    /**
+     * The entry point of application.
+     *
+     * @param args the input arguments
+     */
     public static void main(String[] args) {
         File f = new File("D:\\SZ\\变频工作\\数据采集\\CDD\\20160122\\SZ01A.Log");
         ReadCdd rc = new ReadCdd();
@@ -18,6 +24,9 @@ public class ReadCdd {
         rc.processorSingleLog(f,1);
     }
 
+    /**
+     * Instantiates a new Read cdd.
+     */
     public ReadCdd(){
 //        cdd = new File("/Users/huangyuefeng/Downloads/SZ01A.Log");
 //        cddContent = readSingleLog(cdd);
@@ -25,6 +34,7 @@ public class ReadCdd {
 
     /**
      * 读取单个 cdd-log 文件，返回一个 HashMap<Integer,String>
+     *
      * @param logFile cdd-log 文件路径
      * @return 返回一个 HashMap<Integer,String>
      */
@@ -62,7 +72,8 @@ public class ReadCdd {
 
     /**
      * 失败的案例
-     * @param logFile
+     *
+     * @param logFile the log file
      */
     public void processorSingleLog(File logFile){
         HashMap<Integer,String> logContent = readSingleLog(logFile);
@@ -108,9 +119,10 @@ public class ReadCdd {
 
     /**
      * 读取单个 cdd-log 文件，通过“<”分列文件，并返回一个数组
+     *
      * @param logFile cdd-log 文件路径
-     * @param a 随便
-     * @return 返回一个数组
+     * @param a       随便
+     * @return 返回一个数组 string [ ]
      */
     public String[] readSingleLog(File logFile,int a) {
         FileInputStream fis = null;
@@ -135,11 +147,18 @@ public class ReadCdd {
         return ss;
     }
 
+    /**
+     * Processor single log.
+     *
+     * @param logFile the log file
+     * @param a       the a
+     */
     public void processorSingleLog(File logFile,int a){
+        //logContent 数组存放读取到的文件，文件是按照"<"分割的；
         String[] logContent = readSingleLog(logFile,1);
-//        HashMap<Integer,String> hsm = new HashMap<Integer, String>();
+
+        //用来记录有所行数，，因为各个 P 指令块是分开在 logContent 数组里面的；
         int lineNumber = 0;
-        int endLineNumber = 0;
 
         String bscName = "";
         String RLDEPsector = "";
@@ -149,82 +168,123 @@ public class ReadCdd {
         String bcch = "";
         String band = "";
         String RLCFPsector = "";
+        String[][] ch_group = new String[4][14];    //保存四个信道，每个信道有14个元素（ch_group、hsn、dchno1-12）
 
+        for (int x=0;x<4;x++){
+            //给 ch_group 二维数组赋初值，因为取不到参数的时候，需要标记为 N/A；
+            for (int y=0;y<14;y++){
+                ch_group[x][y]="N/A";
+            }
+        }
 
 //        System.out.println("logContent"+logContent.length);
         for (int i=0;i<logContent.length;i++){
+            //将各个 P 指令的内容按行分割开来处理；
             String[] ss = logContent[i].split("\\r|\\n");
 
-
+            //打印各个 P 指令的内容的行数，也既是各个 P 指令的结尾行数；
 //            System.out.println("ss"+ss.length);
 
-            for (int j=0;j<ss.length;j++){
+            for (int j=0;j<ss.length;j++){  //遍历所有 P 指令块分割后的行，j 为行号；
+                //记行数；
+                lineNumber++;
 
                 String lineContent = ss[j];
 
-                lineNumber++;
+                //lineNumber定位处理到总文件的哪一行了，而 j 是 ss 元素的行数；
 //                System.out.println("正在处理第："+lineNumber+"行");
 //                System.out.println(lineContent);
 
                 if (lineContent.contains("Connected")){
                     //开始位置，并读取 bscName;
                     bscName = lineContent.substring(16,22);
-//                    System.out.println(j+""+bscName);
+//                    System.out.println("开始处理 "+bscName+"\r\n"+ss[j]);
                 }
 
                 if (lineContent.contains("RLDEP")&&!lineContent.contains("EXT")){
                     // 读取小区基础信息：sector、lac、ci、bsic、bcch、band
 //                    System.out.println(lineContent);
-                    int k=j;
-//                    System.out.println("k"+k+" < end "+endLineNumber);
 
-                    while (k<endLineNumber){
-                        if (ss[k]!=null && ss[k].contains("CGI")){
-                            RLDEPsector = ss[k+1].substring(0,7);
-                            lac = ss[k+1].substring(16,20);
-                            ci = ss[k+1].substring(21,26).trim();
-                            bsic = ss[k+1].substring(30,32);
-                            bcch = ss[k+1].substring(36,43).trim();
-                            band = ss[k+4].substring(52,ss[k+4].length());
-//                            System.out.println(sector+"-"+lac+"-"+ci+"-"+bsic+"-"+bcch+"-"+band);
+                    while (j<ss.length){
+                        if (ss[j]!=null && ss[j].contains("CGI")){
+                            RLDEPsector = ss[j+1].substring(0,7);
+                            lac = ss[j+1].substring(16,20);
+                            ci = ss[j+1].substring(21,26).trim();
+                            bsic = ss[j+1].substring(30,32);
+                            bcch = ss[j+1].substring(36,43).trim();
+                            band = ss[j+4].substring(52,ss[j+4].length());
+//                            System.out.println(RLDEPsector+"-"+lac+"-"+ci+"-"+bsic+"-"+bcch+"-"+band);
                         }
-                        k++;
+                        j++;
                     }
                 }
 
                 if (lineContent.contains("RLCFP")){
-                    int k=j;
-                    while (k<endLineNumber){
-                        if (ss[k]!=null && ss[k].contains("CHGR") && !ss[k].contains("FREQUENCY")){
-                            RLCFPsector = ss[k-2].substring(0,7);
-                            ??
+                    // 读取信道信息
+                    while (j<ss.length){
+//                        System.out.println("j "+j);
+                        if (ss[j]!=null && ss[j].contains("CHGR")){
+                            if (ss[j].contains("FAULT")){
+                                System.out.println("cdd-log 存在故障码："+"\r\n"+ss[j]);
+                            }
+                            RLCFPsector = ss[j-2].substring(0,7);
+//                            System.out.println("j1"+j);
 
-                            System.out.println(RLCFPsector);
+                            String cellEndLineNumber = ss[j].substring(0,5).concat("CELL");
+                            int switchNumber = 0;
+                            if (ss[j].substring(0,5).trim().length()>=1) {
+//                                            System.out.println(ss[j-2]);
+                                System.out.println(ss[j]+" "+j);
+                            }
+                            switch (cellEndLineNumber){
+                                case "CELL": break;
+                                default:
+                                    for (int l=0; l<4;l++) {
+
+                                        ch_group[l][0] = ss[j+1].substring(0,5).trim();    //CHGR
+                                        ch_group[l][1] = ss[j+1].substring(49,53).trim();    //hsn
+                                        ch_group[l][2] = ss[j+1].substring(60,ss[j+1].length()).trim();    //dchno1
+//                                        ch_group[l][3] = ss[j+2].substring(60,ss[j+1].length()).trim();    //dchno2
+//                                        ch_group[l][4] = ss[j+3].substring(60,ss[j+1].length()).trim();
+//                                        ch_group[l][5] = ss[j+4].substring(60,ss[j+1].length()).trim();
+//                                        ch_group[l][6] = ss[j+5].substring(60,ss[j+1].length()).trim();
+//                                        ch_group[l][7] = ss[j+6].substring(60,ss[j+1].length()).trim();
+//                                        ch_group[l][8] = ss[j+7].substring(60,ss[j+1].length()).trim();
+//                                        ch_group[l][9] = ss[j+8].substring(60,ss[j+1].length()).trim();
+//                                        ch_group[l][10] = ss[j+9].substring(60,ss[j+1].length()).trim();
+//                                        ch_group[l][11] = ss[j+10].substring(60,ss[j+1].length()).trim();
+//                                        ch_group[l][12] = ss[j+11].substring(60,ss[j+1].length()).trim();
+//                                        ch_group[l][13] = ss[j+12].substring(60,ss[j+1].length()).trim();
+//                                        System.out.println("this is"+ss[j+2].substring(0,5).trim().length());
+                                    }
+//                                    for (int m=0;m<14;m++) {
+//                                        System.out.print(ch_group[1][m]+" ");
+//                                    }
+//                                    System.out.println();
+                                    switchNumber++;
+                            }
+//                            System.out.println(RLCFPsector);
+                            j += switchNumber;
+
                         }
-                        k++;
+                        j++;
                     }
                 }
 
                 if (lineContent.contains("Disconnected")){
-                    System.out.println("处理最后一行： "+lineNumber);
+//                    System.out.println("处理最后一行： "+lineNumber+"\r\n"+ss[j]);
                 }
             }
-
-            //结束位置；
-            endLineNumber = ss.length;
-//            System.out.println(endLineNumber);
         }
 
     }
 
 
-
-
-
     /**
      * 读取文件夹
-     * @param folderPath
-     * @return
+     *
+     * @param folderPath the folder path
+     * @return string string
      */
     public String textFolderToString(String folderPath) {
         File[] files = new File(folderPath).listFiles();
