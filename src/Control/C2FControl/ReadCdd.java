@@ -1,6 +1,4 @@
-package Control.C2FControl;
-
-import com.sun.org.apache.bcel.internal.generic.SWITCH;
+﻿﻿package Control.C2FControl;
 
 import java.io.*;
 import java.util.HashMap;

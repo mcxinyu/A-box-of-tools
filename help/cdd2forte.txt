@@ -1,7 +1,10 @@
-bsc¡¢sector¡¢lac¡¢ci¡¢band¡¢bcch¡¢bsic¡¢trx
-ch_group_0¡¢hsn¡¢dchno_1¡¢dchno_2¡¢dchno_3
-ch_group_1¡¢hsn¡¢dchno_1¡¢dchno_2¡¢dchno_3
-ch_group_3¡¢hsn¡¢dchno_1
+bscNameã€
+sectorã€lacã€ciã€bandã€bcchã€bsicã€
+trx
+ch_group_0ã€hsnã€dchno_1ã€dchno_2ã€dchno_3
+ch_group_1ã€hsnã€dchno_1ã€dchno_2ã€dchno_3
+ch_group_3ã€hsnã€dchno_1
+
 HO
 
 <RLDEP:CELL=ALL;
@@ -13,8 +16,8 @@ INT      NCOMB                   0          NO      GSM900
 
 CELLIND  RAC  RIMNACC  GAN
 H'000
-»ñµÃ
-sector¡¢lac¡¢ci¡¢band¡¢bcch¡¢bsic
+è·å¾—
+sectorã€lacã€ciã€bandã€bcchã€bsic
 
 <RLCFP:CELL=ALL;
 CELL
@@ -25,11 +28,11 @@ CHGR   SCTYPE    SDCCH   SDCCHAC   TN   CBCH     HSN   HOP  DCHNO
                                    3                          61
  2                0       0        2    NO        0    OFF    25
                                                               27
-»ñµÃ
-ch_group_0¡¢hsn¡¢dchno_1...
-ch_group_1¡¢hsn¡¢dchno_1...
-ch_group_2¡¢hsn¡¢dchno_1...
-ch_group_3¡¢hsn¡¢dchno_1...
+è·å¾—
+ch_group_0ã€hsnã€dchno_1...
+ch_group_1ã€hsnã€dchno_1...
+ch_group_2ã€hsnã€dchno_1...
+ch_group_3ã€hsnã€dchno_1...
 
 <RLNRP:CELL=ALL;
 CELL
@@ -43,18 +46,11 @@ CELLR     DIR     CAND   CS
 CELLR     DIR     CAND   CS
 01DA152   MUTUAL  BOTH   NO
 
-»ñµÃ
+è·å¾—
 HO
 
-ÖğĞĞ¶ÁÈ¡·Ç¿ÕĞĞµÄÊı¾İ£¬
-*** ºóÃæ¶ÁÈ¡µ½ bsc Ãû£»
-¡°<¡±Ê¶±ğµ½Ö¸ÁîĞĞ£¬²¢¼ÇÂ¼ÏÂÊÇÊ²Ã´Ö¸Áî
+é€è¡Œè¯»å–éç©ºè¡Œçš„æ•°æ®ï¼Œ
+*** åé¢è¯»å–åˆ° bsc åï¼›
+â€œ<â€è¯†åˆ«åˆ°æŒ‡ä»¤è¡Œï¼Œå¹¶è®°å½•ä¸‹æ˜¯ä»€ä¹ˆæŒ‡ä»¤
 
-
-
-
-
-
-
-
-
+01DA273
