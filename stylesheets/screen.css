@@ -313,8 +313,9 @@ footer span.ribbon-inner p {
   background-color: #7c334f;
   margin: 0;
   color: #e69b95;
-  font: bold italic 12px/1 Georgia, Times, “Times New Roman”, serif;
-  padding-bottom:4px;
+  /*font: bold italic 12px/1 Georgia, Times, “Times New Roman”, serif;*/
+  font: normal 12px/1 Georgia, Times, “微软雅黑”, serif;
+  /*padding-bottom:4px;*/
 }
 
 footer span.ribbon-inner a {
