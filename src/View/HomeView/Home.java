@@ -1,4 +1,4 @@
-﻿package View.HomeView;
+package View.HomeView;
 /**
  * Created by 跃峰 on 2015/11/19.
  * View.CheckPlanView 的主界面，承载了主要功能按钮

@@ -1,5 +1,6 @@
-﻿﻿package Control.C2FControl;
+package Control.C2FControl;
 
+import java.awt.*;
 import java.io.*;
 import java.util.HashMap;
 
@@ -168,12 +169,6 @@ public class ReadCdd {
         String RLCFPsector = "";
         String[][] ch_group = new String[4][14];    //保存四个信道，每个信道有14个元素（ch_group、hsn、dchno1-12）
 
-        for (int x=0;x<4;x++){
-            //给 ch_group 二维数组赋初值，因为取不到参数的时候，需要标记为 N/A；
-            for (int y=0;y<14;y++){
-                ch_group[x][y]="N/A";
-            }
-        }
 
 //        System.out.println("logContent"+logContent.length);
         for (int i=0;i<logContent.length;i++){
@@ -218,54 +213,116 @@ public class ReadCdd {
                 }
 
                 if (lineContent.contains("RLCFP")){
-                    // 读取信道信息
-                    while (j<ss.length){
-//                        System.out.println("j "+j);
-                        if (ss[j]!=null && ss[j].contains("CHGR")){
-                            if (ss[j].contains("FAULT")){
-                                System.out.println("cdd-log 存在故障码："+"\r\n"+ss[j]);
-                            }
-                            RLCFPsector = ss[j-2].substring(0,7);
-//                            System.out.println("j1"+j);
-
-                            String cellEndLineNumber = ss[j].substring(0,5).concat("CELL");
-                            int switchNumber = 0;
-                            if (ss[j].substring(0,5).trim().length()>=1) {
-//                                            System.out.println(ss[j-2]);
-                                System.out.println(ss[j]+" "+j);
-                            }
-                            switch (cellEndLineNumber){
-                                case "CELL": break;
-                                default:
-                                    for (int l=0; l<4;l++) {
-
-                                        ch_group[l][0] = ss[j+1].substring(0,5).trim();    //CHGR
-                                        ch_group[l][1] = ss[j+1].substring(49,53).trim();    //hsn
-                                        ch_group[l][2] = ss[j+1].substring(60,ss[j+1].length()).trim();    //dchno1
-//                                        ch_group[l][3] = ss[j+2].substring(60,ss[j+1].length()).trim();    //dchno2
-//                                        ch_group[l][4] = ss[j+3].substring(60,ss[j+1].length()).trim();
-//                                        ch_group[l][5] = ss[j+4].substring(60,ss[j+1].length()).trim();
-//                                        ch_group[l][6] = ss[j+5].substring(60,ss[j+1].length()).trim();
-//                                        ch_group[l][7] = ss[j+6].substring(60,ss[j+1].length()).trim();
-//                                        ch_group[l][8] = ss[j+7].substring(60,ss[j+1].length()).trim();
-//                                        ch_group[l][9] = ss[j+8].substring(60,ss[j+1].length()).trim();
-//                                        ch_group[l][10] = ss[j+9].substring(60,ss[j+1].length()).trim();
-//                                        ch_group[l][11] = ss[j+10].substring(60,ss[j+1].length()).trim();
-//                                        ch_group[l][12] = ss[j+11].substring(60,ss[j+1].length()).trim();
-//                                        ch_group[l][13] = ss[j+12].substring(60,ss[j+1].length()).trim();
-//                                        System.out.println("this is"+ss[j+2].substring(0,5).trim().length());
-                                    }
-//                                    for (int m=0;m<14;m++) {
-//                                        System.out.print(ch_group[1][m]+" ");
-//                                    }
-//                                    System.out.println();
-                                    switchNumber++;
-                            }
-//                            System.out.println(RLCFPsector);
-                            j += switchNumber;
-
+                    for (int x=0;x<4;x++){
+                        //给 ch_group 二维数组赋初值，因为取不到参数的时候，需要标记为 N/A；
+                        for (int y=0;y<14;y++){
+                            ch_group[x][y]="N/A";
                         }
-                        j++;
+                    }
+
+                    // 读取信道信息
+                    // RLCFP 按“CELL”分列后存入数组 RLCFP[] 中
+                    String[] RLCFP = logContent[i].split("CELL");
+//                    System.out.println(RLCFP[RLCFP.length-1]);
+
+                    for (int k=3;k<RLCFP.length;k++) {
+                        // 再将各个小区的 RLCFP 按行分割后存入数组 RLCFP_LINE[]；
+                        String[] RLCFP_LINE = RLCFP[k].split("\\r|\\n");
+
+
+                        // 循环各个 RLCFP_LINE[]；
+                        for (int l=0;l<RLCFP_LINE.length;l++){
+                            // 各个小区的信道组号统计
+                            int CHGR_COUNT = 0;
+
+                            // 取得  RLCFP_LINE 表头所在行，其实如果没有错误的话，一般都是第三行；
+                            if (RLCFP_LINE[l]!=null && RLCFP_LINE[l].contains("SDCCHAC")){
+                                RLCFPsector = RLCFP_LINE[l-2].substring(0,7);
+//                                System.out.println(RLCFPsector);
+
+                                //开始从 RLCFP_LINE 表头所在行 以后 的行，循环取得其他参数；
+                                for (int m=l+1;m<RLCFP_LINE.length;m++){
+//                                    if (RLCFP_LINE[m].length()==1){
+//                                        System.out.println("空行： "+RLCFP_LINE[m]);
+//                                    }
+//                                    System.out.println("第一行："+RLCFP_LINE[0]);
+//                                    System.out.println("第三行："+RLCFP_LINE[3]);
+//                                    System.out.println("最后行："+RLCFP_LINE[RLCFP_LINE.length-1]);
+                                    // 取得“信道组号”所在行，只能取三位出来对比，因为整个 RLCFP 指令最后有个三位的“END”标记；
+                                    if (RLCFP_LINE[m]!=null && RLCFP_LINE[m].substring(0,3).trim().length()==1) {
+//                                            System.out.println(RLCFP_LINE[m]);
+
+                                        System.out.println("CHGR_COUNT: "+CHGR_COUNT);
+                                        System.out.println("CHGR: "+RLCFP_LINE[m]);
+
+                                        //给数组 ch_group[CHGR_COUNT][] 赋值；
+                                        for (int n=0;n<RLCFP_LINE.length-l;n++) {
+                                            if (RLCFP_LINE[m].contains("END")) {
+                                                System.out.println("处理完");
+                                            }else if (n == 0){
+                                                ch_group[CHGR_COUNT][n] = RLCFP_LINE[m].substring(0,5).trim();    //CHGR
+                                                System.out.println("this is "+ch_group[CHGR_COUNT][n]);
+                                            }else if (n == 1){
+                                                ch_group[CHGR_COUNT][n] = RLCFP_LINE[m].substring(49,53).trim();    //hsn
+                                                System.out.println("this is "+ch_group[CHGR_COUNT][n]);
+                                            }else if (n == 2){
+                                                ch_group[CHGR_COUNT][n] = RLCFP_LINE[m].substring(60).trim();    //dchno1
+                                                System.out.println("this is "+ch_group[CHGR_COUNT][n]);
+                                            }else if (n >= 3) {
+//                                                ???????????????????????????????????????????????????
+                                                for (int o=n;o<RLCFP_LINE.length-n;o++) {
+                                                    switch (RLCFP_LINE[o].substring(0, 3).trim()) {
+                                                        case "0":
+                                                            System.out.println("break0");
+                                                            break;
+                                                        case "1":
+                                                            System.out.println("break1");
+                                                            break;
+                                                        case "2":
+                                                            System.out.println("break2");
+                                                            break;
+                                                        case "3":
+                                                            System.out.println("break3");
+                                                            break;
+                                                        case "4":
+                                                            System.out.println("break4");
+                                                            break;
+                                                        default:
+                                                            if (n == 3) {
+                                                                ch_group[CHGR_COUNT][n] = RLCFP_LINE[m + 1].substring(60).trim();    //dchno2
+                                                            } else if (n == 4) {
+                                                                ch_group[CHGR_COUNT][n] = RLCFP_LINE[m + 2].substring(60).trim();    //dchno3
+                                                            } else if (n == 5) {
+                                                                ch_group[CHGR_COUNT][n] = RLCFP_LINE[m + 3].substring(60).trim();    //dchno4
+                                                            } else if (n == 6) {
+                                                                ch_group[CHGR_COUNT][n] = RLCFP_LINE[m + 4].substring(60).trim();    //dchno5
+                                                            } else if (n == 7) {
+                                                                ch_group[CHGR_COUNT][n] = RLCFP_LINE[m + 5].substring(60).trim();    //dchno6
+                                                            } else if (n == 8) {
+                                                                ch_group[CHGR_COUNT][n] = RLCFP_LINE[m + 6].substring(60).trim();    //dchno7
+                                                            } else if (n == 9) {
+                                                                ch_group[CHGR_COUNT][n] = RLCFP_LINE[m + 7].substring(60).trim();    //dchno8
+                                                            } else if (n == 10) {
+                                                                ch_group[CHGR_COUNT][n] = RLCFP_LINE[m + 8].substring(60).trim();    //dchno9
+                                                            } else if (n == 11) {
+                                                                ch_group[CHGR_COUNT][n] = RLCFP_LINE[m + 9].substring(60).trim();    //dchno10
+                                                            } else if (n == 12) {
+                                                                ch_group[CHGR_COUNT][n] = RLCFP_LINE[m + 10].substring(60).trim();    //dchno11
+                                                            } else if (n == 13) {
+                                                                ch_group[CHGR_COUNT][n] = RLCFP_LINE[m + 11].substring(60).trim();    //dchno12
+                                                            }
+                                                    }
+                                                }
+                                            }
+
+//                                            System.out.println("this is"+ch_group[CHGR_COUNT][n]);
+                                        }
+                                        CHGR_COUNT++;
+                                    }
+                                }
+                                System.out.println("处理完： "+RLCFPsector);
+                            }
+                        }
                     }
                 }
 
