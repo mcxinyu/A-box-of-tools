@@ -219,12 +219,6 @@ public class ReadCdd {
 
                 // 判断指令块是否为 RLCFP 块；
                 if (lineContent.contains("RLCFP")){
-                    for (int x=0;x<4;x++){
-                        //给 ch_group 二维数组赋初值，因为取不到参数的时候，需要标记为 N/A；
-                        for (int y=0;y<14;y++){
-                            ch_group[x][y]="N/A";
-                        }
-                    }
                     // 读取信道信息
                     // RLCFP_CELL 按“CELL”分列后存入数组 RLCFP_CELL[] 中，每个 RLCFP_CELL 就是一个小区的数据；
                     String[] RLCFP_CELL = logContent[i].split("CELL");
@@ -232,6 +226,13 @@ public class ReadCdd {
 
                     // 遍历各个小区的数据，一个 k 就是一个小区块；
                     for (int k=3;k<RLCFP_CELL.length;k++) {
+                        for (int x=0;x<4;x++){
+                            //给 ch_group 二维数组赋初值，因为取不到参数的时候，需要标记为 N/A；
+                            for (int y=0;y<14;y++){
+                                ch_group[x][y]="N/A";
+                            }
+                        }
+
                         // 再将各个小区的 RLCFP_CELL 按行分割后存入数组 RLCFP_CELL_LINE[]；
                         String[] RLCFP_CELL_LINE = RLCFP_CELL[k].split("\\r|\\n");
                         // 各个小区的信道组号统计
@@ -324,7 +325,7 @@ public class ReadCdd {
                                             ch_group[1][1] = RLCFP_CELL_LINE[CHGR_LINE[1]].substring(49, 53).trim();    //hsn
 
                                             for (int n = 0; n < RLCFP_CELL_LINE.length - CHGR_LINE[1]; n++) {
-                                                if (RLCFP_CELL_LINE[CHGR_LINE[0] + n].length()>59) {
+                                                if (RLCFP_CELL_LINE[CHGR_LINE[1] + n].length()>59) {
                                                     ch_group[1][2 + n] = RLCFP_CELL_LINE[CHGR_LINE[1] + n].substring(60).trim();    //dchno1-dchno12
                                                 }
                                             }
@@ -346,7 +347,7 @@ public class ReadCdd {
                                             ch_group[1][1] = RLCFP_CELL_LINE[CHGR_LINE[1]].substring(49, 53).trim();    //hsn
 
                                             for (int n = 0; n < CHGR_LINE[2] - CHGR_LINE[1]; n++) {
-                                                if (RLCFP_CELL_LINE[CHGR_LINE[0] + n].length()>59) {
+                                                if (RLCFP_CELL_LINE[CHGR_LINE[1] + n].length()>59) {
                                                     ch_group[1][2 + n] = RLCFP_CELL_LINE[CHGR_LINE[1] + n].substring(60).trim();    //dchno1-dchno12
                                                 }
                                             }
@@ -356,7 +357,7 @@ public class ReadCdd {
                                             ch_group[2][1] = RLCFP_CELL_LINE[CHGR_LINE[2]].substring(49, 53).trim();    //hsn
 
                                             for (int n = 0; n < RLCFP_CELL_LINE.length - CHGR_LINE[2]; n++) {
-                                                if (RLCFP_CELL_LINE[CHGR_LINE[0] + n].length()>59) {
+                                                if (RLCFP_CELL_LINE[CHGR_LINE[2] + n].length()>59) {
                                                     ch_group[2][2 + n] = RLCFP_CELL_LINE[CHGR_LINE[2] + n].substring(60).trim();    //dchno1-dchno12
                                                 }
                                             }
@@ -369,8 +370,7 @@ public class ReadCdd {
 
                                             for (int n = 0; n < CHGR_LINE[1] - CHGR_LINE[0]; n++) {
                                                 if (RLCFP_CELL_LINE[CHGR_LINE[0] + n].length()>59) {
-                                                    System.out.println(RLCFP_CELL_LINE[CHGR_LINE[0] + n]);
-                                                    ch_group[2][2 + n] = RLCFP_CELL_LINE[CHGR_LINE[2] + n].substring(60).trim();    //dchno1-dchno12
+                                                    ch_group[0][2 + n] = RLCFP_CELL_LINE[CHGR_LINE[0] + n].substring(60).trim();    //dchno1-dchno12
                                                 }
                                             }
 
@@ -379,8 +379,8 @@ public class ReadCdd {
                                             ch_group[1][1] = RLCFP_CELL_LINE[CHGR_LINE[1]].substring(49, 53).trim();    //hsn
 
                                             for (int n = 0; n < CHGR_LINE[2] - CHGR_LINE[1]; n++) {
-                                                if (RLCFP_CELL_LINE[CHGR_LINE[0] + n].length()>59) {
-                                                    ch_group[2][2 + n] = RLCFP_CELL_LINE[CHGR_LINE[2] + n].substring(60).trim();    //dchno1-dchno12
+                                                if (RLCFP_CELL_LINE[CHGR_LINE[1] + n].length()>59) {
+                                                    ch_group[1][2 + n] = RLCFP_CELL_LINE[CHGR_LINE[1] + n].substring(60).trim();    //dchno1-dchno12
                                                 }
                                             }
 
@@ -389,7 +389,7 @@ public class ReadCdd {
                                             ch_group[2][1] = RLCFP_CELL_LINE[CHGR_LINE[2]].substring(49, 53).trim();    //hsn
 
                                             for (int n = 0; n < CHGR_LINE[3] - CHGR_LINE[2]; n++) {
-                                                if (RLCFP_CELL_LINE[CHGR_LINE[0] + n].length()>59) {
+                                                if (RLCFP_CELL_LINE[CHGR_LINE[2] + n].length()>59) {
                                                     ch_group[2][2 + n] = RLCFP_CELL_LINE[CHGR_LINE[2] + n].substring(60).trim();    //dchno1-dchno12
                                                 }
                                             }
@@ -399,8 +399,8 @@ public class ReadCdd {
                                             ch_group[3][1] = RLCFP_CELL_LINE[CHGR_LINE[3]].substring(49, 53).trim();    //hsn
 
                                             for (int n = 0; n < RLCFP_CELL_LINE.length - CHGR_LINE[3]; n++) {
-                                                if (RLCFP_CELL_LINE[CHGR_LINE[0] + n].length()>59) {
-                                                    ch_group[2][2 + n] = RLCFP_CELL_LINE[CHGR_LINE[2] + n].substring(60).trim();    //dchno1-dchno12
+                                                if (RLCFP_CELL_LINE[CHGR_LINE[3] + n].length()>59) {
+                                                    ch_group[3][2 + n] = RLCFP_CELL_LINE[CHGR_LINE[3] + n].substring(60).trim();    //dchno1-dchno12
                                                 }
                                             }
 
