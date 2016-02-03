@@ -19,7 +19,7 @@ public class ProcessorLog {
 //        File f = new File("/Users/huangyuefeng/Downloads/CDD/SZ01A.log");
         ProcessorLog rc = new ProcessorLog();
 //        String[] ss = rc.readSingleLog(f,1);
-        rc.processorSingleLog(f,1);
+        rc.processorSingleLog(f);
     }
 
     /**
@@ -35,11 +35,10 @@ public class ProcessorLog {
      * Processor single log.
      *
      * @param logFile the log file
-     * @param a       the a
      */
-    public void processorSingleLog(File logFile,int a){
+    public void processorSingleLog(File logFile){
         //logContent 数组存放读取到的文件，文件按照"<"分割的；一个 logContent 就是一个 OSS 指令块;
-        String[] logContent = ReadText.readSingleText(logFile,1).split("<");
+        String[] logContent = ReadFile.readSingleText(logFile).split("<");
 
         //用来记录有所行数，，因为各个 P 指令块是分开在 logContent 数组里面的；
         int lineNumber = 0;
@@ -316,31 +315,6 @@ public class ProcessorLog {
             }
         }
 
-    }
-
-
-    /**
-     * 读取文件夹
-     *
-     * @param folderPath the folder path
-     * @return string string
-     */
-    public String textFolderToString(String folderPath) {
-        File[] files = new File(folderPath).listFiles();
-        String connect ="";
-        if (files.length>0){
-            for(File file:files){
-                System.out.println(file.getName());
-                connect += ReadText.readSingleText(file);
-            }
-//            for (int i=0;i<files.length;i++){
-//                System.out.println(files[i].getName());
-//                connect += textToString(files[i]);
-//            }
-        }else {
-            System.out.println("未找到文件");
-        }
-        return connect;
     }
 
 }

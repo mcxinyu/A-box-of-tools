@@ -8,6 +8,8 @@ package View.HomeView;
 import View.Cdd2ForteView.Cdd2Forte;
 import View.CheckPlanView.CheckPlan;
 import View.CheckPlanView.WelcomeArea;
+import View.FileSplitView.FileSplit;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,7 +19,7 @@ import javax.swing.*;
 
 public class Home extends JFrame implements ActionListener{
     WelcomeArea welcome;
-    HomeFunctionBtn checkPlanBtn,cdd2forteBtn,placeholderBtn2,placeholderBtn3;
+    HomeFunctionBtn checkPlanBtn,cdd2forteBtn,fileSplitBtn,placeholderBtn3;
     JPanel functionalArea;
     JFrame j1,j2;
 
@@ -30,16 +32,15 @@ public class Home extends JFrame implements ActionListener{
 
         cdd2forteBtn = new HomeFunctionBtn("images/cdd2forte_128.png","cdd2forte","   使用 cdd-log 生成 forte 环境          （目前只支持爱立信设备）",200,0);
         checkPlanBtn = new HomeFunctionBtn("images/CheckPlan_128.png","变频方案检查表","  现网 cdd/cdd_Channel 与变频      方案生成网优之家检查表",400,0);
-        placeholderBtn2 = new HomeFunctionBtn("images/ad_128.png","广告位出租","                    上广告",200,200);
+        fileSplitBtn = new HomeFunctionBtn("images/ad_128.png","广告位出租","                    上广告",200,200);
         placeholderBtn3 = new HomeFunctionBtn("images/ad_128.png","广告位出租","                    上广告",400,200);
-        placeholderBtn2.button.setEnabled(false);
         placeholderBtn3.button.setEnabled(false);
 
         functionalArea = new JPanel(null);
         functionalArea.setBackground(new Color(230,230,230));
         functionalArea.add(cdd2forteBtn);
         functionalArea.add(checkPlanBtn);
-        functionalArea.add(placeholderBtn2);
+        functionalArea.add(fileSplitBtn);
         functionalArea.add(placeholderBtn3);
 
         //注册监听
@@ -49,8 +50,8 @@ public class Home extends JFrame implements ActionListener{
         checkPlanBtn.button.addActionListener(this);
 //        checkPlan.setActionCommand("checkPlan");
 //        checkPlan.addActionListener(this);
-        placeholderBtn2.button.setActionCommand("placeholderBtn2");
-        placeholderBtn2.button.addActionListener(this);
+        fileSplitBtn.button.setActionCommand("fileSplitBtn");
+        fileSplitBtn.button.addActionListener(this);
         placeholderBtn3.button.setActionCommand("placeholderBtn3");
         placeholderBtn3.button.addActionListener(this);
         //添加入Frame
@@ -87,9 +88,9 @@ public class Home extends JFrame implements ActionListener{
                     j1.setVisible(true);
                 }
             });
-        }else if (e.getActionCommand().equals("placeholderBtn2")){
+        }else if (e.getActionCommand().equals("fileSplitBtn")){
 //            j1.setVisible(false);
-            j2 = new CheckPlan();
+            j2 = new FileSplit();
             j2.addWindowListener(new WindowAdapter(){
                 public void windowClosing(WindowEvent e){
                     j1.setVisible(true);
