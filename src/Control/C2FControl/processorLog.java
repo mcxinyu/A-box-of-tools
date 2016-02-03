@@ -1,15 +1,13 @@
 package Control.C2FControl;
 
-import java.awt.*;
 import java.io.*;
-import java.util.HashMap;
 
 
 /**
- * 用于读取、处理 cdd 文本文件，得到 cdd 参数
+ * 用于处理 cdd 文本文件，得到 cdd 参数
  * Created by 跃峰 on 2016/1/27.
  */
-public class ReadCdd {
+public class ProcessorLog {
 
     /**
      * The entry point of application.
@@ -19,7 +17,7 @@ public class ReadCdd {
     public static void main(String[] args) {
         File f = new File("D:\\SZ\\变频工作\\数据采集\\CDD\\20160122\\SZ01A.Log");
 //        File f = new File("/Users/huangyuefeng/Downloads/CDD/SZ01A.log");
-        ReadCdd rc = new ReadCdd();
+        ProcessorLog rc = new ProcessorLog();
 //        String[] ss = rc.readSingleLog(f,1);
         rc.processorSingleLog(f,1);
     }
@@ -27,79 +25,11 @@ public class ReadCdd {
     /**
      * Instantiates a new Read cdd.
      */
-    public ReadCdd(){
+    public ProcessorLog(){
 //        cdd = new File("/Users/huangyuefeng/Downloads/CDD/SZ01A.Log");
 //        cddContent = readSingleLog(cdd);
     }
 
-    /**
-     * 读取单个 cdd-log 文件，返回一个 HashMap<Integer,String>
-     *
-     * @param logFile cdd-log 文件路径
-     * @return 返回一个 HashMap<Integer,String>
-     */
-    public HashMap readSingleLog(File logFile){
-        int len = 0;
-        String line = "";
-        FileInputStream fis = null;
-        InputStreamReader isr = null;
-        BufferedReader br = null;
-        HashMap<Integer,String> logContent = new HashMap<Integer, String>();
-
-        try {
-            fis = new FileInputStream(logFile);
-            isr= new InputStreamReader(fis);
-            br = new BufferedReader(isr);
-
-            while((line=br.readLine())!=null){
-                len++;
-                logContent.put(len,line);
-            }
-//            System.out.println(len);
-//            System.out.println(logContent.size());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }finally {
-            try {
-                if (br != null) br.close();
-                if (isr != null) isr.close();
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-        return logContent;
-    }
-
-    /**
-     * 读取单个 cdd-log 文件，通过“<”分列文件，并返回一个数组
-     *
-     * @param logFile cdd-log 文件路径
-     * @param a       随便
-     * @return 返回一个数组 string [ ]
-     */
-    public String[] readSingleLog(File logFile,int a) {
-        FileInputStream fis = null;
-        Long filelength = logFile.length();    //获取文件长度
-        String fileName = logFile.getName();   //文件名
-        byte[] fileContent = new byte[filelength.intValue()];
-        try {
-            fis = new FileInputStream(logFile);
-            fis.read(fileContent);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }finally {
-            try {
-                fis.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        String s = new String(fileContent);
-        // 将文件以"<"分割为若干个 OSS 指令块，存储到数组并返回
-        String[] ss = s.split("<");
-        return ss;
-    }
 
     /**
      * Processor single log.
@@ -108,8 +38,8 @@ public class ReadCdd {
      * @param a       the a
      */
     public void processorSingleLog(File logFile,int a){
-        //logContent 数组存放读取到的文件，文件已经是按照"<"分割的；一个 logContent 就是一个 OSS 指令块;
-        String[] logContent = readSingleLog(logFile,1);
+        //logContent 数组存放读取到的文件，文件按照"<"分割的；一个 logContent 就是一个 OSS 指令块;
+        String[] logContent = ReadText.readSingleText(logFile,1).split("<");
 
         //用来记录有所行数，，因为各个 P 指令块是分开在 logContent 数组里面的；
         int lineNumber = 0;
@@ -401,7 +331,7 @@ public class ReadCdd {
         if (files.length>0){
             for(File file:files){
                 System.out.println(file.getName());
-                connect += readSingleLog(file);
+                connect += ReadText.readSingleText(file);
             }
 //            for (int i=0;i<files.length;i++){
 //                System.out.println(files[i].getName());
