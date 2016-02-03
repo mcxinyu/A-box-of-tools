@@ -14,7 +14,7 @@ public class Cdd2Forte extends JFrame{
     JFrame frame;
     JPanel welcomeArea;
     JPanel controlBtnArea;
-    JButton backBtn,nextBtn,okBtn,cancelBtn,readCddBtn,export2ForteBtn;
+    JButton backBtn,nextBtn,okBtn,cancelBtn,readCoordinateBtn ,readCddBtn,export2ForteBtn;
     JPanel contentsArea;
     JLabel temp1,temp2,text,progressBar,expPoint,joke;
 
@@ -31,21 +31,31 @@ public class Cdd2Forte extends JFrame{
         text.setFont(MyTools.fontPlain13);
         temp1 = new JLabel("                    ");
         temp2 = new JLabel("                    ");
-        progressBar = new JLabel("导入数据进度条");
-        expPoint = new JLabel("导出数据进度条");
+        progressBar = new JLabel("导入 cdd-log 进度条");
+        expPoint = new JLabel("导出环境进度条");
+//        expPoint.setOpaque(true);
+//        expPoint.setBackground(Color.RED);
 //        joke = new JLabel("点击确认和取消都是没效果的！");
+
+        readCoordinateBtn = new JButton(" 读取坐标文件 ");
+        readCoordinateBtn.setFont(MyTools.fontBold18);
 
         readCddBtn = new JButton("读取 cdd-log");
         readCddBtn.setFont(MyTools.fontBold18);
+        readCddBtn.setEnabled(false);
+
         export2ForteBtn = new JButton("导出 forte 环境");
         export2ForteBtn.setFont(MyTools.fontBold18);
+        export2ForteBtn.setEnabled(false);
 
-        contentsArea = new JPanel(new GridLayout(6,1,0,0));
-        contentsArea.add(text);
-        contentsArea.add(readCddBtn);
-        contentsArea.add(progressBar);
-        contentsArea.add(export2ForteBtn);
-        contentsArea.add(expPoint);
+//        contentsArea = new JPanel(new GridLayout(6,1,0,0));
+        contentsArea = new JPanel(new GridBagLayout());
+        contentsArea.add(text,new GBC(0,0,2,1).setFill(GBC.VERTICAL).setAnchor(GBC.CENTER).setIpad(30,30).setInsets(0,1));
+        contentsArea.add(readCoordinateBtn,new GBC(0,1,1,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(20,20).setInsets(0,0));
+        contentsArea.add(readCddBtn,new GBC(1,1,1,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(20,20).setInsets(0,0));
+        contentsArea.add(progressBar,new GBC(0,2,2,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(30,30).setInsets(0,1));
+        contentsArea.add(export2ForteBtn,new GBC(0,3,2,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(20,20).setInsets(0,0));
+        contentsArea.add(expPoint,new GBC(0,4,2,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(30,30).setInsets(0,1));
 
         //控制栏
         backBtn = new JButton("< 上一步");
@@ -54,6 +64,7 @@ public class Cdd2Forte extends JFrame{
         cancelBtn = new JButton(" 取  消 ");
         backBtn.setEnabled(false);
         nextBtn.setEnabled(false);
+        okBtn.setEnabled(false);
 
         controlBtnArea = new ControlBtnArea(backBtn,nextBtn,okBtn,cancelBtn);
 

@@ -3,9 +3,11 @@ sector、lac、ci、band、bcch、bsic、
 trx
 ch_group_0、hsn、dchno_1、dchno_2、dchno_3
 ch_group_1、hsn、dchno_1、dchno_2、dchno_3
-ch_group_3、hsn、dchno_1
-
+ch_group_2、hsn、dchno_1、dchno_2、dchno_3
+ch_group_3、hsn、dchno_1、dchno_2、dchno_3
+--------------------以上完成----------------------
 HO
+--------------------剩下未完成↑----------------------
 
 <RLDEP:CELL=ALL;
 CELL     CGI                  BSIC  BCCHNO  AGBLK  MFRMS  IRC
@@ -45,12 +47,3 @@ CELLR     DIR     CAND   CS
 01GA461   MUTUAL  BOTH   NO
 CELLR     DIR     CAND   CS
 01DA152   MUTUAL  BOTH   NO
-
-获得
-HO
-
-逐行读取非空行的数据，
-*** 后面读取到 bsc 名；
-“<”识别到指令行，并记录下是什么指令
-
-01DA273

@@ -71,53 +71,6 @@ public class ReadCdd {
     }
 
     /**
-     * 失败的案例
-     *
-     * @param logFile the log file
-     */
-    public void processorSingleLog(File logFile){
-        HashMap<Integer,String> logContent = readSingleLog(logFile);
-//        Iterator iter = logContent.entrySet().iterator();
-        int mapSize = logContent.size();
-
-        long startTime=System.currentTimeMillis();  //获取开始时间
-
-        String bscName = "";
-
-        int i = 1;
-        while (i<mapSize){
-            String s = logContent.get(i);
-            if (s.contains("Connected")){
-                bscName = s.substring(17,23);
-            }
-            i++;
-            if (s.contains("RLDEP")&&!s.contains("EXT")){
-            }
-        }
-
-//        for (int i=1;i<=mapSize;i++){
-////            System.out.println(logContent.get(i));
-//            String s = logContent.get(i);
-//            if (s.contains("Connected")){
-//                bscName = s.substring(17,23);
-//            }else if (s.contains("RLDEP")&&!s.contains("EXT")){
-//            }
-//        }
-
-//        while (iter.hasNext()){
-//            HashMap.Entry entry = (HashMap.Entry) iter.next();
-////            Object key = entry.getKey();
-////            Object val = entry.getValue();
-////            System.out.println(entry.getValue());
-//        }
-
-//        System.out.println(logContent.get(mapSize));
-
-        long endTime=System.currentTimeMillis();    //获取结束时间
-        System.out.println("程序运行时间： "+(endTime-startTime)+"ms");
-    }
-
-    /**
      * 读取单个 cdd-log 文件，通过“<”分列文件，并返回一个数组
      *
      * @param logFile cdd-log 文件路径
@@ -143,6 +96,7 @@ public class ReadCdd {
             }
         }
         String s = new String(fileContent);
+        // 将文件以"<"分割为若干个 OSS 指令块，存储到数组并返回
         String[] ss = s.split("<");
         return ss;
     }
@@ -160,14 +114,16 @@ public class ReadCdd {
         //用来记录有所行数，，因为各个 P 指令块是分开在 logContent 数组里面的；
         int lineNumber = 0;
 
-        String bscName = "";
-        String RLDEPsector = "";
-        String lac = "";
-        String ci = "";
-        String bsic = "";
-        String bcch = "";
-        String band = "";
+        String[] sectors = new String[7];
+//        String bscName = "";
+//        String RLDEPsector = "";
+//        String lac = "";
+//        String ci = "";
+//        String bsic = "";
+//        String bcch = "";
+//        String band = "";
         String RLCFPsector = "";
+
         String[][] ch_group = new String[4][14];    //保存4个信道组，每个信道组可能有14个元素（ch_group、hsn、dchno1-12）
 
 
@@ -194,7 +150,7 @@ public class ReadCdd {
                 // 判断指令块是否为 Connected 块；
                 if (lineContent.contains("Connected")){
                     //开始位置，并读取 bscName;
-                    bscName = lineContent.substring(16,22);
+                    sectors[0] = lineContent.substring(16,22);
 //                    System.out.println("开始处理 "+bscName+"\r\n"+ss[j]);
                 }
 
@@ -205,12 +161,12 @@ public class ReadCdd {
 
                     while (j<ss.length){
                         if (ss[j]!=null && ss[j].contains("CGI")){
-                            RLDEPsector = ss[j+1].substring(0,7);
-                            lac = ss[j+1].substring(16,20);
-                            ci = ss[j+1].substring(21,26).trim();
-                            bsic = ss[j+1].substring(30,32);
-                            bcch = ss[j+1].substring(36,43).trim();
-                            band = ss[j+4].substring(52,ss[j+4].length());
+                            sectors[1] = ss[j+1].substring(0,7);
+                            sectors[2] = ss[j+1].substring(16,20);
+                            sectors[3] = ss[j+1].substring(21,26).trim();
+                            sectors[4] = ss[j+1].substring(30,32);
+                            sectors[5] = ss[j+1].substring(36,43).trim();
+                            sectors[6] = ss[j+4].substring(52,ss[j+4].length());
 //                            System.out.println(RLDEPsector+"-"+lac+"-"+ci+"-"+bsic+"-"+bcch+"-"+band);
                         }
                         j++;
@@ -308,7 +264,7 @@ public class ReadCdd {
                                                 }
                                             }
 
-                                            System.out.println("只有一个信道组");
+//                                            System.out.println("只有一个信道组");
                                         } else if (CHGR_COUNT == 2) {
                                             //取出第一个信道组数据
                                             ch_group[0][0] = RLCFP_CELL_LINE[CHGR_LINE[0]].substring(0, 3).trim();    //CHGR
@@ -330,7 +286,7 @@ public class ReadCdd {
                                                 }
                                             }
 
-                                            System.out.println("有二个信道组");
+//                                            System.out.println("有二个信道组");
                                         } else if (CHGR_COUNT == 3) {
                                             //取出第一个信道组数据
                                             ch_group[0][0] = RLCFP_CELL_LINE[CHGR_LINE[0]].substring(0, 3).trim();    //CHGR
@@ -362,7 +318,7 @@ public class ReadCdd {
                                                 }
                                             }
 
-                                            System.out.println("有三个信道组");
+//                                            System.out.println("有三个信道组");
                                         } else if (CHGR_COUNT == 4) {
                                             //取出第一个信道组数据
                                             ch_group[0][0] = RLCFP_CELL_LINE[CHGR_LINE[0]].substring(0, 3).trim();    //CHGR
@@ -404,7 +360,7 @@ public class ReadCdd {
                                                 }
                                             }
 
-                                            System.out.println("有四个信道组");
+//                                            System.out.println("有四个信道组");
                                         }
                                     }
 
