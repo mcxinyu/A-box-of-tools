@@ -32,7 +32,7 @@ public class Home extends JFrame implements ActionListener{
 
         cdd2forteBtn = new HomeFunctionBtn("images/cdd2forte_128.png","cdd2forte","   使用 cdd-log 生成 forte 环境          （目前只支持爱立信设备）",200,0);
         checkPlanBtn = new HomeFunctionBtn("images/CheckPlan_128.png","变频方案检查表","  现网 cdd/cdd_Channel 与变频      方案生成网优之家检查表",400,0);
-        fileSplitBtn = new HomeFunctionBtn("images/ad_128.png","广告位出租","                    上广告",200,200);
+        fileSplitBtn = new HomeFunctionBtn("images/split_128.png","文本分割合并","可将文本文件分割为小文件，解决    excel 无法打开大文件的困难。",200,200);
         placeholderBtn3 = new HomeFunctionBtn("images/ad_128.png","广告位出租","                    上广告",400,200);
         placeholderBtn3.button.setEnabled(false);
 
