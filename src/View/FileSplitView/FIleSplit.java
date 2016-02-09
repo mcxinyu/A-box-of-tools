@@ -6,7 +6,6 @@ import View.CheckPlanView.WelcomeArea;
 import View.HomeView.MyTools;
 
 import javax.swing.*;
-import javax.xml.soap.Text;
 import java.awt.*;
 
 /**
