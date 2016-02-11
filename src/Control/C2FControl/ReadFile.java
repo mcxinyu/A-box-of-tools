@@ -10,7 +10,7 @@ import java.util.HashMap;
 public class ReadFile {
 
     /**
-     * 读取单个 cdd-log 文件，通过“<”分列文件，并返回一个数组
+     * 读取单个 cdd-log 文件，并返回一个数组
      *
      * @param logFile cdd-log 文件路径
      * @return 返回一个数组 string [ ]

@@ -8,7 +8,7 @@ package View.HomeView;
 import View.Cdd2ForteView.Cdd2Forte;
 import View.CheckPlanView.CheckPlan;
 import View.CheckPlanView.WelcomeArea;
-import View.FileSplitView.FIleSplit;
+import View.FileSplitView.FileSplit;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -90,7 +90,7 @@ public class Home extends JFrame implements ActionListener{
             });
         }else if (e.getActionCommand().equals("fileSplitBtn")){
 //            j1.setVisible(false);
-            j2 = new FIleSplit();
+            j2 = new FileSplit();
             j2.addWindowListener(new WindowAdapter(){
                 public void windowClosing(WindowEvent e){
                     j1.setVisible(true);
