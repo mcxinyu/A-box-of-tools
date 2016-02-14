@@ -55,7 +55,6 @@ public class ProcessorLog {
 
         String[][] ch_group = new String[4][14];    //保存4个信道组，每个信道组可能有14个元素（ch_group、hsn、dchno1-12）
 
-
 //        System.out.println("logContent"+logContent.length);
 
         // 遍历所有 OSS 指令块，一个一个处理；
@@ -288,7 +287,6 @@ public class ProcessorLog {
                                                     ch_group[3][2 + n] = RLCFP_CELL_LINE[CHGR_LINE[3] + n].substring(60).trim();    //dchno1-dchno12
                                                 }
                                             }
-
 //                                            System.out.println("有四个信道组");
                                         }
                                     }
