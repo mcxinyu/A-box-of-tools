@@ -1,9 +1,8 @@
-package View.CheckPlanView;
+package Common;
 /**
  * Created by 跃峰 on 2015/12/8.
  * View.CheckPlanView 的欢迎栏区域
  */
-import View.HomeView.MyTools;
 import javax.swing.*;
 import java.awt.*;
 //欢迎栏区域
@@ -15,13 +14,13 @@ public class WelcomeArea extends JPanel {
         logo = new JLabel(new ImageIcon(image));
         welcomeText = new JLabel(titleText);
         welcomeText.setFont(MyTools.fontBold26);
-        stepsText = new JLabel("  导入数据 ( x of y )");
-        stepsText.setFont(MyTools.fontPlain13);
+//        stepsText = new JLabel("  导入数据 ( x of y )");
+//        stepsText.setFont(MyTools.fontPlain13);
         this.setLayout(new FlowLayout(FlowLayout.LEFT));
         this.setBackground(new Color(230,230,230));
         this.setPreferredSize(new Dimension(0, 70));
         this.add(logo);
         this.add(welcomeText);
-        this.add(stepsText);
+//        this.add(stepsText);
     }
 }

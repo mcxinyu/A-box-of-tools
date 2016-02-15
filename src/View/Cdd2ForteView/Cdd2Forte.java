@@ -1,16 +1,16 @@
 package View.Cdd2ForteView;
 
+import Common.saveFile;
 import Common.selectFile;
+import Control.C2FControl.ProcessorCoordinate;
 import View.CheckPlanView.GBC;
-import View.CheckPlanView.WelcomeArea;
-import View.CheckPlanView.ControlBtnArea;
-import View.HomeView.MyTools;
+import Common.WelcomeArea;
+import Common.ControlBtnArea;
+import Common.MyTools;
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 
 /**
  * cdd2forte 的界面部分
@@ -20,7 +20,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
     JFrame frame;
     JPanel welcomeArea;
     JPanel controlBtnArea;
-    JButton backBtn,nextBtn,okBtn,cancelBtn,readCoordinateBtn ,readCddBtn,export2ForteBtn;
+    JButton backBtn,nextBtn,okBtn,cancelBtn,aboutBtn,readCoordinateBtn ,readCddBtn,export2ForteBtn;
     JPanel contentsArea;
     JLabel temp1,temp2,text,progressBar1,progressBar2,expPoint,joke;
 
@@ -52,14 +52,14 @@ public class Cdd2Forte extends JFrame implements ActionListener{
 
         readCddBtn = new JButton("读取 cdd-log");
         readCddBtn.setFont(MyTools.fontBold18);
-        readCddBtn.setEnabled(false);
+//        readCddBtn.setEnabled(false);
         //注册监听
         readCddBtn.setActionCommand("readCddBtn");
         readCddBtn.addActionListener(this);
 
         export2ForteBtn = new JButton("导出 forte 环境");
         export2ForteBtn.setFont(MyTools.fontBold18);
-        export2ForteBtn.setEnabled(false);
+//        export2ForteBtn.setEnabled(false);
         //注册监听
         export2ForteBtn.setActionCommand("export2ForteBtn");
         export2ForteBtn.addActionListener(this);
@@ -75,6 +75,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
         contentsArea.add(expPoint,new GBC(0,5,2,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(30,30).setInsets(0,1));
 
         //控制栏
+        aboutBtn = new JButton(new ImageIcon("images/about.png"));
         backBtn = new JButton("< 上一步");
         nextBtn = new JButton("下一步 >");
         okBtn = new JButton(" 完  成 ");
@@ -83,7 +84,19 @@ public class Cdd2Forte extends JFrame implements ActionListener{
         nextBtn.setEnabled(false);
         okBtn.setEnabled(false);
 
-        controlBtnArea = new ControlBtnArea(backBtn,nextBtn,okBtn,cancelBtn);
+        //设置监听
+        aboutBtn.setActionCommand("aboutBtn");
+        aboutBtn.addActionListener(this);
+        backBtn.setActionCommand("backBtn");
+        backBtn.addActionListener(this);
+        nextBtn.setActionCommand("nextBtn");
+        nextBtn.addActionListener(this);
+        okBtn.setActionCommand("okBtn");
+        okBtn.addActionListener(this);
+        cancelBtn.setActionCommand("cancelBtn");
+        cancelBtn.addActionListener(this);
+
+        controlBtnArea = new ControlBtnArea(backBtn,nextBtn,okBtn,cancelBtn,aboutBtn);
 
         //添加入Frame
         frame = new JFrame();
@@ -107,28 +120,50 @@ public class Cdd2Forte extends JFrame implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         selectFile sf;
+        String[][] cellCoordinate = null;
         if (e.getActionCommand() == "readCoordinateBtn"){
-            int type;
+            int state;
             sf = new selectFile();
-            type = sf.selectFile("打开坐标文件...","text");
-            if (type == 0 ){
-                //如果点击确定，将选择的文件路径传给文本框
-                readCddBtn.setEnabled(true);
-                progressBar1.setText("读取完毕： "+ sf.getFilePath());
-            }else{
+            state = sf.selectFile("读取坐标文件","text");
+
+            if (state == 0 ){
+                //如果点击确定
+                ProcessorCoordinate pc = new ProcessorCoordinate();
+                cellCoordinate = pc.processorSingleLog(sf.getFile());
+                progressBar1.setText(pc.getNotice());
+                if (pc.getNotice().contains("处理完毕")) {
+                    readCddBtn.setEnabled(true);
+                }
+            }else if (state == 1){
                 progressBar1.setText("未选择坐标文件");
             }
         }else if (e.getActionCommand() == "readCddBtn"){
-            int type;
+            int state;
             sf = new selectFile();
-            type = sf.selectFile("打开cdd...","text");
-            if (type == 0 ){
-                //如果点击确定，将选择的文件路径传给文本框
-                readCddBtn.setEnabled(true);
-                progressBar2.setText("选择了： "+ sf.getFilePath());
-            }else {
+            state = sf.selectFile("读取 cdd-log","text");
+            if (state == 0 ){
+                //如果点击确定
+                progressBar2.setText("CDD 处理完毕： "+ sf.getFile().getName());
+
+                export2ForteBtn.setEnabled(true);
+                okBtn.setEnabled(true);
+            }else if (state == 1){
                 progressBar2.setText("");
             }
+        }else if (e.getActionCommand() == "export2ForteBtn"){
+            saveFile s2f = new saveFile();
+            int state = s2f.saveFile("导出 forte 环境",1);
+            if (state == 0){
+                System.out.println("可以保存");
+            }else if (state == 1){
+                System.out.println("取消保存");
+            }
+        }else if (e.getActionCommand() == "aboutBtn"){
+            new C2FNotice();
+        }else if (e.getActionCommand().equals("backBtn")){
+        }else if (e.getActionCommand().equals("nextBtn")){
+        }else if (e.getActionCommand().equals("okBtn")){
+        }else if (e.getActionCommand().equals("cancelBtn")){
         }
     }
 }

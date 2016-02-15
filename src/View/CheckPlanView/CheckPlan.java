@@ -3,7 +3,9 @@ package View.CheckPlanView;
  * Created by 跃峰 on 2015/11/25.
  * View.CheckPlanView 的界面承载
  */
-import View.HomeView.MyTools;
+import Common.ControlBtnArea;
+import Common.WelcomeArea;
+import Common.MyTools;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;

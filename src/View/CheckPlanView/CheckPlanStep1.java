@@ -3,7 +3,7 @@ package View.CheckPlanView;
  * Created by 跃峰 on 2015/11/25.
  * View.CheckPlanView 的第一步，导入数据：现网cdd与cdd_Channel、方案
  */
-import View.HomeView.MyTools;
+import Common.MyTools;
 
 import javax.swing.*;
 import java.awt.*;

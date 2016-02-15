@@ -79,8 +79,8 @@ class CheckPlanStep2 extends JPanel implements ActionListener{
         jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
         jfc.setDialogTitle(title);
         jfc.setFileFilter(new FileNameExtensionFilter("Excel文件", "xls", "xlsx"));
-        int re = jfc.showSaveDialog(null);
-        File file = jfc.getSelectedFile();
+        jfc.showSaveDialog(null);
+        jfc.getSelectedFile();
     }
 }
 

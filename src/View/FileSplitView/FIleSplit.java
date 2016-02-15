@@ -1,9 +1,9 @@
 package View.FileSplitView;
 
-import View.CheckPlanView.ControlBtnArea;
+import Common.ControlBtnArea;
 import View.CheckPlanView.GBC;
-import View.CheckPlanView.WelcomeArea;
-import View.HomeView.MyTools;
+import Common.WelcomeArea;
+import Common.MyTools;
 
 import javax.swing.*;
 import java.awt.*;
