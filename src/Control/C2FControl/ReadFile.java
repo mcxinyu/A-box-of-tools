@@ -86,21 +86,22 @@ public class ReadFile {
      * @param folderPath the folder path
      * @return string string
      */
-    public String textFolderToString(String folderPath) {
+    public File[] readMultiText(String folderPath) {
         File[] files = new File(folderPath).listFiles();
-        String connect ="";
-        if (files.length>0){
-            for(File file:files){
-                System.out.println(file.getName());
-                connect += ReadFile.readSingleText(file);
-            }
-//            for (int i=0;i<files.length;i++){
-//                System.out.println(files[i].getName());
-//                connect += textToString(files[i]);
+
+//        String content ="";
+//        if (files.length>0){
+//            for(File file:files){
+//                System.out.println(file.getName());
+//                content += ReadFile.readSingleText(file);
 //            }
-        }else {
-            System.out.println("未找到文件");
-        }
-        return connect;
+////            for (int i=0;i<files.length;i++){
+////                System.out.println(files[i].getName());
+////                connect += textToString(files[i]);
+////            }
+//        }else {
+//            System.out.println("未找到文件");
+//        }
+        return files;
     }
 }

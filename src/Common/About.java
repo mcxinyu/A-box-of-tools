@@ -11,7 +11,9 @@ public class About extends JPanel {
     public About(){
         MyTools.windowsFeel();
         JPanel welcome =new WelcomeArea("images/boxtool_64.png","  欢迎使用 一箱工具 应用");
+        JLabel homePage = new JLabel("http://mcxinyu.github.io/A-box-of-tools/");
 
-        this.add(welcome,BorderLayout.NORTH);
+        this.add(welcome);
+        this.add(homePage);
     }
 }
