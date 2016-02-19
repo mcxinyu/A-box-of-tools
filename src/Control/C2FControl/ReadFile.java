@@ -1,7 +1,6 @@
 package Control.C2FControl;
 
 import java.io.*;
-import java.util.HashMap;
 
 /**
  * 用于读取文件（读取文本、读取文件夹等）
@@ -24,60 +23,21 @@ public class ReadFile {
             fis = new FileInputStream(logFile);
             fis.read(fileContent);
         }catch (FileNotFoundException e) {
-//            e.printStackTrace();
             System.out.println("找不到指定的文件。");
-        } catch (Exception e) {
+            e.printStackTrace();
+        }catch (Exception e) {
             e.printStackTrace();
         }finally {
             try {
                 fis.close();
             }catch (NullPointerException e){
                 System.out.println("无法读取文件");
+                e.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         return new String(fileContent);
-    }
-
-
-    /**
-     * 读取单个 cdd-log 文件，返回一个 HashMap<Integer,String>
-     *
-     * @param logFile cdd-log 文件路径
-     * @param a       随便
-     * @return 返回一个 HashMap<Integer,String>
-     */
-    public static HashMap readSingleText(File logFile,int a){
-        int len = 0;
-        String line = "";
-        FileInputStream fis = null;
-        InputStreamReader isr = null;
-        BufferedReader br = null;
-        HashMap<Integer,String> logContent = new HashMap<Integer, String>();
-
-        try {
-            fis = new FileInputStream(logFile);
-            isr= new InputStreamReader(fis);
-            br = new BufferedReader(isr);
-
-            while((line=br.readLine())!=null){
-                len++;
-                logContent.put(len,line);
-            }
-//            System.out.println(len);
-//            System.out.println(logContent.size());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }finally {
-            try {
-                if (br != null) br.close();
-                if (isr != null) isr.close();
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-        return logContent;
     }
 
     /**
