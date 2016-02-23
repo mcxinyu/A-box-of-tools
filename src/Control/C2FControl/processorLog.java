@@ -21,13 +21,14 @@ public class ProcessorLog {
         long startTime=System.currentTimeMillis();
 
         //读取坐标
-        File f1 = new File("D:\\SZ\\变频工作\\数据采集\\cellinfo\\coordinate.txt");
+        File f1 = new File("/Users/huangyuefeng/Downloads/cdd20160122/coordination.txt");
+//        File f1 = new File("D:\\SZ\\变频工作\\数据采集\\cellinfo\\coordinate.txt");
         ProcessorCoordinate pc = new ProcessorCoordinate();
         String[][] s = pc.processorSingleLog(f1);
 
         //读取CDD
-//        File f2 = new File("/Users/huangyuefeng/Downloads/CDD/SZ06A.log");
-        File f2 = new File("D:\\SZ\\变频工作\\数据采集\\CDD\\20160122\\SZ01A.Log");
+        File f2 = new File("/Users/huangyuefeng/Downloads/cdd20160122/SZ01A.log");
+//        File f2 = new File("D:\\SZ\\变频工作\\数据采集\\CDD\\20160122\\SZ01A.Log");
         ProcessorLog pl = new ProcessorLog();
         HashMap hm = pl.processorSingleLog(f2);
         pl.createForteList(s,hm);
@@ -546,6 +547,13 @@ public class ProcessorLog {
                 String[][] sectors = contentHM.get("rldep"+coordinate[i][0]);
                 String[][] rlcpp = contentHM.get("rlcpp"+coordinate[i][0]);
 
+//                for (int x=0;x<ch_group.length;x++){
+//                    for (int y=0;y<ch_group[x].length;y++){
+//                        System.out.print(ch_group[x][y]+" ");
+//                    }
+//                    System.out.println();
+//                }
+
                 for (int x=0;x<ch_group.length;x++){
 
                     if (ch_group[x][0] != "N/A"){   //首先，判断信道是存在的
@@ -555,7 +563,7 @@ public class ProcessorLog {
                         if (ch_group[x][2] != "N/A" && Integer.parseInt(ch_group[x][2]) != 0 && Integer.parseInt(ch_group[x][2])<1020){
                             extended = "PGSM";
                             for (int j=3;j<ch_group[x].length;j++){
-                                if (ch_group[x][j] == "N/A")break;
+                                if (ch_group[x][j].equals("N/A"))break;
                                 if (Integer.parseInt(ch_group[x][j])>=1020){
                                     extended = "N/A";
                                     break;
@@ -564,7 +572,7 @@ public class ProcessorLog {
                         }else if (ch_group[x][2] != "N/A" && (Integer.parseInt(ch_group[x][2])>=1020 || Integer.parseInt(ch_group[x][2])==0)){
                             extended = "EGSM";
                             for (int j=3;j<ch_group[x].length;j++){
-                                if (ch_group[x][j] == "N/A")break;
+                                if (ch_group[x][j].equals("N/A"))break;
                                 if (Integer.parseInt(ch_group[x][j])<1020){
                                     extended = "N/A";
                                     break;
@@ -575,9 +583,12 @@ public class ProcessorLog {
                         // 判断是否为BCCH频点所在信道
                         String ContainsBCCH = "FALSE";
                         for (int j=2;j<ch_group[x].length;j++){
-                            if (ch_group[x][j] == "N/A")break;
-                            if (ch_group[x][j] == sectors[0][4]){
-                                System.out.println("bbbbbbbb");
+                            // 如果遇到 N/A 说明后面没有参数了,可以退出
+                            if (ch_group[x][j].equals("N/A")){
+                                break;
+                            }
+                            // 有参数就比较参数是不是主频,是的话标记这一信道组为 bcch 信道
+                            if (ch_group[x][j].equals(sectors[0][4])){
                                 ContainsBCCH = "TRUE";
                                 break;
                             }
@@ -589,9 +600,21 @@ public class ProcessorLog {
                                 extended+"\tNon hopping\t"+
                                 ContainsBCCH+"\t"+
                                 ch_group[x][1]+"\tDownlink and Uplink\tDownlink and Uplink\tN/A\t"+
-                                rlcpp[0][1]+"\t4\t1\t1\tNormal\t567\t575\t627\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A";
+                                rlcpp[0][1]+"\t4\t1\t1\tNormal\t"+
+                                ch_group[x][2]+"\t"+
+                                ch_group[x][3]+"\t"+
+                                ch_group[x][4]+"\t"+
+                                ch_group[x][5]+"\t"+
+                                ch_group[x][6]+"\t"+
+                                ch_group[x][7]+"\t"+
+                                ch_group[x][8]+"\t"+
+                                ch_group[x][9]+"\t"+
+                                ch_group[x][10]+"\t"+
+                                ch_group[x][11]+"\t"+
+                                ch_group[x][12]+"\t"+
+                                ch_group[x][13]+"\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A";
 
-//                        System.out.println(channelGroupLine);
+                        System.out.println(channelGroupLine);
                     }
 
 //                    for (int y=0;y<ch_group[x].length;y++){
