@@ -1,7 +1,9 @@
 package Control.C2FControl;
 
 import java.io.*;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 
 
 /**
@@ -18,7 +20,7 @@ public class ProcessorLog {
         long startTime=System.currentTimeMillis();
 
         //读取坐标
-        File f1 = new File("D:\\SZ\\变频工作\\数据采集\\cellinfo\\coor.txt");
+        File f1 = new File("D:\\SZ\\变频工作\\数据采集\\cellinfo\\coordinate.txt");
         ProcessorCoordinate pc = new ProcessorCoordinate();
         String[][] s = pc.processorSingleLog(f1);
 
@@ -27,7 +29,7 @@ public class ProcessorLog {
         File f2 = new File("D:\\SZ\\变频工作\\数据采集\\CDD\\20160122\\SZ01A.Log");
         ProcessorLog pl = new ProcessorLog();
         HashMap hm = pl.processorSingleLog(f2);
-        pl.createForteFile(s,hm);
+        pl.createForteList(s,hm);
 
         //读取CDD文件夹
 //        String filePath = "D:\\SZ\\变频工作\\数据采集\\CDD\\20160122\\";
@@ -71,9 +73,9 @@ public class ProcessorLog {
 
 //        System.out.println("logContent"+logContent.length);
 
-            String bscName = "";
-            String[][] bsc = new String[1][1];
-            String[][] sectors = new String[1][6];
+//            String bscName = "";
+//            String[][] bsc = new String[1][1];
+//            String[][] sectors = new String[1][6];
 //            String RLDEPsector = "";
 //            String lac = "";
 //            String ci = "";
@@ -81,8 +83,8 @@ public class ProcessorLog {
 //            String bcch = "";
 //            String band = "";
 
-            String RLCFPsector = "";
-            String[][] ch_group = new String[4][14];    //保存4个信道组，每个信道组可能有14 or 66个元素（ch_group、hsn、dchno1-12?64）
+//            String RLCFPsector = "";
+//            String[][] ch_group = new String[4][14];    //保存4个信道组，每个信道组可能有14 or 66个元素（ch_group、hsn、dchno1-12?64）
 
             // 遍历所有 OSS 指令块，一个一个处理；
             for (int i=0;i<logContent.length;i++){
@@ -109,8 +111,11 @@ public class ProcessorLog {
 
                     // 判断指令块是否为 Connected 块；
                     if (lineContent.contains("Connected")){
+                        String bscName = "";
+                        String[][] bsc = new String[1][1];
+
                         //开始位置，并读取 bscName;
-                        bscName = lineContent.substring(16,22);
+                        bscName = lineContent.substring(17,22);
                         bsc[0][0] = bscName;
                         contentHM.put("bsccc",bsc);
 //                    System.out.println("开始处理 "+ bscName +"\r\n"+ss[j]);
@@ -125,24 +130,62 @@ public class ProcessorLog {
 
                         while (j<ss.length){
                             if (ss[j]!=null && ss[j].contains("CGI")){
-                                sectors[0][0] = ss[j+1].substring(0,7);
-                                sectors[0][1] = ss[j+1].substring(16,20);
-                                sectors[0][2] = ss[j+1].substring(21,26).trim();
-                                sectors[0][3] = ss[j+1].substring(30,32);
-                                sectors[0][4] = ss[j+1].substring(36,43).trim();
-                                sectors[0][5] = ss[j+4].substring(52,ss[j+4].length());
+                                String[][] sectors = new String[1][6];
+                                sectors[0][0] = ss[j+1].substring(0,7); //sector
+                                sectors[0][1] = ss[j+1].substring(16,20);   //lac
+                                sectors[0][2] = ss[j+1].substring(21,26).trim();    //ci
+                                sectors[0][3] = ss[j+1].substring(30,32);   //bsic
+                                sectors[0][4] = ss[j+1].substring(36,43).trim();    //bcch
+                                sectors[0][5] = ss[j+4].substring(52,ss[j+4].length()); //band
 //                            System.out.println(sectors[0]+"-"+sectors[1]+"-"+sectors[2]+"-"+sectors[3]+"-"+sectors[4]+"-"+sectors[5]);
 //                            String line = "MSC\t"+bscName+"\tEricsson\t"+sectors[0][0].substring(0,6)+"\t22.68933\t113.77698\t"+sectors[0][0]+"\t"+sectors[0][1]+"\t"+sectors[0][2]+"\tNew\t50\t"+sectors[0][4]+"\t"+sectors[0][3]+"\tTRUE\tRXOTG\tTRUE\t20\tTRUE\t10\tRandom\tNo Preference";
                                 contentHM.put("rldep"+sectors[0][0],sectors);
+//                                System.out.println(line);
                             }
-//                        for (int k=0;k<lineContent.length;k++) {
-//                            System.out.println(sectors[k]);
-//                        }
                             j++;
-
                         }
 //                    System.out.println("小区数： "+(ss.length-3)/9);
 
+                    }
+
+                    // 判断指令块是否为 RXTCP；
+                    if (lineContent.contains("RXTCP")){
+//                        System.out.println(logContent[i]);
+                        // 通过 RXOTG 分裂后得到每个小区的 RXTCP 块
+                        String[] RXTCP_CELL = logContent[i].split("RXOTG");
+
+//                        System.out.println(RXTCP_CELL[2]);
+                        // 遍历所以 RXTCP 块
+                        for (int k=2;k<RXTCP_CELL.length;k++){
+                            HashSet<String> hs = new HashSet<String>();
+                            String[][] rxtcp = new String[1][2];
+
+                            // 补充分裂后消失的“RXOTG”字符
+                            String temp = "RXOTG"+RXTCP_CELL[k];
+                            // 按行分裂每个 RXTCP 块
+                            String[] cell_line = temp.split("\\r|\\n");
+
+//                            String[][] rxtcp = new String[1][cell_line.length+1];
+
+                            // 遍历每个 RXTCP 块里面的所以行,得到该TG号的所有小区
+                            for (int l=0;l<cell_line.length;l++){
+                                if (cell_line[l].length()==0){break;}
+                                hs.add(cell_line[l].substring(16,26).trim());
+                            }
+                            // 将 hs 转换为数组处理
+                            String[] hsString = hs.toArray(new String[0]);
+                            for (int l=0;l<hsString.length;l++){
+                                rxtcp[0][0] = hsString[l];   //小区名
+                                rxtcp[0][1] = cell_line[0].substring(0,15).trim();  //获取TG号，格式“RXOTG-XXX”,一个小区可能有两个TG号
+                                contentHM.put("rxtcp"+rxtcp[0][0],rxtcp);
+                            }
+
+//                            for (int l=0;l<rxtcp.length;l++){
+//                                for (int m=0;m<rxtcp[l].length;m++){
+//                                    System.out.println(rxtcp[l][m]);
+//                                }
+//                            }
+                        }
                     }
 
                     // 判断指令块是否为 RLCFP 块；
@@ -158,12 +201,6 @@ public class ProcessorLog {
 
                         // 遍历各个小区的数据，一个 k 就是一个小区块；
                         for (int k=3;k<RLCFP_CELL.length;k++) {
-                            for (int x=0;x<ch_group.length;x++){
-                                //给 ch_group 二维数组赋初值，因为取不到参数的时候，需要标记为 N/A；
-                                for (int y=0;y<ch_group[x].length;y++){
-                                    ch_group[x][y]="N/A";
-                                }
-                            }
 
                             // 再将各个小区的 RLCFP_CELL 按行分割后存入数组 RLCFP_CELL_LINE[]；
                             String[] RLCFP_CELL_LINE = RLCFP_CELL[k].split("\\r|\\n");
@@ -226,7 +263,15 @@ public class ProcessorLog {
                             for (int l=0;l<RLCFP_CELL_LINE.length;l++) {
                                 // 取得  RLCFP_CELL_LINE 表头所在行，其实如果没有错误的话，一般都是第三行；
                                 if (RLCFP_CELL_LINE[l]!=null && RLCFP_CELL_LINE[l].contains("SDCCHAC")) {
-                                    RLCFPsector = RLCFP_CELL_LINE[l-2].substring(0).trim();
+                                    String RLCFPsector = RLCFP_CELL_LINE[l-2].substring(0).trim();
+                                    String[][] ch_group = new String[4][14];    //保存4个信道组，每个信道组可能有14 or 66个元素（ch_group、hsn、dchno1-12?64）
+                                    // 初始化 ch_group[][]，因为取不到参数的时候，需要标记为 N/A；
+                                    for (int x=0;x<ch_group.length;x++){
+                                        for (int y=0;y<ch_group[x].length;y++){
+                                            ch_group[x][y]="N/A";
+                                        }
+                                    }
+
 //                                System.out.println(RLCFPsector);
 
                                     //开始从 RLCFP_CELL_LINE 表头所在行 以后 的行，循环取得其他参数；
@@ -360,6 +405,7 @@ public class ProcessorLog {
 //                            System.out.println();
 //                        }
 //                        System.out.println("处理完： " + RLCFPsector);
+
                         }
                     }
 
@@ -424,15 +470,127 @@ public class ProcessorLog {
     return contentHM;
     }
 
-    public void createForteFile(String[][] coordinate,HashMap<String,String[][]> contentHM){
+    /**
+     * 生成 forte 环境文件，一个网元文件应该运行一次该方法;
+     * @param coordinate 接收坐标文件传递过来的 coordinate[][] 数组；
+     * @param contentHM 接收CDD文件传递过来的 contentHM HashMap；
+     */
+    public void createForteList(String[][] coordinate,HashMap<String,String[][]> contentHM){
         String sectorHead = "MSC\tBSC\tVendor\tSite\tLatitude\tLongitude\tSector\tID\tMaster\tLAC\tCI\tKeywords\tAzimuth\tBCCH frequency\tBSIC\tIntracell HO\tSynchronization group\tAMR HR Allocation\tAMR HR Threshold\tHR Allocation\tHR Threshold\tTCH allocation priority\tGPRS allocation priority\tRemote\tMCC\tMNC";
-//        String sectorLine = "MSC\t"+bscName+"\tEricsson\t"+sectors[0][0].substring(0,6)+"\t22.68933\t113.77698\t"+sectors[0][0]+"\t"+sectors[0][1]+"\t"+sectors[0][2]+"\tNew\t50\t"+sectors[0][4]+"\t"+sectors[0][3]+"\tTRUE\tRXOTG\tTRUE\t20\tTRUE\t10\tRandom\tNo Preference";
         String channelGroupHead = "Sector\tChannel Group\tSubcell\tBand\tExtended\tHopping method\tContains BCCH\tHSN\tDTX\tPower control\tSubcell Signal Threshold\tSubcell Tx Power\t# TRXs\t# SDCCH TSs\t# Fixed GPRS TSs\tPriority\tTCH 1\tTCH 2\tTCH 3\tTCH 4\tTCH 5\tTCH 6\tTCH 7\tTCH 8\tTCH 9\tTCH 10\tTCH 11\tTCH 12\tTCH 13\tTCH 14\tTCH 15\tTCH 16\tTCH 17\tTCH 18\tTCH 19\tTCH 20\tTCH 21\tTCH 22\tTCH 23\tTCH 24\tTCH 25\tTCH 26\tTCH 27\tTCH 28\tTCH 29\tTCH 30\tTCH 31\tTCH 32\tTCH 33\tTCH 34\tTCH 35\tTCH 36\tTCH 37\tTCH 38\tTCH 39\tTCH 40\tTCH 41\tTCH 42\tTCH 43\tTCH 44\tTCH 45\tTCH 46\tTCH 47\tTCH 48\tTCH 49\tTCH 50\tTCH 51\tTCH 52\tTCH 53\tTCH 54\tTCH 55\tTCH 56\tTCH 57\tTCH 58\tTCH 59\tTCH 60\tTCH 61\tTCH 62\tTCH 63\tTCH 64\tMAIO 1\tMAIO 2\tMAIO 3\tMAIO 4\tMAIO 5\tMAIO 6\tMAIO 7\tMAIO 8\tMAIO 9\tMAIO 10\tMAIO 11\tMAIO 12\tMAIO 13\tMAIO 14\tMAIO 15\tMAIO 16";
-        String channelGroupLine = "01DA011\t0\tUL\t1800\tN/A\tNon hopping\tTRUE\t3\tDownlink and Uplink\tDownlink and Uplink\tN/A\t47\t4\t1\t1\tNormal\t567\t575\t627\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A";
 
+//        System.out.println(contentHM.get("rldep01GA101"));
 
+        String[][] bsc = contentHM.get("bsccc");
+        String bscName = bsc[0][0];
+
+        System.out.println(channelGroupHead);
+
+        // 对坐标文件中的小区进行遍历，只处理坐标文件夹出现的小区
         for (int i=1;i<coordinate.length;i++){
-            System.out.println("11111111");
+//            System.out.print(coordinate[i][0]);
+
+            if (contentHM.containsKey("rldep"+coordinate[i][0])){
+                // 遍历数组，打印 Sectors 文件
+
+                String[][] sectors = contentHM.get("rldep"+coordinate[i][0]);
+                String[][] rxtcp = contentHM.get("rxtcp"+coordinate[i][0]);
+                String rxotg = bscName+"_"+rxtcp[0][1];
+//                System.out.print(rxtcp[0][0]+"====");
+//                System.out.println(coordinate[i][0]);
+//                System.out.println(rxotg);
+
+                String sectorLine = "MSC\t"+
+                        bscName+"\tEricsson\t"+
+                        sectors[0][0].substring(0,6)+"\t"+
+                        coordinate[i][2]+"\t"+
+                        coordinate[i][1]+"\t"+
+                        sectors[0][0]+"\t\t\t"+
+                        sectors[0][1]+"\t"+
+                        sectors[0][2]+"\tNew\t"+
+                        coordinate[i][5]+"\t"+
+                        sectors[0][4]+"\t"+
+                        sectors[0][3]+"\tFALSE\t"+
+                        rxotg+"\tTRUE\t20\tTRUE\t10\tRandom\tNo Preference\tFALSE\t460\t00";
+//                System.out.println(sectorLine);
+
+            }else {
+//                    System.out.println("无"+coordinate[i][0]);
+            }
+
+            if (contentHM.containsKey("rlcfp"+coordinate[i][0])){
+                // 遍历数组，打印 ChannelGroups 文件
+//                String[][] ch_group = new String[4][14];    //保存4个信道组，每个信道组可能有14 or 66个元素（ch_group、hsn、dchno1-12?64）
+                String[][] ch_group = contentHM.get("rlcfp"+coordinate[i][0]);
+                String[][] sectors = contentHM.get("rldep"+coordinate[i][0]);
+
+                for (int x=0;x<ch_group.length;x++){
+
+                    if (ch_group[x][0] != "N/A"){
+
+                        // 判断信道存储的频率为什么类型：PGSM、EGSM、N/A
+                        String extended = "N/A";
+                        if (ch_group[x][3] != "N/A" && Integer.parseInt(ch_group[x][3]) != 0 && Integer.parseInt(ch_group[x][3])<1020){
+                            extended = "PGSM";
+                            for (int j=4;j<ch_group.length;j++){
+                                if (ch_group[x][j] == "N/A")break;
+                                if (Integer.parseInt(ch_group[x][j])>=1020){
+                                    extended = "N/A";
+                                    break;
+                                }
+                            }
+                        }else if (ch_group[x][3] != "N/A" && (Integer.parseInt(ch_group[x][3])>=1020 || Integer.parseInt(ch_group[x][3])==0)){
+                            extended = "EGSM";
+                            for (int j=4;j<ch_group.length;j++){
+                                if (ch_group[x][j] == "N/A")break;
+                                if (Integer.parseInt(ch_group[x][j])<1020){
+                                    extended = "N/A";
+                                    break;
+                                }
+                            }
+                        }
+
+                        // 判断是否为BCCH频点所在信道
+                        String ContainsBCCH = "FALSE";
+                        for (int j=3;j<ch_group.length;j++){
+                            if (ch_group[x][j] == "N/A")break;
+                            if (ch_group[x][j] == sectors[0][4]){
+                                ContainsBCCH = "TRUE";
+                                break;
+                            }
+                        }
+
+                        String channelGroupLine = coordinate[i][0]+"\t"+
+                                ch_group[x][0]+"\tUL\t"+
+                                sectors[0][5].substring(3)+"\t"+
+                                extended+"\tNon hopping\t"+
+                                ContainsBCCH+"\t"+
+                                ch_group[x][1]+"\tDownlink and Uplink\tDownlink and Uplink\tN/A\t47\t4\t1\t1\tNormal\t567\t575\t627\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A";
+
+                        System.out.println(channelGroupLine);
+                    }
+
+//                    for (int y=0;y<ch_group[x].length;y++){
+//                        System.out.print(ch_group[x][y]+" ");
+//                    }
+                }
+            }
+
+            if (contentHM.containsKey("rlnrp"+coordinate[i][0])){
+                // 遍历数组，打印 handovers 文件
+            }
+
+            for (int j=0;j<coordinate[i].length;j++) {
+            }
         }
+
+//        String[][] ch_group = contentHM.get("rlcfp01DA121");
+//        for (int x=0;x<ch_group.length;x++){
+//            for (int y=0;y<ch_group[x].length;y++){
+//                System.out.print(ch_group[x][y]+" ");
+//            }
+//            System.out.println();
+//        }
+
     }
 }
