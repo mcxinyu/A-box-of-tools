@@ -1,6 +1,7 @@
 package Control.C2FControl;
 
 import java.io.*;
+import java.time.temporal.Temporal;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -145,6 +146,26 @@ public class ProcessorLog {
                             j++;
                         }
 //                    System.out.println("小区数： "+(ss.length-3)/9);
+
+                    }
+
+                    // 判断指令块是否为 RLCPP；读取功率
+                    if (lineContent.contains("RLCPP")){
+//                        System.out.println(logContent[i]);
+                        String[] RLCPP_CELL = logContent[i].split("\\r|\\n");
+
+                        for (int k=0;k<RLCPP_CELL.length;k++){
+
+                            if (RLCPP_CELL[k].contains("TYPE")){
+                                for (int l=k;l<RLCPP_CELL.length;l++){
+                                    if (RLCPP_CELL[l].contains("END"))break;
+                                    String[][] rlcpp = new String[1][2];
+                                    rlcpp[0][0] = RLCPP_CELL[l].substring(0,7);    // 小区名
+                                    rlcpp[0][1] = RLCPP_CELL[l].substring(15,22).trim();   // BSPWRB
+                                    contentHM.put("rlcpp"+rlcpp[0][0],rlcpp);
+                                }
+                            }
+                        }
 
                     }
 
@@ -523,25 +544,26 @@ public class ProcessorLog {
 //                String[][] ch_group = new String[4][14];    //保存4个信道组，每个信道组可能有14 or 66个元素（ch_group、hsn、dchno1-12?64）
                 String[][] ch_group = contentHM.get("rlcfp"+coordinate[i][0]);
                 String[][] sectors = contentHM.get("rldep"+coordinate[i][0]);
+                String[][] rlcpp = contentHM.get("rlcpp"+coordinate[i][0]);
 
                 for (int x=0;x<ch_group.length;x++){
 
-                    if (ch_group[x][0] != "N/A"){
+                    if (ch_group[x][0] != "N/A"){   //首先，判断信道是存在的
 
                         // 判断信道存储的频率为什么类型：PGSM、EGSM、N/A
                         String extended = "N/A";
-                        if (ch_group[x][3] != "N/A" && Integer.parseInt(ch_group[x][3]) != 0 && Integer.parseInt(ch_group[x][3])<1020){
+                        if (ch_group[x][2] != "N/A" && Integer.parseInt(ch_group[x][2]) != 0 && Integer.parseInt(ch_group[x][2])<1020){
                             extended = "PGSM";
-                            for (int j=4;j<ch_group.length;j++){
+                            for (int j=3;j<ch_group[x].length;j++){
                                 if (ch_group[x][j] == "N/A")break;
                                 if (Integer.parseInt(ch_group[x][j])>=1020){
                                     extended = "N/A";
                                     break;
                                 }
                             }
-                        }else if (ch_group[x][3] != "N/A" && (Integer.parseInt(ch_group[x][3])>=1020 || Integer.parseInt(ch_group[x][3])==0)){
+                        }else if (ch_group[x][2] != "N/A" && (Integer.parseInt(ch_group[x][2])>=1020 || Integer.parseInt(ch_group[x][2])==0)){
                             extended = "EGSM";
-                            for (int j=4;j<ch_group.length;j++){
+                            for (int j=3;j<ch_group[x].length;j++){
                                 if (ch_group[x][j] == "N/A")break;
                                 if (Integer.parseInt(ch_group[x][j])<1020){
                                     extended = "N/A";
@@ -552,9 +574,10 @@ public class ProcessorLog {
 
                         // 判断是否为BCCH频点所在信道
                         String ContainsBCCH = "FALSE";
-                        for (int j=3;j<ch_group.length;j++){
+                        for (int j=2;j<ch_group[x].length;j++){
                             if (ch_group[x][j] == "N/A")break;
                             if (ch_group[x][j] == sectors[0][4]){
+                                System.out.println("bbbbbbbb");
                                 ContainsBCCH = "TRUE";
                                 break;
                             }
@@ -565,9 +588,10 @@ public class ProcessorLog {
                                 sectors[0][5].substring(3)+"\t"+
                                 extended+"\tNon hopping\t"+
                                 ContainsBCCH+"\t"+
-                                ch_group[x][1]+"\tDownlink and Uplink\tDownlink and Uplink\tN/A\t47\t4\t1\t1\tNormal\t567\t575\t627\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A";
+                                ch_group[x][1]+"\tDownlink and Uplink\tDownlink and Uplink\tN/A\t"+
+                                rlcpp[0][1]+"\t4\t1\t1\tNormal\t567\t575\t627\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A";
 
-                        System.out.println(channelGroupLine);
+//                        System.out.println(channelGroupLine);
                     }
 
 //                    for (int y=0;y<ch_group[x].length;y++){
