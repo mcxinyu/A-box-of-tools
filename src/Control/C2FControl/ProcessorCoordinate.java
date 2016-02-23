@@ -34,7 +34,7 @@ public class ProcessorCoordinate {
         if (coordinates[0].length()==85) {
             for (int i = 0; i < coordinates.length; i++){
                 String[] temp = coordinates[i].split("\\t");
-                cellCoordinate[i][0] = temp[0]; //Sector
+                cellCoordinate[i][0] = temp[0].toUpperCase(); //Sector
                 cellCoordinate[i][1] = temp[1]; //Longitude
                 cellCoordinate[i][2] = temp[10];    //Latitude
                 cellCoordinate[i][3] = temp[2]; //LAC
@@ -51,7 +51,7 @@ public class ProcessorCoordinate {
         }else if(coordinates[0].length()==14 || coordinates[0].length()==20){
             for (int i = 0; i < coordinates.length; i++){
                 String[] temp = coordinates[i].split("\\t");
-                cellCoordinate[i][0] = temp[0]; //Sector
+                cellCoordinate[i][0] = temp[0].toUpperCase(); //Sector
                 cellCoordinate[i][1] = temp[1]; //Longitude
                 cellCoordinate[i][2] = temp[2]; //Latitude
                 cellCoordinate[i][3] = "N/A";   //LAC
