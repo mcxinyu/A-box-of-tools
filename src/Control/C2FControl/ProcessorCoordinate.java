@@ -34,33 +34,37 @@ public class ProcessorCoordinate {
         if (coordinates[0].length()==85) {
             for (int i = 0; i < coordinates.length; i++){
                 String[] temp = coordinates[i].split("\\t");
-                cellCoordinate[i][0] = temp[0];
-                cellCoordinate[i][1] = temp[1];
-                cellCoordinate[i][2] = temp[10];
-                cellCoordinate[i][3] = temp[2];
-                cellCoordinate[i][4] = temp[3];
-                cellCoordinate[i][5] = temp[4];
-                for (int j = 0; j < cellCoordinate[i].length; j++) {
-                    System.out.print(cellCoordinate[i][j] + " ");
-                }
-                System.out.println();
-            }
-            notice = "坐标处理完毕："+coordinateFile.getName();
-            System.out.println("处理完毕： "+(coordinates.length-1));
-        }else if(coordinates[0].length()==14 || coordinates[0].length()==20){
-            for (int i = 0; i < coordinates.length; i++){
-                String[] temp = coordinates[i].split("\\t");
-                cellCoordinate[i][0] = temp[0];
-                cellCoordinate[i][1] = temp[1];
-                cellCoordinate[i][2] = temp[2];
-                cellCoordinate[i][3] = "N/A";
-                cellCoordinate[i][4] = "N/A";
-                cellCoordinate[i][5] = temp[3];
+                cellCoordinate[i][0] = temp[0]; //Sector
+                cellCoordinate[i][1] = temp[1]; //Longitude
+                cellCoordinate[i][2] = temp[10];    //Latitude
+                cellCoordinate[i][3] = temp[2]; //LAC
+                cellCoordinate[i][4] = temp[3]; //CI
+                cellCoordinate[i][5] = temp[4]; //Azimuth
+
 //                for (int j = 0; j < cellCoordinate[i].length; j++) {
 //                    System.out.print(cellCoordinate[i][j] + " ");
 //                }
 //                System.out.println();
             }
+            notice = "坐标处理完毕："+coordinateFile.getName();
+//            System.out.println("处理完毕： "+(coordinates.length-1));
+        }else if(coordinates[0].length()==14 || coordinates[0].length()==20){
+            for (int i = 0; i < coordinates.length; i++){
+                String[] temp = coordinates[i].split("\\t");
+                cellCoordinate[i][0] = temp[0]; //Sector
+                cellCoordinate[i][1] = temp[1]; //Longitude
+                cellCoordinate[i][2] = temp[2]; //Latitude
+                cellCoordinate[i][3] = "N/A";   //LAC
+                cellCoordinate[i][4] = "N/A";   //CI
+                cellCoordinate[i][5] = temp[3]; //Azimuth
+
+//                for (int j = 0; j < cellCoordinate[i].length; j++) {
+//                    System.out.print(cellCoordinate[i][j] + " ");
+//                }
+//                System.out.println();
+            }
+            notice = "坐标处理完毕："+coordinateFile.getName();
+//            System.out.println("处理完毕： "+(coordinates.length-1));
         }else {
             System.out.println("坐标文件错误");
             notice = "坐标文件错误";
