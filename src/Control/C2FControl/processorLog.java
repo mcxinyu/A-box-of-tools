@@ -31,7 +31,7 @@ public class ProcessorLog {
         File f2 = new File("D:\\SZ\\变频工作\\数据采集\\CDD\\20160122\\SZ01A.Log");
         ProcessorLog pl = new ProcessorLog();
         HashMap hm = pl.processorSingleLog(f2);
-//        pl.createForteList(s,hm);
+        pl.createForteList(s,hm);
 
         //读取CDD文件夹
 //        String filePath = "D:\\SZ\\变频工作\\数据采集\\CDD\\20160122\\";
@@ -484,7 +484,7 @@ public class ProcessorLog {
                                 for (int l=1;l<RLNRP_line.length;l++){
                                     if (temp >= 33) {break;}
                                     if (RLNRP_line[l].contains("CELLR")){
-                                        System.out.println(RLNRP_line[l+1]);
+//                                        System.out.println(RLNRP_line[l+1]);
                                         if (RLNRP_line[l+1].length()>7) {
                                             rlnrp[0][temp] = RLNRP_line[l + 1].substring(0, 7).trim();
                                             temp++;
@@ -670,18 +670,8 @@ public class ProcessorLog {
             if (contentHM.containsKey("rlnrp"+coordinate[i][0])){
                 // 遍历数组，打印 handovers 文件
 
-                String s = coordinate[i][0];
-                System.out.println(coordinate[i][0]);
-
                 String[][] rlnrp = contentHM.get("rlnrp"+coordinate[i][0]);
 //                System.out.println(rlnrp[0][0]+"===="+coordinate[i][0]);
-
-//                for (int x=0;x<rlnrp.length;x++){
-//                    for (int y=0;y<rlnrp[x].length;y++){
-//                        System.out.print(rlnrp[x][y]+" ");
-//                    }
-//                    System.out.println();
-//                }
 
                 for (int j=0;j<rlnrp.length;j++){
 
@@ -689,7 +679,7 @@ public class ProcessorLog {
                     for (int k=1;k<rlnrp[j].length;k++){
                         if (rlnrp[j][k].equals("N/A"))break;
                         String handoverLine = rlnrp[j][0]+"\t"+rlnrp[j][k]+"\t5\tN/A";
-                        System.out.println(handoverLine);
+//                        System.out.println(handoverLine);
                     }
                 }
 
