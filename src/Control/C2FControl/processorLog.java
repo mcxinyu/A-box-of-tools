@@ -31,7 +31,7 @@ public class ProcessorLog {
         File f2 = new File("D:\\SZ\\变频工作\\数据采集\\CDD\\20160122\\SZ01A.Log");
         ProcessorLog pl = new ProcessorLog();
         HashMap hm = pl.processorSingleLog(f2);
-        pl.createForteList(s,hm);
+//        pl.createForteList(s,hm);
 
         //读取CDD文件夹
 //        String filePath = "D:\\SZ\\变频工作\\数据采集\\CDD\\20160122\\";
@@ -469,7 +469,7 @@ public class ProcessorLog {
                             String[][] rlnrp = new String[1][33];
                             // 先给数组设置默认值
                             for (int l=0;l<rlnrp.length;l++){
-                                for (int m=1;m<rlnrp[l].length;m++){
+                                for (int m=0;m<rlnrp[l].length;m++){
                                     rlnrp[l][m] = "N/A";
                                 }
                             }
@@ -478,14 +478,18 @@ public class ProcessorLog {
 
                                 // 取得主小区的小区名
                                 rlnrp[0][0] = RLNRP_line[0].substring(0).trim();
-//                                int temp = 0;
 
                                 // 取得各个邻区的小区名
-                                for (int l=1;l<(RLNRP_line.length-3)/12;l++){
-                                    if (l >= 33) {break;}
-                                    rlnrp[0][l] = RLNRP_line[3 + 12*(l-1)].substring(0,7);
-//                                    temp += 12;
-//                                    System.out.println(rlnrp[0][0]);
+                                int temp = 1;
+                                for (int l=1;l<RLNRP_line.length;l++){
+                                    if (temp >= 33) {break;}
+                                    if (RLNRP_line[l].contains("CELLR")){
+                                        System.out.println(RLNRP_line[l+1]);
+                                        if (RLNRP_line[l+1].length()>7) {
+                                            rlnrp[0][temp] = RLNRP_line[l + 1].substring(0, 7).trim();
+                                            temp++;
+                                        }
+                                    }
                                 }
                                 // put 本小区邻区数据
                                 contentHM.put("rlnrp"+rlnrp[0][0],rlnrp);
@@ -654,7 +658,7 @@ public class ProcessorLog {
                                 ch_group[x][14]+"\t"+
                                 ch_group[x][15]+"\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A";
 
-                        System.out.println(channelGroupLine);
+//                        System.out.println(channelGroupLine);
                     }
 
 //                    for (int y=0;y<ch_group[x].length;y++){
@@ -667,7 +671,7 @@ public class ProcessorLog {
                 // 遍历数组，打印 handovers 文件
 
                 String s = coordinate[i][0];
-//                System.out.println(coordinate[i][0]);
+                System.out.println(coordinate[i][0]);
 
                 String[][] rlnrp = contentHM.get("rlnrp"+coordinate[i][0]);
 //                System.out.println(rlnrp[0][0]+"===="+coordinate[i][0]);
@@ -679,15 +683,15 @@ public class ProcessorLog {
 //                    System.out.println();
 //                }
 
-//                for (int j=0;j<rlnrp.length;j++){
-//
-////                    String servingSector = rlnrp[j][0];
-//                    for (int k=1;k<rlnrp[j].length;k++){
-//                        if (rlnrp[j][k].equals("N/A"))break;
-//                        String handoverLine = rlnrp[j][0]+"\t"+rlnrp[j][k]+"\t5\tN/A";
-//                        System.out.println(handoverLine);
-//                    }
-//                }
+                for (int j=0;j<rlnrp.length;j++){
+
+//                    String servingSector = rlnrp[j][0];
+                    for (int k=1;k<rlnrp[j].length;k++){
+                        if (rlnrp[j][k].equals("N/A"))break;
+                        String handoverLine = rlnrp[j][0]+"\t"+rlnrp[j][k]+"\t5\tN/A";
+                        System.out.println(handoverLine);
+                    }
+                }
 
             }
         }
