@@ -2,6 +2,7 @@ package Control.C2FControl;
 
 import java.io.*;
 import java.time.temporal.Temporal;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,40 +22,65 @@ public class ProcessorLog {
         long startTime=System.currentTimeMillis();
 
         //读取坐标
-        File f1 = new File("/Users/huangyuefeng/Downloads/cdd20160122/coordination.txt");
+        File f1 = new File("/Users/huangyuefeng/Downloads/coordination.txt");
 //        File f1 = new File("D:\\SZ\\变频工作\\数据采集\\cellinfo\\coordinate.txt");
-        ProcessorCoordinate pc = new ProcessorCoordinate();
-        String[][] s = pc.processorSingleLog(f1);
+//        ProcessorCoordinate pc = new ProcessorCoordinate();
+//        String[][] s = pc.processorSingleLog(f1);
 
         //读取CDD
-        File f2 = new File("/Users/huangyuefeng/Downloads/cdd20160122/SZ01A.log");
+//        File f2 = new File("/Users/huangyuefeng/Downloads/cdd20160122/SZ01A.log");
 //        File f2 = new File("D:\\SZ\\变频工作\\数据采集\\CDD\\20160122\\SZ01A.Log");
         ProcessorLog pl = new ProcessorLog();
-        HashMap hm = pl.processorSingleLog(f2);
-        pl.createForteList(s,hm);
+//        HashMap hm = pl.processorSingleLog(f2);
+//        pl.createForteList(s,hm);
 
         //读取CDD文件夹
 //        String filePath = "D:\\SZ\\变频工作\\数据采集\\CDD\\20160122\\";
-//        pl.processorMultiLog(filePath);
+        String filePath = "/Users/huangyuefeng/Downloads/cdd20160122/";
+        pl.processorMultiLog(filePath,f1);
 
         long endTime=System.currentTimeMillis();
         System.out.println("程序运行时间： "+(endTime-startTime)/1000+"s");
     }
 
-    public void processorMultiLog(String filePath){
-        File[] fileList = new ReadFile().readMultiText(filePath);
-        HashMap[][] hh = new HashMap[fileList.length][];
+    public void createForteFile(ArrayList[][] forteArray,String filePath){
+//        File sectors = new File("filePath");
+//        File channelGroups = new File("filePath");
+//        File handovers = new File("filePath");
 
+        File sectors = new File("/Users/huangyuefeng/Downloads/cdd20160122/test/Sectors.txt");
+        File channelGroups = new File("/Users/huangyuefeng/Downloads/cdd20160122/test/ChannelGroups.txt");
+        File handovers = new File("/Users/huangyuefeng/Downloads/cdd20160122/test/Handovers.txt");
+
+    }
+
+    public ArrayList[][] processorMultiLog(String filePath,File coordinates){
+
+        // 读取文件夹里面的 cdd 文件,并将文件列表储存到 fileList 中
+        File[] fileList = new ReadFile().readMultiText(filePath);
+
+        //读取坐标文件
+        ProcessorCoordinate pc = new ProcessorCoordinate();
+        String[][] coordinatesList = pc.processorSingleLog(coordinates);
+
+        // forteArray 分别顺序包含:sector/channelGroup/handover
+        ArrayList[][] forteArray = new ArrayList[fileList.length][3];
+
+        // 遍历 fileList 一个个 cdd 文件处理后赋值给 forteArray 数组
         for (int i=0;i<fileList.length;i++){
-            System.out.println("开始处理"+fileList[i]);
-            HashMap hm = processorSingleLog(fileList[i]);
-            System.out.println("完成"+fileList[i]);
-//            hh[i] = hm.get(bsccc);
+//            System.out.println("开始处理"+fileList[i]);
+            HashMap contentHM = processorSingleLog(fileList[i]);
+
+            forteArray[i][0] = createSectorsList(coordinatesList,contentHM);
+            forteArray[i][1] = createChannelGroupsList(coordinatesList,contentHM);
+            forteArray[i][2] = createHandoversList(coordinatesList,contentHM);
+//            System.out.println("完成"+fileList[i]);
         }
+        return forteArray;
     }
 
     /**
-     * Processor single log.
+     * Processor single CDD log.
      *
      * @param logFile the log file
      */
@@ -520,23 +546,24 @@ public class ProcessorLog {
     }
 
     /**
-     * 生成 forte 环境文件，一个网元文件应该运行一次该方法;
+     * 生成 sectors 一个网元文件应该运行一次该方法;
      * @param coordinate 接收坐标文件传递过来的 coordinate[][] 数组；
      * @param contentHM 接收CDD文件传递过来的 contentHM HashMap；
      */
-    public HashMap createForteList(String[][] coordinate,HashMap<String,String[][]> contentHM){
-        // HashMap<type+sector,string>
-        HashMap<String,String> forteHM = new HashMap<String, String>();
+    public ArrayList createSectorsList(String[][] coordinate,HashMap<String,String[][]> contentHM){
 
-        String sectorHead = "MSC\tBSC\tVendor\tSite\tLatitude\tLongitude\tSector\tID\tMaster\tLAC\tCI\tKeywords\tAzimuth\tBCCH frequency\tBSIC\tIntracell HO\tSynchronization group\tAMR HR Allocation\tAMR HR Threshold\tHR Allocation\tHR Threshold\tTCH allocation priority\tGPRS allocation priority\tRemote\tMCC\tMNC";
-        String channelGroupHead = "Sector\tChannel Group\tSubcell\tBand\tExtended\tHopping method\tContains BCCH\tHSN\tDTX\tPower control\tSubcell Signal Threshold\tSubcell Tx Power\t# TRXs\t# SDCCH TSs\t# Fixed GPRS TSs\tPriority\tTCH 1\tTCH 2\tTCH 3\tTCH 4\tTCH 5\tTCH 6\tTCH 7\tTCH 8\tTCH 9\tTCH 10\tTCH 11\tTCH 12\tTCH 13\tTCH 14\tTCH 15\tTCH 16\tTCH 17\tTCH 18\tTCH 19\tTCH 20\tTCH 21\tTCH 22\tTCH 23\tTCH 24\tTCH 25\tTCH 26\tTCH 27\tTCH 28\tTCH 29\tTCH 30\tTCH 31\tTCH 32\tTCH 33\tTCH 34\tTCH 35\tTCH 36\tTCH 37\tTCH 38\tTCH 39\tTCH 40\tTCH 41\tTCH 42\tTCH 43\tTCH 44\tTCH 45\tTCH 46\tTCH 47\tTCH 48\tTCH 49\tTCH 50\tTCH 51\tTCH 52\tTCH 53\tTCH 54\tTCH 55\tTCH 56\tTCH 57\tTCH 58\tTCH 59\tTCH 60\tTCH 61\tTCH 62\tTCH 63\tTCH 64\tMAIO 1\tMAIO 2\tMAIO 3\tMAIO 4\tMAIO 5\tMAIO 6\tMAIO 7\tMAIO 8\tMAIO 9\tMAIO 10\tMAIO 11\tMAIO 12\tMAIO 13\tMAIO 14\tMAIO 15\tMAIO 16";
-        String handoverHead = "Serving Sector\tTarget Sector\tHysteresis\tSector Threshold";
-//        System.out.println(contentHM.get("rldep01GA101"));
+        ArrayList sectorslist = new ArrayList();
+
+
+        String sectorHead = "MSC\tBSC\tVendor\tSite\tLatitude\tLongitude\tSector\tID\tMaster\tLAC\tCI\tKeywords\t" +
+                "Azimuth\tBCCH frequency\tBSIC\tIntracell HO\tSynchronization group\tAMR HR Allocation\t" +
+                "AMR HR Threshold\tHR Allocation\tHR Threshold\tTCH allocation priority\t" +
+                "GPRS allocation priority\tRemote\tMCC\tMNC";
 
         String[][] bsc = contentHM.get("bsccc");
         String bscName = bsc[0][0];
 
-//        System.out.println(handoverHead);
+//        System.out.println(sectorHead);
 
         // 对坐标文件中的小区进行遍历，只处理坐标文件夹出现的小区
         for (int i=1;i<coordinate.length;i++){
@@ -564,12 +591,50 @@ public class ProcessorLog {
                         sectors[0][4]+"\t"+
                         sectors[0][3]+"\tFALSE\t"+
                         rxotg+"\tTRUE\t20\tTRUE\t10\tRandom\tNo Preference\tFALSE\t460\t00";
-                forteHM.put("sectorLine",sectorLine);
+                sectorslist.add(sectorLine);
 //                System.out.println(sectorLine);
 
             }else {
 //                    System.out.println("无"+coordinate[i][0]);
             }
+        }
+
+//        String[][] rlnrp = contentHM.get("rlnrp01DA121");
+//        for (int x=0;x<rlnrp.length;x++){
+//            for (int y=0;y<rlnrp[x].length;y++){
+//                System.out.print(rlnrp[x][y]+" ");
+//            }
+//            System.out.println();
+//        }
+
+        return sectorslist;
+    }
+
+    /**
+     * 生成 channelGroups 一个网元文件应该运行一次该方法;
+     * @param coordinate 接收坐标文件传递过来的 coordinate[][] 数组；
+     * @param contentHM 接收CDD文件传递过来的 contentHM HashMap；
+     */
+    public ArrayList createChannelGroupsList(String[][] coordinate,HashMap<String,String[][]> contentHM){
+
+        ArrayList channelGroupslist = new ArrayList();
+
+        String channelGroupHead = "Sector\tChannel Group\tSubcell\tBand\tExtended\tHopping method\t" +
+                "Contains BCCH\tHSN\tDTX\tPower control\tSubcell Signal Threshold\tSubcell Tx Power\t# TRXs\t# SDCCH TSs\t" +
+                "# Fixed GPRS TSs\tPriority\tTCH 1\tTCH 2\tTCH 3\tTCH 4\tTCH 5\tTCH 6\tTCH 7\tTCH 8\tTCH 9\tTCH 10\tTCH 11\t" +
+                "TCH 12\tTCH 13\tTCH 14\tTCH 15\tTCH 16\tTCH 17\tTCH 18\tTCH 19\tTCH 20\tTCH 21\tTCH 22\tTCH 23\tTCH 24\tTCH 25\t" +
+                "TCH 26\tTCH 27\tTCH 28\tTCH 29\tTCH 30\tTCH 31\tTCH 32\tTCH 33\tTCH 34\tTCH 35\tTCH 36\tTCH 37\tTCH 38\tTCH 39\t" +
+                "TCH 40\tTCH 41\tTCH 42\tTCH 43\tTCH 44\tTCH 45\tTCH 46\tTCH 47\tTCH 48\tTCH 49\tTCH 50\tTCH 51\tTCH 52\tTCH 53\t" +
+                "TCH 54\tTCH 55\tTCH 56\tTCH 57\tTCH 58\tTCH 59\tTCH 60\tTCH 61\tTCH 62\tTCH 63\tTCH 64\tMAIO 1\tMAIO 2\tMAIO 3\t" +
+                "MAIO 4\tMAIO 5\tMAIO 6\tMAIO 7\tMAIO 8\tMAIO 9\tMAIO 10\tMAIO 11\tMAIO 12\tMAIO 13\tMAIO 14\tMAIO 15\tMAIO 16";
+
+        String[][] bsc = contentHM.get("bsccc");
+
+//        System.out.println(channelGroupHead);
+
+        // 对坐标文件中的小区进行遍历，只处理坐标文件夹出现的小区
+        for (int i=1;i<coordinate.length;i++){
+//            System.out.print(coordinate[i][0]);
 
             if (contentHM.containsKey("rlcfp"+coordinate[i][0])){
                 // 遍历数组，打印 ChannelGroups 文件
@@ -589,7 +654,7 @@ public class ProcessorLog {
 
                     if (ch_group[x][0] != "N/A"){   //首先，判断信道是存在的
 
-                        // 判断信道存储的频率为什么类型：PGSM、EGSM、N/A
+                        // 判断信道存储的频率为什么类型：1~124 PGSM、975~1024 EGSM、N/A
                         String extended = "N/A";
                         if (ch_group[x][4] != "N/A" && Integer.parseInt(ch_group[x][4]) != 0 && Integer.parseInt(ch_group[x][4])<=124){
                             extended = "PGSM";
@@ -617,7 +682,7 @@ public class ProcessorLog {
                             hoppingMethod = "Base band";
                         }
 
-                        // 判断是否为BCCH频点所在信道
+                        // 判断是否为BCCH频点所在信道,并计算信道的频点数
                         String ContainsBCCH = "FALSE";
                         int frequencyCount = 0;
                         for (int j=4;j<ch_group[x].length;j++){
@@ -633,7 +698,7 @@ public class ProcessorLog {
 
                         // 计算信道的频点数，bcch也包含在内了
 //                        int frequencyCount = 0;
-//                        for (int j=3;j<ch_group[x].length;j++){
+//                        for (int j=4;j<ch_group[x].length;j++){
 //                            if (ch_group[x][j].equals("N/A")){
 //                                break;
 //                            }
@@ -661,8 +726,11 @@ public class ProcessorLog {
                                 ch_group[x][12]+"\t"+
                                 ch_group[x][13]+"\t"+
                                 ch_group[x][14]+"\t"+
-                                ch_group[x][15]+"\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A";
-                        forteHM.put("channelGroupLine",channelGroupLine);
+                                ch_group[x][15]+"\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\t" +
+                                "N/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\t" +
+                                "N/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\t" +
+                                "N/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A";
+                        channelGroupslist.add(channelGroupLine);
 //                        System.out.println(channelGroupLine);
                     }
 
@@ -671,6 +739,29 @@ public class ProcessorLog {
 //                    }
                 }
             }
+        }
+        return channelGroupslist;
+    }
+
+    /**
+     * 生成 handovers 一个网元文件应该运行一次该方法;
+     * @param coordinate 接收坐标文件传递过来的 coordinate[][] 数组；
+     * @param contentHM 接收CDD文件传递过来的 contentHM HashMap；
+     */
+    public ArrayList createHandoversList(String[][] coordinate,HashMap<String,String[][]> contentHM){
+
+        ArrayList handoverslist = new ArrayList();
+
+        String handoverHead = "Serving Sector\tTarget Sector\tHO Attempts\tHO Successful Attempts";
+
+        String[][] bsc = contentHM.get("bsccc");
+
+//        handoverslist.add(handoverHead);
+//        System.out.println(handoverHead);
+
+        // 对坐标文件中的小区进行遍历，只处理坐标文件夹出现的小区
+        for (int i=1;i<coordinate.length;i++){
+//            System.out.print(coordinate[i][0]);
 
             if (contentHM.containsKey("rlnrp"+coordinate[i][0])){
                 // 遍历数组，打印 handovers 文件
@@ -684,29 +775,14 @@ public class ProcessorLog {
                     for (int k=1;k<rlnrp[j].length;k++){
                         if (rlnrp[j][k].equals("N/A"))break;
                         String handoverLine = rlnrp[j][0]+"\t"+rlnrp[j][k]+"\t5\tN/A";
-                        forteHM.put("handoverLine",handoverLine);
+                        handoverslist.add(handoverLine);
 //                        System.out.println(handoverLine);
                     }
                 }
 
             }
         }
-
-//        String[][] rlnrp = contentHM.get("rlnrp01DA121");
-//        for (int x=0;x<rlnrp.length;x++){
-//            for (int y=0;y<rlnrp[x].length;y++){
-//                System.out.print(rlnrp[x][y]+" ");
-//            }
-//            System.out.println();
-//        }
-
-        return forteHM;
+        return handoverslist;
     }
 
-    public void createForteFile(HashMap forteHM){
-        File sectors = new File("/Users/huangyuefeng/Downloads/cdd20160122/test/Sectors.txt");
-        File channelGroups = new File("/Users/huangyuefeng/Downloads/cdd20160122/test/ChannelGroups.txt");
-        File handovers = new File("/Users/huangyuefeng/Downloads/cdd20160122/test/Handovers.txt");
-
-    }
 }
