@@ -21,14 +21,14 @@ public class ProcessorLog {
         long startTime=System.currentTimeMillis();
 
         //读取坐标
-//        File f1 = new File("/Users/huangyuefeng/Downloads/cdd20160122/coordination.txt");
-        File f1 = new File("D:\\SZ\\变频工作\\数据采集\\cellinfo\\coordinate.txt");
+        File f1 = new File("/Users/huangyuefeng/Downloads/cdd20160122/coordination.txt");
+//        File f1 = new File("D:\\SZ\\变频工作\\数据采集\\cellinfo\\coordinate.txt");
         ProcessorCoordinate pc = new ProcessorCoordinate();
         String[][] s = pc.processorSingleLog(f1);
 
         //读取CDD
-//        File f2 = new File("/Users/huangyuefeng/Downloads/cdd20160122/SZ01A.log");
-        File f2 = new File("D:\\SZ\\变频工作\\数据采集\\CDD\\20160122\\SZ01A.Log");
+        File f2 = new File("/Users/huangyuefeng/Downloads/cdd20160122/SZ01A.log");
+//        File f2 = new File("D:\\SZ\\变频工作\\数据采集\\CDD\\20160122\\SZ01A.Log");
         ProcessorLog pl = new ProcessorLog();
         HashMap hm = pl.processorSingleLog(f2);
         pl.createForteList(s,hm);
@@ -466,6 +466,7 @@ public class ProcessorLog {
                             String[] RLNRP_line = RLNRP_CELL[k].split("\\r|\\n");
 //                            System.out.println(RLNRP_line.length);
 
+                            // 暂存32个邻区,发现现网有的小区邻区有60+个;
                             String[][] rlnrp = new String[1][33];
                             // 先给数组设置默认值
                             for (int l=0;l<rlnrp.length;l++){
@@ -523,7 +524,7 @@ public class ProcessorLog {
      * @param coordinate 接收坐标文件传递过来的 coordinate[][] 数组；
      * @param contentHM 接收CDD文件传递过来的 contentHM HashMap；
      */
-    public void createForteList(String[][] coordinate,HashMap<String,String[][]> contentHM){
+    public HashMap createForteList(String[][] coordinate,HashMap<String,String[][]> contentHM){
         // HashMap<type+sector,string>
         HashMap<String,String> forteHM = new HashMap<String, String>();
 
@@ -563,6 +564,7 @@ public class ProcessorLog {
                         sectors[0][4]+"\t"+
                         sectors[0][3]+"\tFALSE\t"+
                         rxotg+"\tTRUE\t20\tTRUE\t10\tRandom\tNo Preference\tFALSE\t460\t00";
+                forteHM.put("sectorLine",sectorLine);
 //                System.out.println(sectorLine);
 
             }else {
@@ -660,7 +662,7 @@ public class ProcessorLog {
                                 ch_group[x][13]+"\t"+
                                 ch_group[x][14]+"\t"+
                                 ch_group[x][15]+"\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A";
-
+                        forteHM.put("channelGroupLine",channelGroupLine);
 //                        System.out.println(channelGroupLine);
                     }
 
@@ -682,6 +684,7 @@ public class ProcessorLog {
                     for (int k=1;k<rlnrp[j].length;k++){
                         if (rlnrp[j][k].equals("N/A"))break;
                         String handoverLine = rlnrp[j][0]+"\t"+rlnrp[j][k]+"\t5\tN/A";
+                        forteHM.put("handoverLine",handoverLine);
 //                        System.out.println(handoverLine);
                     }
                 }
@@ -696,6 +699,14 @@ public class ProcessorLog {
 //            }
 //            System.out.println();
 //        }
+
+        return forteHM;
+    }
+
+    public void createForteFile(HashMap forteHM){
+        File sectors = new File("/Users/huangyuefeng/Downloads/cdd20160122/test/Sectors.txt");
+        File channelGroups = new File("/Users/huangyuefeng/Downloads/cdd20160122/test/ChannelGroups.txt");
+        File handovers = new File("/Users/huangyuefeng/Downloads/cdd20160122/test/Handovers.txt");
 
     }
 }
