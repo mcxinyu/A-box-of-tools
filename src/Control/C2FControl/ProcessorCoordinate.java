@@ -8,21 +8,22 @@ import java.io.*;
  */
 public class ProcessorCoordinate {
 
-    public static void main(String[] args) {
-        long startTime=System.currentTimeMillis();
-
-//        File f = new File("D:\\SZ\\变频工作\\数据采集\\cellinfo\\coor.txt");
-        File f = new File("/Users/huangyuefeng/Downloads/cdd20160122/coordination.txt");
-        ProcessorCoordinate pc = new ProcessorCoordinate();
-        pc.processorSingleLog(f);
-
-        long endTime=System.currentTimeMillis();
-        System.out.println("程序运行时间： "+(endTime-startTime)+"ms");
-    }
+//    public static void main(String[] args) {
+//        long startTime=System.currentTimeMillis();
+//
+////        File f = new File("D:\\SZ\\变频工作\\数据采集\\cellinfo\\coor.txt");
+//        File f = new File("/Users/huangyuefeng/Downloads/cdd20160122/coordination.txt");
+//        ProcessorCoordinate pc = new ProcessorCoordinate();
+//        pc.processorSingleLog(f);
+//
+//        long endTime=System.currentTimeMillis();
+//        System.out.println("程序运行时间： "+(endTime-startTime)+"ms");
+//    }
 
     String notice = "";
     public String[][] processorSingleLog(File coordinateFile){
-        String[] coordinates = ReadFile.readSingleText(coordinateFile).split("\\r|\\n");
+//        String[] coordinates = ReadFile.readSingleText(coordinateFile).split("\\r|\\n");
+        String[] coordinates = ReadFile.readSingleText(coordinateFile).split("\\r\\n");
 
 //        System.out.println(coordinates[0].length());
 //        for (int c=0;c<coordinates.length;c++){
