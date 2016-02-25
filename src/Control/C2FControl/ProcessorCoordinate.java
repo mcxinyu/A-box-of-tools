@@ -22,8 +22,8 @@ public class ProcessorCoordinate {
 
     String notice = "";
     public String[][] processorSingleLog(File coordinateFile){
-        String[] coordinates = ReadFile.readSingleText(coordinateFile).split("\\r|\\n");
-//        String[] coordinates = ReadFile.readSingleText(coordinateFile).split("\\r\\n");
+//        String[] coordinates = ReadFile.readSingleText(coordinateFile).split("\\r|\\n");
+        String[] coordinates = ReadFile.readSingleText(coordinateFile).split("\\r\\n");
 
 //        System.out.println(coordinates[0].length());
 //        for (int c=0;c<coordinates.length;c++){

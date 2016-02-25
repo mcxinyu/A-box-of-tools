@@ -1,11 +1,8 @@
 package Control.C2FControl;
 
+import java.awt.*;
 import java.io.*;
-import java.time.temporal.Temporal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 
 
 /**
@@ -22,8 +19,8 @@ public class ProcessorLog {
         long startTime=System.currentTimeMillis();
 
         //读取坐标
-        File f1 = new File("/Users/huangyuefeng/Downloads/coordination.txt");
-//        File f1 = new File("D:\\SZ\\变频工作\\数据采集\\cellinfo\\coordinate.txt");
+//        File f1 = new File("/Users/huangyuefeng/Downloads/coordination.txt");
+        File f1 = new File("D:\\SZ\\变频工作\\数据采集\\cellinfo\\coordinate.txt");
 //        ProcessorCoordinate pc = new ProcessorCoordinate();
 //        String[][] s = pc.processorSingleLog(f1);
 
@@ -35,25 +32,117 @@ public class ProcessorLog {
 //        pl.createForteList(s,hm);
 
         //读取CDD文件夹
-//        String filePath = "D:\\SZ\\变频工作\\数据采集\\CDD\\20160122\\";
-        String filePath = "/Users/huangyuefeng/Downloads/cdd20160122/";
-        pl.processorMultiLog(filePath,f1);
+        String filePath = "D:\\SZ\\变频工作\\数据采集\\CDD\\20160122t\\";
+//        String filePath = "/Users/huangyuefeng/Downloads/cdd20160122/";
+        ArrayList[][] forteArray = pl.processorMultiLog(filePath,f1);
+
+        String exportPath = "D:\\test\\";
+        pl.createForteFile(forteArray,exportPath);
 
         long endTime=System.currentTimeMillis();
         System.out.println("程序运行时间： "+(endTime-startTime)/1000+"s");
     }
 
-    public void createForteFile(ArrayList[][] forteArray,String filePath){
+    /**
+     *
+     * @param forteArray 包含了三个文件的内容:sector/channelGroup/handover
+     * @param exportPath 文件保存的位置
+     */
+    public void createForteFile(ArrayList[][] forteArray,String exportPath){
 //        File sectors = new File("filePath");
 //        File channelGroups = new File("filePath");
 //        File handovers = new File("filePath");
 
-        File sectors = new File("/Users/huangyuefeng/Downloads/cdd20160122/test/Sectors.txt");
-        File channelGroups = new File("/Users/huangyuefeng/Downloads/cdd20160122/test/ChannelGroups.txt");
-        File handovers = new File("/Users/huangyuefeng/Downloads/cdd20160122/test/Handovers.txt");
+        File sectors = new File("D:\\test\\Sectors.txt");
+        File channelGroups = new File("D:\\test\\ChannelGroups.txt");
+        File handovers = new File("D:\\test\\Handovers.txt");
 
+        String sectorHead = "MSC\tBSC\tVendor\tSite\tLatitude\tLongitude\tSector\tID\tMaster\tLAC\tCI\tKeywords\t" +
+                "Azimuth\tBCCH frequency\tBSIC\tIntracell HO\tSynchronization group\tAMR HR Allocation\t" +
+                "AMR HR Threshold\tHR Allocation\tHR Threshold\tTCH allocation priority\t" +
+                "GPRS allocation priority\tRemote\tMCC\tMNC";
+        String channelGroupHead = "Sector\tChannel Group\tSubcell\tBand\tExtended\tHopping method\t" +
+                "Contains BCCH\tHSN\tDTX\tPower control\tSubcell Signal Threshold\tSubcell Tx Power\t# TRXs\t# SDCCH TSs\t" +
+                "# Fixed GPRS TSs\tPriority\tTCH 1\tTCH 2\tTCH 3\tTCH 4\tTCH 5\tTCH 6\tTCH 7\tTCH 8\tTCH 9\tTCH 10\tTCH 11\t" +
+                "TCH 12\tTCH 13\tTCH 14\tTCH 15\tTCH 16\tTCH 17\tTCH 18\tTCH 19\tTCH 20\tTCH 21\tTCH 22\tTCH 23\tTCH 24\tTCH 25\t" +
+                "TCH 26\tTCH 27\tTCH 28\tTCH 29\tTCH 30\tTCH 31\tTCH 32\tTCH 33\tTCH 34\tTCH 35\tTCH 36\tTCH 37\tTCH 38\tTCH 39\t" +
+                "TCH 40\tTCH 41\tTCH 42\tTCH 43\tTCH 44\tTCH 45\tTCH 46\tTCH 47\tTCH 48\tTCH 49\tTCH 50\tTCH 51\tTCH 52\tTCH 53\t" +
+                "TCH 54\tTCH 55\tTCH 56\tTCH 57\tTCH 58\tTCH 59\tTCH 60\tTCH 61\tTCH 62\tTCH 63\tTCH 64\tMAIO 1\tMAIO 2\tMAIO 3\t" +
+                "MAIO 4\tMAIO 5\tMAIO 6\tMAIO 7\tMAIO 8\tMAIO 9\tMAIO 10\tMAIO 11\tMAIO 12\tMAIO 13\tMAIO 14\tMAIO 15\tMAIO 16";
+        String handoverHead = "Serving Sector\tTarget Sector\tHO Attempts\tHO Successful Attempts";
+
+        try (FileOutputStream sectorsFOS = new FileOutputStream(sectors);
+             FileOutputStream channelGroupsFOS = new FileOutputStream(channelGroups);
+             FileOutputStream handoversFOS = new FileOutputStream(handovers)) {
+            // 如果文件不存在就创建一个新的
+            if (!sectors.exists()) {
+                sectors.createNewFile();
+            }
+            if (!channelGroups.exists()) {
+                channelGroups.createNewFile();
+            }
+            if (!handovers.exists()) {
+                handovers.createNewFile();
+            }
+
+            // 打印表头
+            byte[] sectorHeadBytes = sectorHead.getBytes();
+            sectorsFOS.write(sectorHeadBytes);
+            byte[] channelGroupHeadBytes = channelGroupHead.getBytes();
+            channelGroupsFOS.write(channelGroupHeadBytes);
+            byte[] handoverHeadBytes = handoverHead.getBytes();
+            handoversFOS.write(handoverHeadBytes);
+
+            // 处理 sectors 文件
+            for (int i=0;i<forteArray[0].length;i++){
+                ArrayList sectorslist = forteArray[0][i];
+
+                String[] sectorsString = new String[sectorslist.size()];
+                sectorsString = (String[]) sectorslist.toArray(sectorsString);
+
+                for (int j=0;j<sectorsString.length;j++){
+                    byte[] contentInBytes = sectorsString[j].getBytes();
+                    sectorsFOS.write(contentInBytes);
+                }
+            }
+            // 处理 channelGroups 文件
+            for (int i=0;i<forteArray[1].length;i++){
+                ArrayList channelGroupslist = forteArray[1][i];
+
+                String[] channelGroupsString = new String[channelGroupslist.size()];
+                channelGroupsString = (String[]) channelGroupslist.toArray(channelGroupsString);
+
+                for (int j=0;j<channelGroupsString.length;j++){
+                    byte[] contentInBytes = channelGroupsString[j].getBytes();
+                    channelGroupsFOS.write(contentInBytes);
+                }
+            }
+            // 处理 handovers 文件
+            for (int i=0;i<forteArray[2].length;i++){
+                ArrayList handoverslist = forteArray[2][i];
+
+                String[] handoversString = new String[handoverslist.size()];
+                handoversString = (String[]) handoverslist.toArray(handoversString);
+
+                for (int j=0;j<handoversString.length;j++){
+                    byte[] contentInBytes = handoversString[j].getBytes();
+                    handoversFOS.write(contentInBytes);
+                }
+            }
+//            sectorsFOS.flush();
+//            sectorsFOS.close();
+            System.out.println("Done");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
+    /**
+     * 批量处理cdd文件，将文件列表中的文件一个个处理后再调用生成相应文件的方法，最后返回一个包含内容的数组
+     * @param filePath cdd 文件的文件夹
+     * @param coordinates 坐标文件，程序只处理坐标文件中出现的小区名
+     * @return 返回的数组中包含了三个文件的内容:sector/channelGroup/handover
+     */
     public ArrayList[][] processorMultiLog(String filePath,File coordinates){
 
         // 读取文件夹里面的 cdd 文件,并将文件列表储存到 fileList 中
@@ -68,13 +157,13 @@ public class ProcessorLog {
 
         // 遍历 fileList 一个个 cdd 文件处理后赋值给 forteArray 数组
         for (int i=0;i<fileList.length;i++){
-//            System.out.println("开始处理"+fileList[i]);
+            System.out.println("开始处理"+fileList[i]);
             HashMap contentHM = processorSingleLog(fileList[i]);
 
             forteArray[i][0] = createSectorsList(coordinatesList,contentHM);
             forteArray[i][1] = createChannelGroupsList(coordinatesList,contentHM);
             forteArray[i][2] = createHandoversList(coordinatesList,contentHM);
-//            System.out.println("完成"+fileList[i]);
+            System.out.println("完成"+fileList[i]);
         }
         return forteArray;
     }
@@ -186,11 +275,14 @@ public class ProcessorLog {
                             if (RLCPP_CELL[k].contains("TYPE")){
                                 for (int l=k;l<RLCPP_CELL.length;l++){
                                     if (RLCPP_CELL[l].contains("END"))break;
-                                    String[][] rlcpp = new String[1][2];
-                                    rlcpp[0][0] = RLCPP_CELL[l].substring(0,7);    // 小区名
-                                    rlcpp[0][1] = RLCPP_CELL[l].substring(15,22).trim();   // BSPWRB
-                                    contentHM.put("rlcpp"+rlcpp[0][0],rlcpp);
+                                    if (!RLCPP_CELL[l].contains("UL") || !RLCPP_CELL[l].contains("OL")){
+                                        String[][] rlcpp = new String[1][2];
+                                        rlcpp[0][0] = RLCPP_CELL[l].substring(0,7);    // 小区名
+                                        rlcpp[0][1] = RLCPP_CELL[l].substring(15,17).trim();   // BSPWRB
+                                        contentHM.put("rlcpp"+rlcpp[0][0],rlcpp);
+                                    }
                                 }
+                                break;
                             }
                         }
 
