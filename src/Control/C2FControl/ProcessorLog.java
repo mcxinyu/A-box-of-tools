@@ -32,7 +32,7 @@ public class ProcessorLog {
 //        pl.createForteList(s,hm);
 
         //读取CDD文件夹
-        String filePath = "D:\\SZ\\变频工作\\数据采集\\CDD\\20160122t\\";
+        String filePath = "D:\\SZ\\变频工作\\数据采集\\CDD\\20160122\\";
 //        String filePath = "/Users/huangyuefeng/Downloads/cdd20160122/";
         ArrayList[][] forteArray = pl.processorMultiLog(filePath,f1);
 
@@ -71,9 +71,9 @@ public class ProcessorLog {
                 "MAIO 4\tMAIO 5\tMAIO 6\tMAIO 7\tMAIO 8\tMAIO 9\tMAIO 10\tMAIO 11\tMAIO 12\tMAIO 13\tMAIO 14\tMAIO 15\tMAIO 16";
         String handoverHead = "Serving Sector\tTarget Sector\tHO Attempts\tHO Successful Attempts";
 
-        try (FileOutputStream sectorsFOS = new FileOutputStream(sectors);
-             FileOutputStream channelGroupsFOS = new FileOutputStream(channelGroups);
-             FileOutputStream handoversFOS = new FileOutputStream(handovers)) {
+        try (FileWriter sectorsFW = new FileWriter(sectors);
+             FileWriter channelGroupsFW = new FileWriter(channelGroups);
+             FileWriter handoversFW = new FileWriter(handovers)) {
             // 如果文件不存在就创建一个新的
             if (!sectors.exists()) {
                 sectors.createNewFile();
@@ -85,6 +85,9 @@ public class ProcessorLog {
                 handovers.createNewFile();
             }
 
+            sectorsFW.write(sectorHead+"\r\n");
+            channelGroupsFW.write(channelGroupHead+"\r\n");
+            handoversFW.write(handoverHead+"\r\n");
             // 打印表头
 //            byte[] sectorHeadBytes = sectorHead.getBytes();
 //            sectorsFOS.write(sectorHeadBytes);
@@ -97,47 +100,54 @@ public class ProcessorLog {
             for (int i=0;i<forteArray[0].length;i++){
                 ArrayList sectorslist = forteArray[0][i];
 
-                String content = sectorHead+"\\r\\n";
-
-                String[] sectorsString = new String[sectorslist.size()];
-                sectorsString = (String[]) sectorslist.toArray(sectorsString);
-
                 Iterator it1 = sectorslist.iterator();
                 while(it1.hasNext()){
-                    System.out.println(it1.next());
+                    sectorsFW.write(it1.next()+"\r\n");
                 }
+
+//                String[] sectorsString = new String[sectorslist.size()];
+//                sectorsString = (String[]) sectorslist.toArray(sectorsString);
 
 //                for (int j=0;j<sectorsString.length;j++){
 //                    content += sectorsString[j]+"\\r\\n";
 //                }
-//                System.out.println(content);
 
-                byte[] contentInBytes = content.getBytes();
-//                sectorsFOS.write(contentInBytes);
+//                byte[] contentInBytes = content.getBytes();
+//                sectorsFW.write(content+hh);
             }
             // 处理 channelGroups 文件
             for (int i=0;i<forteArray[1].length;i++){
                 ArrayList channelGroupslist = forteArray[1][i];
 
-                String[] channelGroupsString = new String[channelGroupslist.size()];
-                channelGroupsString = (String[]) channelGroupslist.toArray(channelGroupsString);
-
-                for (int j=0;j<channelGroupsString.length;j++){
-                    byte[] contentInBytes = channelGroupsString[j].getBytes();
-                    channelGroupsFOS.write(contentInBytes);
+                Iterator it1 = channelGroupslist.iterator();
+                while(it1.hasNext()){
+                    channelGroupsFW.write(it1.next()+"\r\n");
                 }
+
+//                String[] channelGroupsString = new String[channelGroupslist.size()];
+//                channelGroupsString = (String[]) channelGroupslist.toArray(channelGroupsString);
+//
+//                for (int j=0;j<channelGroupsString.length;j++){
+//                    byte[] contentInBytes = channelGroupsString[j].getBytes();
+////                    channelGroupsFW.write(contentInBytes);
+//                }
             }
             // 处理 handovers 文件
             for (int i=0;i<forteArray[2].length;i++){
                 ArrayList handoverslist = forteArray[2][i];
 
-                String[] handoversString = new String[handoverslist.size()];
-                handoversString = (String[]) handoverslist.toArray(handoversString);
-
-                for (int j=0;j<handoversString.length;j++){
-                    byte[] contentInBytes = handoversString[j].getBytes();
-                    handoversFOS.write(contentInBytes);
+                Iterator it1 = handoverslist.iterator();
+                while(it1.hasNext()){
+                    handoversFW.write(it1.next()+"\r\n");
                 }
+
+//                String[] handoversString = new String[handoverslist.size()];
+//                handoversString = (String[]) handoverslist.toArray(handoversString);
+//
+//                for (int j=0;j<handoversString.length;j++){
+//                    byte[] contentInBytes = handoversString[j].getBytes();
+////                    handoversFW.write(contentInBytes);
+//                }
             }
 //            sectorsFOS.flush();
 //            sectorsFOS.close();
