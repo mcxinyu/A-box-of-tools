@@ -41,27 +41,40 @@ public class ReadFile {
     }
 
     /**
-     * 读取文件夹
+     * 读取多个文件
      *
-     * @param folderPath the folder path
+     * @param files 文件夹、者多个文件、单个文件 的数组
      * @return string string
      */
-    public File[] readMultiText(String folderPath) {
-        File[] files = new File(folderPath).listFiles();
-
-//        String content ="";
-//        if (files.length>0){
-//            for(File file:files){
-//                System.out.println(file.getName());
-//                content += ReadFile.readSingleText(file);
-//            }
-////            for (int i=0;i<files.length;i++){
-////                System.out.println(files[i].getName());
-////                connect += textToString(files[i]);
-////            }
-//        }else {
-//            System.out.println("未找到文件");
-//        }
-        return files;
+    public File[] readMultiText(File[] files) {
+        File[] filesList;
+        if (files[0].isDirectory()){
+            System.out.println("文件夹数量： "+files.length);
+            filesList = files[0].listFiles();
+        }else {
+            System.out.println("文件数量： "+files.length);
+            filesList = files;
+        }
+        return filesList;
     }
+
+//    public File[] readMultiText(String folderPath) {
+//        File[] files = new File(folderPath).listFiles();
+//
+////        String content ="";
+////        if (files.length>0){
+////            for(File file:files){
+////                System.out.println(file.getName());
+////                content += ReadFile.readSingleText(file);
+////            }
+//////            for (int i=0;i<files.length;i++){
+//////                System.out.println(files[i].getName());
+//////                connect += textToString(files[i]);
+//////            }
+////        }else {
+////            System.out.println("未找到文件");
+////        }
+//        return files;
+//    }
+
 }

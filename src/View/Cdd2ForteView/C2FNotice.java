@@ -18,12 +18,14 @@ public class C2FNotice extends JDialog {
 
         JLabel title = new JLabel("请 注 意：                                      ");
         title.setFont(MyTools.fontBold26);
-        JLabel note1 = new JLabel("坐标文件可以使用 forte 支持的格式");
+        JLabel note1 = new JLabel("（1）坐标文件可以使用 forte 支持的格式；");
         note1.setFont(MyTools.fontBold13);
         JLabel forteType = new JLabel(new ImageIcon("images/forteType.png"));
-        JLabel note2 = new JLabel("也可以只包含主要内容，表头需要按顺序为：小区号、经度、纬度、方位角");
+        JLabel note2 = new JLabel("也可以只包含主要内容，表头需要按顺序为：小区号、经度、纬度、方位角。");
         note2.setFont(MyTools.fontBold13);
         JLabel coustomType = new JLabel(new ImageIcon("images/coustomType.png"));
+        JLabel note3 = new JLabel("（2）选择 CDD 文件的时候，可以单个文件处理，也可以选择整个文件夹。");
+        note3.setFont(MyTools.fontBold13);
 
         JPanel center = new JPanel(new FlowLayout());
         center.setBackground(new Color(230,230,230));
@@ -32,6 +34,7 @@ public class C2FNotice extends JDialog {
         center.add(forteType);
         center.add(note2);
         center.add(coustomType);
+        center.add(note3);
 
 
         frame = new JDialog();

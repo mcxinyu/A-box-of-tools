@@ -8,7 +8,7 @@ import java.io.File;
  * Created by 跃峰 on 2016/2/15.
  */
 public class saveFile {
-//    File file = null;
+    File file = null;
     public int saveFile (String windowTitle,int fileMode){
         //用于新建一个保存文件的窗口
         JFileChooser jfc = new JFileChooser();
@@ -21,8 +21,12 @@ public class saveFile {
         }
 
         int state = jfc.showSaveDialog(null);
-//        file = jfc.getSelectedFile();
+        file = jfc.getSelectedFile();
 
         return state;
+    }
+
+    public File getFile() {
+        return file;
     }
 }

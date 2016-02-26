@@ -15,33 +15,33 @@ public class ProcessorLog {
      *
      * @param args the input arguments
      */
-    public static void main(String[] args) {
-        long startTime=System.currentTimeMillis();
-
-        //读取坐标
-//        File f1 = new File("/Users/huangyuefeng/Downloads/coordination.txt");
-        File f1 = new File("D:\\SZ\\变频工作\\数据采集\\cellinfo\\coordinate.txt");
+//    public static void main(String[] args) {
+//        long startTime=System.currentTimeMillis();
+//
+//        //读取坐标
+////        File f1 = new File("/Users/huangyuefeng/Downloads/coordination.txt");
+//        File f1 = new File("D:\\SZ\\变频工作\\数据采集\\cellinfo\\coordinate.txt");
 //        ProcessorCoordinate pc = new ProcessorCoordinate();
-//        String[][] s = pc.processorSingleLog(f1);
-
-        //读取CDD
-//        File f2 = new File("/Users/huangyuefeng/Downloads/cdd20160122/SZ01A.log");
-//        File f2 = new File("D:\\SZ\\变频工作\\数据采集\\CDD\\20160122\\SZ01A.Log");
-        ProcessorLog pl = new ProcessorLog();
-//        HashMap hm = pl.processorSingleLog(f2);
-//        pl.createForteList(s,hm);
-
-        //读取CDD文件夹
-        String filePath = "D:\\SZ\\变频工作\\数据采集\\CDD\\20160122t\\";
-//        String filePath = "/Users/huangyuefeng/Downloads/cdd20160122/";
-        ArrayList[][] forteArray = pl.processorMultiLog(filePath,f1);
-
-        String exportPath = "D:\\test\\";
-        pl.createForteFile(forteArray,exportPath);
-
-        long endTime=System.currentTimeMillis();
-        System.out.println("程序运行时间： "+(endTime-startTime)/1000+"s");
-    }
+//        String[][] coorS = pc.processorSingleLog(f1);
+//
+//        //读取CDD
+////        File f2 = new File("/Users/huangyuefeng/Downloads/cdd20160122/SZ01A.log");
+////        File f2 = new File("D:\\SZ\\变频工作\\数据采集\\CDD\\20160122\\SZ01A.Log");
+//        ProcessorLog pl = new ProcessorLog();
+////        HashMap hm = pl.processorSingleLog(f2);
+////        pl.createForteList(s,hm);
+//
+//        //读取CDD文件夹
+//        String filePath = "D:\\SZ\\变频工作\\数据采集\\CDD\\20160122t\\";
+////        String filePath = "/Users/huangyuefeng/Downloads/cdd20160122/";
+//        ArrayList[][] forteArray = pl.processorMultiLog(filePath,coorS);
+//
+//        String exportPath = "D:\\test\\";
+//        pl.createForteFile(forteArray,exportPath);
+//
+//        long endTime=System.currentTimeMillis();
+//        System.out.println("程序运行时间： "+(endTime-startTime)/1000+"s");
+//    }
 
     /**
      *
@@ -151,18 +151,19 @@ public class ProcessorLog {
 
     /**
      * 批量处理cdd文件，将文件列表中的文件一个个处理后再调用生成相应文件的方法，最后返回一个包含内容的数组
-     * @param filePath cdd 文件的文件夹
-     * @param coordinates 坐标文件，程序只处理坐标文件中出现的小区名
+     * @param fileList cdd 文件列表
+     * @param coordinatesList 坐标文件返回的内容，程序只处理坐标文件中出现的小区名
      * @return 返回的数组中包含了三个文件的内容:sector/channelGroup/handover
      */
-    public ArrayList[][] processorMultiLog(String filePath,File coordinates){
+    String processorState = "";
+    public ArrayList[][] processorMultiLog(File[] fileList,String[][] coordinatesList){
 
         // 读取文件夹里面的 cdd 文件,并将文件列表储存到 fileList 中
-        File[] fileList = new ReadFile().readMultiText(filePath);
+//        File[] fileList = new ReadFile().readMultiText(filePath);
 
         //读取坐标文件
         ProcessorCoordinate pc = new ProcessorCoordinate();
-        String[][] coordinatesList = pc.processorSingleLog(coordinates);
+//        String[][] coordinatesList = pc.processorSingleLog(coordinates);
 
         // forteArray 分别顺序包含:sector/channelGroup/handover
         ArrayList[][] forteArray = new ArrayList[3][fileList.length];
@@ -170,14 +171,21 @@ public class ProcessorLog {
         // 遍历 fileList 一个个 cdd 文件处理后赋值给 forteArray 数组
         for (int i=0;i<fileList.length;i++){
 //            System.out.println("开始处理"+fileList[i]);
+            processorState = "开始处理"+fileList[i];
             HashMap contentHM = processorSingleLog(fileList[i]);
 
             forteArray[0][i] = createSectorsList(coordinatesList,contentHM);
             forteArray[1][i] = createChannelGroupsList(coordinatesList,contentHM);
             forteArray[2][i] = createHandoversList(coordinatesList,contentHM);
 //            System.out.println("完成"+fileList[i]);
+            processorState = "处理完毕"+fileList[i];
         }
+        System.out.println("cdd 文件读取完毕！");
         return forteArray;
+    }
+
+    public String getProcessorState() {
+        return processorState;
     }
 
     /**
