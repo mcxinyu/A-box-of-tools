@@ -32,7 +32,7 @@ public class ProcessorLog {
 //        pl.createForteList(s,hm);
 
         //读取CDD文件夹
-        String filePath = "D:\\SZ\\变频工作\\数据采集\\CDD\\20160122\\";
+        String filePath = "D:\\SZ\\变频工作\\数据采集\\CDD\\20160122t\\";
 //        String filePath = "/Users/huangyuefeng/Downloads/cdd20160122/";
         ArrayList[][] forteArray = pl.processorMultiLog(filePath,f1);
 
@@ -49,13 +49,13 @@ public class ProcessorLog {
      * @param exportPath 文件保存的位置
      */
     public void createForteFile(ArrayList[][] forteArray,String exportPath){
-//        File sectors = new File("filePath");
-//        File channelGroups = new File("filePath");
-//        File handovers = new File("filePath");
+//        File sectors = new File(exportPath);
+//        File channelGroups = new File(exportPath);
+//        File handovers = new File(exportPath);
 
-        File sectors = new File("D:\\test\\Sectors.txt");
-        File channelGroups = new File("D:\\test\\ChannelGroups.txt");
-        File handovers = new File("D:\\test\\Handovers.txt");
+        File sectors = new File(exportPath+"\\Sectors.txt");
+        File channelGroups = new File(exportPath+"\\ChannelGroups.txt");
+        File handovers = new File(exportPath+"\\Handovers.txt");
 
         String sectorHead = "MSC\tBSC\tVendor\tSite\tLatitude\tLongitude\tSector\tID\tMaster\tLAC\tCI\tKeywords\t" +
                 "Azimuth\tBCCH frequency\tBSIC\tIntracell HO\tSynchronization group\tAMR HR Allocation\t" +
@@ -149,8 +149,6 @@ public class ProcessorLog {
 ////                    handoversFW.write(contentInBytes);
 //                }
             }
-//            sectorsFOS.flush();
-//            sectorsFOS.close();
             System.out.println("Done");
         } catch (IOException e) {
             e.printStackTrace();
@@ -207,22 +205,6 @@ public class ProcessorLog {
             //用来记录有所行数，，因为各个 P 指令块是分开在 logContent 数组里面的；
             int lineNumber = 0;
 
-
-//        System.out.println("logContent"+logContent.length);
-
-//            String bscName = "";
-//            String[][] bsc = new String[1][1];
-//            String[][] sectors = new String[1][6];
-//            String RLDEPsector = "";
-//            String lac = "";
-//            String ci = "";
-//            String bsic = "";
-//            String bcch = "";
-//            String band = "";
-
-//            String RLCFPsector = "";
-//            String[][] ch_group = new String[4][14];    //保存4个信道组，每个信道组可能有14 or 66个元素（ch_group、hsn、dchno1-12?64）
-
             // 遍历所有 OSS 指令块，一个一个处理；
             for (int i=0;i<logContent.length;i++){
 
@@ -261,19 +243,17 @@ public class ProcessorLog {
 
                     // 判断指令块是否为 RLDEP 块；
                     if (lineContent.contains("RLDEP")&&!lineContent.contains("EXT")){
-                        // 读取小区基础信息：sector、lac、ci、bsic、bcch、band
+                        // 读取小区基础信息：sector、cgi、bsic、bcch、band
 //                    System.out.println(lineContent);
-//                    String head = "MSC\tBSC\tVendor\tSite\tLatitude\tLongitude\tSector\tID\tMaster\tLAC\tCI\tKeywords\tAzimuth\tBCCH frequency\tBSIC\tIntracell HO\tSynchronization group\tAMR HR Allocation\tAMR HR Threshold\tHR Allocation\tHR Threshold\tTCH allocation priority\tGPRS allocation priority\tRemote\tMCC\tMNC";
 
                         while (j<ss.length){
                             if (ss[j]!=null && ss[j].contains("CGI")){
-                                String[][] sectors = new String[1][6];
+                                String[][] sectors = new String[1][5];
                                 sectors[0][0] = ss[j+1].substring(0,7); //sector
-                                sectors[0][1] = ss[j+1].substring(16,20);   //lac
-                                sectors[0][2] = ss[j+1].substring(21,26).trim();    //ci
-                                sectors[0][3] = ss[j+1].substring(30,32);   //bsic
-                                sectors[0][4] = ss[j+1].substring(36,43).trim();    //bcch
-                                sectors[0][5] = ss[j+4].substring(52,ss[j+4].length()); //band
+                                sectors[0][1] = ss[j+1].substring(9,29).trim();   //cgi
+                                sectors[0][2] = ss[j+1].substring(30,32);   //bsic
+                                sectors[0][3] = ss[j+1].substring(36,43).trim();    //bcch
+                                sectors[0][4] = ss[j+4].substring(52,ss[j+4].length()); //band
 //                            System.out.println(sectors[0]+"-"+sectors[1]+"-"+sectors[2]+"-"+sectors[3]+"-"+sectors[4]+"-"+sectors[5]);
 //                            String line = "MSC\t"+bscName+"\tEricsson\t"+sectors[0][0].substring(0,6)+"\t22.68933\t113.77698\t"+sectors[0][0]+"\t"+sectors[0][1]+"\t"+sectors[0][2]+"\tNew\t50\t"+sectors[0][4]+"\t"+sectors[0][3]+"\tTRUE\tRXOTG\tTRUE\t20\tTRUE\t10\tRandom\tNo Preference";
                                 contentHM.put("rldep"+sectors[0][0],sectors);
@@ -684,6 +664,7 @@ public class ProcessorLog {
             if (contentHM.containsKey("rldep"+coordinate[i][0])){
                 // 遍历数组，打印 Sectors 文件
 
+                // 小区基础信息：sector、cgi、bsic、bcch、band
                 String[][] sectors = contentHM.get("rldep"+coordinate[i][0]);
                 String[][] rxtcp = contentHM.get("rxtcp"+coordinate[i][0]);
                 String rxotg = bscName+"_"+rxtcp[0][1];
@@ -691,18 +672,27 @@ public class ProcessorLog {
 //                System.out.println(coordinate[i][0]);
 //                System.out.println(rxotg);
 
+                // 获取 CGI 内的信息
+                String[] cgi = sectors[0][1].split("-");
+                String MCC = cgi[0];
+                String MNC = cgi[1];
+                String LAC = cgi[2];
+                String CI = cgi[3];
+
                 String sectorLine = "MSC\t"+
                         bscName+"\tEricsson\t"+
                         sectors[0][0].substring(0,6)+"\t"+
                         coordinate[i][2]+"\t"+
                         coordinate[i][1]+"\t"+
                         sectors[0][0]+"\t\t\t"+
-                        sectors[0][1]+"\t"+
-                        sectors[0][2]+"\tNew\t"+
+                        LAC+"\t"+
+                        CI+"\tNew\t"+
                         coordinate[i][5]+"\t"+
-                        sectors[0][4]+"\t"+
-                        sectors[0][3]+"\tFALSE\t"+
-                        rxotg+"\tTRUE\t20\tTRUE\t10\tRandom\tNo Preference\tFALSE\t460\t00";
+                        sectors[0][3]+"\t"+
+                        sectors[0][2]+"\tFALSE\t"+
+                        rxotg+"\tTRUE\t20\tTRUE\t10\tRandom\tNo Preference\tFALSE\t"+
+                        MCC+"\t"+
+                        MNC;
                 sectorslist.add(sectorLine);
 //                System.out.println(sectorLine);
 
@@ -801,7 +791,7 @@ public class ProcessorLog {
                             // 如果遇到 N/A 说明后面没有参数了,可以退出
                             if (ch_group[x][j].equals("N/A"))break;
                             // 有参数就比较参数是不是主频,是的话标记这一信道组为 bcch 信道
-                            if (ch_group[x][j].equals(sectors[0][4])){
+                            if (ch_group[x][j].equals(sectors[0][3])){
                                 ContainsBCCH = "TRUE";
 //                                break;
                             }
@@ -819,7 +809,7 @@ public class ProcessorLog {
 
                         String channelGroupLine = coordinate[i][0]+"\t"+
                                 ch_group[x][0]+"\tUL\t"+
-                                sectors[0][5].substring(3)+"\t"+
+                                sectors[0][4].substring(3)+"\t"+
                                 extended+"\t"+
                                 hoppingMethod+"\t"+
                                 ContainsBCCH+"\t"+
@@ -865,8 +855,6 @@ public class ProcessorLog {
         ArrayList handoverslist = new ArrayList();
 
         String handoverHead = "Serving Sector\tTarget Sector\tHO Attempts\tHO Successful Attempts";
-
-        String[][] bsc = contentHM.get("bsccc");
 
 //        handoverslist.add(handoverHead);
 //        System.out.println(handoverHead);
