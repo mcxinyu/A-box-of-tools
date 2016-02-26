@@ -85,16 +85,10 @@ public class ProcessorLog {
                 handovers.createNewFile();
             }
 
+            // 打印表头
             sectorsFW.write(sectorHead+"\r\n");
             channelGroupsFW.write(channelGroupHead+"\r\n");
             handoversFW.write(handoverHead+"\r\n");
-            // 打印表头
-//            byte[] sectorHeadBytes = sectorHead.getBytes();
-//            sectorsFOS.write(sectorHeadBytes);
-//            byte[] channelGroupHeadBytes = channelGroupHead.getBytes();
-//            channelGroupsFOS.write(channelGroupHeadBytes);
-//            byte[] handoverHeadBytes = handoverHead.getBytes();
-//            handoversFOS.write(handoverHeadBytes);
 
             // 处理 sectors 文件
             for (int i=0;i<forteArray[0].length;i++){
@@ -175,13 +169,13 @@ public class ProcessorLog {
 
         // 遍历 fileList 一个个 cdd 文件处理后赋值给 forteArray 数组
         for (int i=0;i<fileList.length;i++){
-            System.out.println("开始处理"+fileList[i]);
+//            System.out.println("开始处理"+fileList[i]);
             HashMap contentHM = processorSingleLog(fileList[i]);
 
             forteArray[0][i] = createSectorsList(coordinatesList,contentHM);
             forteArray[1][i] = createChannelGroupsList(coordinatesList,contentHM);
             forteArray[2][i] = createHandoversList(coordinatesList,contentHM);
-            System.out.println("完成"+fileList[i]);
+//            System.out.println("完成"+fileList[i]);
         }
         return forteArray;
     }

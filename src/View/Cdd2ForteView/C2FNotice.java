@@ -16,15 +16,18 @@ public class C2FNotice extends JDialog {
 
         JPanel welcome =new WelcomeArea("images/boxtool_64.png","  一箱工具");
 
-        JLabel note1 = new JLabel("坐标文件可以使用 forte 格式的");
+        JLabel title = new JLabel("请 注 意：                                      ");
+        title.setFont(MyTools.fontBold26);
+        JLabel note1 = new JLabel("坐标文件可以使用 forte 支持的格式");
         note1.setFont(MyTools.fontBold13);
         JLabel forteType = new JLabel(new ImageIcon("images/forteType.png"));
-        JLabel note2 = new JLabel("也可以只包含主要内容，但是表头需要按顺序为：小区名、经度、纬度、方位角");
+        JLabel note2 = new JLabel("也可以只包含主要内容，表头需要按顺序为：小区号、经度、纬度、方位角");
         note2.setFont(MyTools.fontBold13);
         JLabel coustomType = new JLabel(new ImageIcon("images/coustomType.png"));
 
         JPanel center = new JPanel(new FlowLayout());
         center.setBackground(new Color(230,230,230));
+        center.add(title);
         center.add(note1);
         center.add(forteType);
         center.add(note2);
