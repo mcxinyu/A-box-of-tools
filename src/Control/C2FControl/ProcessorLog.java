@@ -86,24 +86,34 @@ public class ProcessorLog {
             }
 
             // 打印表头
-            byte[] sectorHeadBytes = sectorHead.getBytes();
-            sectorsFOS.write(sectorHeadBytes);
-            byte[] channelGroupHeadBytes = channelGroupHead.getBytes();
-            channelGroupsFOS.write(channelGroupHeadBytes);
-            byte[] handoverHeadBytes = handoverHead.getBytes();
-            handoversFOS.write(handoverHeadBytes);
+//            byte[] sectorHeadBytes = sectorHead.getBytes();
+//            sectorsFOS.write(sectorHeadBytes);
+//            byte[] channelGroupHeadBytes = channelGroupHead.getBytes();
+//            channelGroupsFOS.write(channelGroupHeadBytes);
+//            byte[] handoverHeadBytes = handoverHead.getBytes();
+//            handoversFOS.write(handoverHeadBytes);
 
             // 处理 sectors 文件
             for (int i=0;i<forteArray[0].length;i++){
                 ArrayList sectorslist = forteArray[0][i];
 
+                String content = sectorHead+"\\r\\n";
+
                 String[] sectorsString = new String[sectorslist.size()];
                 sectorsString = (String[]) sectorslist.toArray(sectorsString);
 
-                for (int j=0;j<sectorsString.length;j++){
-                    byte[] contentInBytes = sectorsString[j].getBytes();
-                    sectorsFOS.write(contentInBytes);
+                Iterator it1 = sectorslist.iterator();
+                while(it1.hasNext()){
+                    System.out.println(it1.next());
                 }
+
+//                for (int j=0;j<sectorsString.length;j++){
+//                    content += sectorsString[j]+"\\r\\n";
+//                }
+//                System.out.println(content);
+
+                byte[] contentInBytes = content.getBytes();
+//                sectorsFOS.write(contentInBytes);
             }
             // 处理 channelGroups 文件
             for (int i=0;i<forteArray[1].length;i++){
@@ -153,16 +163,16 @@ public class ProcessorLog {
         String[][] coordinatesList = pc.processorSingleLog(coordinates);
 
         // forteArray 分别顺序包含:sector/channelGroup/handover
-        ArrayList[][] forteArray = new ArrayList[fileList.length][3];
+        ArrayList[][] forteArray = new ArrayList[3][fileList.length];
 
         // 遍历 fileList 一个个 cdd 文件处理后赋值给 forteArray 数组
         for (int i=0;i<fileList.length;i++){
             System.out.println("开始处理"+fileList[i]);
             HashMap contentHM = processorSingleLog(fileList[i]);
 
-            forteArray[i][0] = createSectorsList(coordinatesList,contentHM);
-            forteArray[i][1] = createChannelGroupsList(coordinatesList,contentHM);
-            forteArray[i][2] = createHandoversList(coordinatesList,contentHM);
+            forteArray[0][i] = createSectorsList(coordinatesList,contentHM);
+            forteArray[1][i] = createChannelGroupsList(coordinatesList,contentHM);
+            forteArray[2][i] = createHandoversList(coordinatesList,contentHM);
             System.out.println("完成"+fileList[i]);
         }
         return forteArray;

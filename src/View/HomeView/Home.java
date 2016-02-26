@@ -8,6 +8,7 @@ package View.HomeView;
 import View.Cdd2ForteView.Cdd2Forte;
 import View.CheckPlanView.CheckPlan;
 import Common.WelcomeArea;
+import View.FileSplitView.FileSplit;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
