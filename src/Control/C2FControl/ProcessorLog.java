@@ -1,6 +1,5 @@
 package Control.C2FControl;
 
-import java.awt.*;
 import java.io.*;
 import java.util.*;
 
@@ -52,52 +51,52 @@ public class ProcessorLog {
 //        File sectors = new File(exportPath);
 //        File channelGroups = new File(exportPath);
 //        File handovers = new File(exportPath);
+        if (forteArray != null) {
+            File sectors = new File(exportPath + "\\Sectors.txt");
+            File channelGroups = new File(exportPath + "\\ChannelGroups.txt");
+            File handovers = new File(exportPath + "\\Handovers.txt");
 
-        File sectors = new File(exportPath+"\\Sectors.txt");
-        File channelGroups = new File(exportPath+"\\ChannelGroups.txt");
-        File handovers = new File(exportPath+"\\Handovers.txt");
+            String sectorHead = "MSC\tBSC\tVendor\tSite\tLatitude\tLongitude\tSector\tID\tMaster\tLAC\tCI\tKeywords\t" +
+                    "Azimuth\tBCCH frequency\tBSIC\tIntracell HO\tSynchronization group\tAMR HR Allocation\t" +
+                    "AMR HR Threshold\tHR Allocation\tHR Threshold\tTCH allocation priority\t" +
+                    "GPRS allocation priority\tRemote\tMCC\tMNC";
+            String channelGroupHead = "Sector\tChannel Group\tSubcell\tBand\tExtended\tHopping method\t" +
+                    "Contains BCCH\tHSN\tDTX\tPower control\tSubcell Signal Threshold\tSubcell Tx Power\t# TRXs\t# SDCCH TSs\t" +
+                    "# Fixed GPRS TSs\tPriority\tTCH 1\tTCH 2\tTCH 3\tTCH 4\tTCH 5\tTCH 6\tTCH 7\tTCH 8\tTCH 9\tTCH 10\tTCH 11\t" +
+                    "TCH 12\tTCH 13\tTCH 14\tTCH 15\tTCH 16\tTCH 17\tTCH 18\tTCH 19\tTCH 20\tTCH 21\tTCH 22\tTCH 23\tTCH 24\tTCH 25\t" +
+                    "TCH 26\tTCH 27\tTCH 28\tTCH 29\tTCH 30\tTCH 31\tTCH 32\tTCH 33\tTCH 34\tTCH 35\tTCH 36\tTCH 37\tTCH 38\tTCH 39\t" +
+                    "TCH 40\tTCH 41\tTCH 42\tTCH 43\tTCH 44\tTCH 45\tTCH 46\tTCH 47\tTCH 48\tTCH 49\tTCH 50\tTCH 51\tTCH 52\tTCH 53\t" +
+                    "TCH 54\tTCH 55\tTCH 56\tTCH 57\tTCH 58\tTCH 59\tTCH 60\tTCH 61\tTCH 62\tTCH 63\tTCH 64\tMAIO 1\tMAIO 2\tMAIO 3\t" +
+                    "MAIO 4\tMAIO 5\tMAIO 6\tMAIO 7\tMAIO 8\tMAIO 9\tMAIO 10\tMAIO 11\tMAIO 12\tMAIO 13\tMAIO 14\tMAIO 15\tMAIO 16";
+            String handoverHead = "Serving Sector\tTarget Sector\tHO Attempts\tHO Successful Attempts";
 
-        String sectorHead = "MSC\tBSC\tVendor\tSite\tLatitude\tLongitude\tSector\tID\tMaster\tLAC\tCI\tKeywords\t" +
-                "Azimuth\tBCCH frequency\tBSIC\tIntracell HO\tSynchronization group\tAMR HR Allocation\t" +
-                "AMR HR Threshold\tHR Allocation\tHR Threshold\tTCH allocation priority\t" +
-                "GPRS allocation priority\tRemote\tMCC\tMNC";
-        String channelGroupHead = "Sector\tChannel Group\tSubcell\tBand\tExtended\tHopping method\t" +
-                "Contains BCCH\tHSN\tDTX\tPower control\tSubcell Signal Threshold\tSubcell Tx Power\t# TRXs\t# SDCCH TSs\t" +
-                "# Fixed GPRS TSs\tPriority\tTCH 1\tTCH 2\tTCH 3\tTCH 4\tTCH 5\tTCH 6\tTCH 7\tTCH 8\tTCH 9\tTCH 10\tTCH 11\t" +
-                "TCH 12\tTCH 13\tTCH 14\tTCH 15\tTCH 16\tTCH 17\tTCH 18\tTCH 19\tTCH 20\tTCH 21\tTCH 22\tTCH 23\tTCH 24\tTCH 25\t" +
-                "TCH 26\tTCH 27\tTCH 28\tTCH 29\tTCH 30\tTCH 31\tTCH 32\tTCH 33\tTCH 34\tTCH 35\tTCH 36\tTCH 37\tTCH 38\tTCH 39\t" +
-                "TCH 40\tTCH 41\tTCH 42\tTCH 43\tTCH 44\tTCH 45\tTCH 46\tTCH 47\tTCH 48\tTCH 49\tTCH 50\tTCH 51\tTCH 52\tTCH 53\t" +
-                "TCH 54\tTCH 55\tTCH 56\tTCH 57\tTCH 58\tTCH 59\tTCH 60\tTCH 61\tTCH 62\tTCH 63\tTCH 64\tMAIO 1\tMAIO 2\tMAIO 3\t" +
-                "MAIO 4\tMAIO 5\tMAIO 6\tMAIO 7\tMAIO 8\tMAIO 9\tMAIO 10\tMAIO 11\tMAIO 12\tMAIO 13\tMAIO 14\tMAIO 15\tMAIO 16";
-        String handoverHead = "Serving Sector\tTarget Sector\tHO Attempts\tHO Successful Attempts";
-
-        try (FileWriter sectorsFW = new FileWriter(sectors);
-             FileWriter channelGroupsFW = new FileWriter(channelGroups);
-             FileWriter handoversFW = new FileWriter(handovers)) {
-            // 如果文件不存在就创建一个新的
-            if (!sectors.exists()) {
-                sectors.createNewFile();
-            }
-            if (!channelGroups.exists()) {
-                channelGroups.createNewFile();
-            }
-            if (!handovers.exists()) {
-                handovers.createNewFile();
-            }
-
-            // 打印表头
-            sectorsFW.write(sectorHead+"\r\n");
-            channelGroupsFW.write(channelGroupHead+"\r\n");
-            handoversFW.write(handoverHead+"\r\n");
-
-            // 处理 sectors 文件
-            for (int i=0;i<forteArray[0].length;i++){
-                ArrayList sectorslist = forteArray[0][i];
-
-                Iterator it1 = sectorslist.iterator();
-                while(it1.hasNext()){
-                    sectorsFW.write(it1.next()+"\r\n");
+            try (FileWriter sectorsFW = new FileWriter(sectors);
+                 FileWriter channelGroupsFW = new FileWriter(channelGroups);
+                 FileWriter handoversFW = new FileWriter(handovers)) {
+                // 如果文件不存在就创建一个新的
+                if (!sectors.exists()) {
+                    sectors.createNewFile();
                 }
+                if (!channelGroups.exists()) {
+                    channelGroups.createNewFile();
+                }
+                if (!handovers.exists()) {
+                    handovers.createNewFile();
+                }
+
+                // 打印表头
+                sectorsFW.write(sectorHead + "\r\n");
+                channelGroupsFW.write(channelGroupHead + "\r\n");
+                handoversFW.write(handoverHead + "\r\n");
+
+                // 处理 sectors 文件
+                for (int i = 0; i < forteArray[0].length; i++) {
+                    ArrayList sectorslist = forteArray[0][i];
+
+                    Iterator it1 = sectorslist.iterator();
+                    while (it1.hasNext()) {
+                        sectorsFW.write(it1.next() + "\r\n");
+                    }
 
 //                String[] sectorsString = new String[sectorslist.size()];
 //                sectorsString = (String[]) sectorslist.toArray(sectorsString);
@@ -108,15 +107,15 @@ public class ProcessorLog {
 
 //                byte[] contentInBytes = content.getBytes();
 //                sectorsFW.write(content+hh);
-            }
-            // 处理 channelGroups 文件
-            for (int i=0;i<forteArray[1].length;i++){
-                ArrayList channelGroupslist = forteArray[1][i];
-
-                Iterator it1 = channelGroupslist.iterator();
-                while(it1.hasNext()){
-                    channelGroupsFW.write(it1.next()+"\r\n");
                 }
+                // 处理 channelGroups 文件
+                for (int i = 0; i < forteArray[1].length; i++) {
+                    ArrayList channelGroupslist = forteArray[1][i];
+
+                    Iterator it1 = channelGroupslist.iterator();
+                    while (it1.hasNext()) {
+                        channelGroupsFW.write(it1.next() + "\r\n");
+                    }
 
 //                String[] channelGroupsString = new String[channelGroupslist.size()];
 //                channelGroupsString = (String[]) channelGroupslist.toArray(channelGroupsString);
@@ -125,15 +124,15 @@ public class ProcessorLog {
 //                    byte[] contentInBytes = channelGroupsString[j].getBytes();
 ////                    channelGroupsFW.write(contentInBytes);
 //                }
-            }
-            // 处理 handovers 文件
-            for (int i=0;i<forteArray[2].length;i++){
-                ArrayList handoverslist = forteArray[2][i];
-
-                Iterator it1 = handoverslist.iterator();
-                while(it1.hasNext()){
-                    handoversFW.write(it1.next()+"\r\n");
                 }
+                // 处理 handovers 文件
+                for (int i = 0; i < forteArray[2].length; i++) {
+                    ArrayList handoverslist = forteArray[2][i];
+
+                    Iterator it1 = handoverslist.iterator();
+                    while (it1.hasNext()) {
+                        handoversFW.write(it1.next() + "\r\n");
+                    }
 
 //                String[] handoversString = new String[handoverslist.size()];
 //                handoversString = (String[]) handoverslist.toArray(handoversString);
@@ -142,10 +141,11 @@ public class ProcessorLog {
 //                    byte[] contentInBytes = handoversString[j].getBytes();
 ////                    handoversFW.write(contentInBytes);
 //                }
+                }
+                System.out.println("Done");
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            System.out.println("Done");
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -155,37 +155,27 @@ public class ProcessorLog {
      * @param coordinatesList 坐标文件返回的内容，程序只处理坐标文件中出现的小区名
      * @return 返回的数组中包含了三个文件的内容:sector/channelGroup/handover
      */
-    String processorState = "";
     public ArrayList[][] processorMultiLog(File[] fileList,String[][] coordinatesList){
+        ArrayList[][] forteArray = null;
+        if (fileList != null && coordinatesList != null) {
+            // forteArray 分别顺序包含:sector/channelGroup/handover
+            forteArray = new ArrayList[3][fileList.length];
 
-        // 读取文件夹里面的 cdd 文件,并将文件列表储存到 fileList 中
-//        File[] fileList = new ReadFile().readMultiText(filePath);
-
-        //读取坐标文件
-        ProcessorCoordinate pc = new ProcessorCoordinate();
-//        String[][] coordinatesList = pc.processorSingleLog(coordinates);
-
-        // forteArray 分别顺序包含:sector/channelGroup/handover
-        ArrayList[][] forteArray = new ArrayList[3][fileList.length];
-
-        // 遍历 fileList 一个个 cdd 文件处理后赋值给 forteArray 数组
-        for (int i=0;i<fileList.length;i++){
+            // 遍历 fileList 一个个 cdd 文件处理后赋值给 forteArray 数组
+            for (int i = 0; i < fileList.length; i++) {
+                if (fileList[i].isFile()) {
 //            System.out.println("开始处理"+fileList[i]);
-            processorState = "开始处理"+fileList[i];
-            HashMap contentHM = processorSingleLog(fileList[i]);
+                    HashMap contentHM = processorSingleLog(fileList[i]);
 
-            forteArray[0][i] = createSectorsList(coordinatesList,contentHM);
-            forteArray[1][i] = createChannelGroupsList(coordinatesList,contentHM);
-            forteArray[2][i] = createHandoversList(coordinatesList,contentHM);
+                    forteArray[0][i] = createSectorsList(coordinatesList, contentHM);
+                    forteArray[1][i] = createChannelGroupsList(coordinatesList, contentHM);
+                    forteArray[2][i] = createHandoversList(coordinatesList, contentHM);
 //            System.out.println("完成"+fileList[i]);
-            processorState = "处理完毕"+fileList[i];
+                }
+                System.out.println("cdd 文件处理完毕！");
+            }
         }
-        System.out.println("cdd 文件读取完毕！");
         return forteArray;
-    }
-
-    public String getProcessorState() {
-        return processorState;
     }
 
     /**
@@ -193,14 +183,16 @@ public class ProcessorLog {
      *
      * @param logFile the log file
      */
+    String notice = "";
     public HashMap processorSingleLog(File logFile) {
         // HashMap<bsccc+sector,string[][]>
-        HashMap<String,String[][]> contentHM = new HashMap<String, String[][]>();
+//        HashMap<String,String[][]> contentHM = new HashMap<String, String[][]>();
+        HashMap<String,String[][]> contentHM = null;
 
         String[] checkCDD = ReadFile.readSingleText(logFile).split("\\r|\\n");
 
-        if (checkCDD[1].contains("Connected") && (checkCDD[checkCDD.length-1].contains("Disconnected") || checkCDD[checkCDD.length-1].contains("Run stopped"))){
-
+        if (checkCDD.length>1 && checkCDD[1].contains("Connected") && (checkCDD[checkCDD.length-1].contains("Disconnected") || checkCDD[checkCDD.length-1].contains("Run stopped"))){
+            contentHM = new HashMap<String, String[][]>();
             //logContent 数组存放读取到的文件，文件按照"<"分割的；一个 logContent 就是一个 OSS 指令块;
             String[] logContent = ReadFile.readSingleText(logFile).split("<");
 
@@ -633,10 +625,16 @@ public class ProcessorLog {
                     }
                 }
             }
+            notice = "cdd 文件处理完毕";
         }else {
+            notice = "cdd 文件错误";
             System.out.println("cdd 文件错误");
         }
     return contentHM;
+    }
+
+    public String getNotice() {
+        return notice;
     }
 
     /**
@@ -646,62 +644,64 @@ public class ProcessorLog {
      */
     public ArrayList createSectorsList(String[][] coordinate,HashMap<String,String[][]> contentHM){
 
-        ArrayList sectorslist = new ArrayList();
+        ArrayList sectorslist = null;
 
+        if (contentHM != null && coordinate != null) {
 
-        String sectorHead = "MSC\tBSC\tVendor\tSite\tLatitude\tLongitude\tSector\tID\tMaster\tLAC\tCI\tKeywords\t" +
-                "Azimuth\tBCCH frequency\tBSIC\tIntracell HO\tSynchronization group\tAMR HR Allocation\t" +
-                "AMR HR Threshold\tHR Allocation\tHR Threshold\tTCH allocation priority\t" +
-                "GPRS allocation priority\tRemote\tMCC\tMNC";
+            String sectorHead = "MSC\tBSC\tVendor\tSite\tLatitude\tLongitude\tSector\tID\tMaster\tLAC\tCI\tKeywords\t" +
+                    "Azimuth\tBCCH frequency\tBSIC\tIntracell HO\tSynchronization group\tAMR HR Allocation\t" +
+                    "AMR HR Threshold\tHR Allocation\tHR Threshold\tTCH allocation priority\t" +
+                    "GPRS allocation priority\tRemote\tMCC\tMNC";
 
-        String[][] bsc = contentHM.get("bsccc");
-        String bscName = bsc[0][0];
+            String[][] bsc = contentHM.get("bsccc");
+            String bscName = bsc[0][0];
 
 //        System.out.println(sectorHead);
 
-        // 对坐标文件中的小区进行遍历，只处理坐标文件夹出现的小区
-        for (int i=1;i<coordinate.length;i++){
+            // 对坐标文件中的小区进行遍历，只处理坐标文件夹出现的小区
+            for (int i = 1; i < coordinate.length; i++) {
 //            System.out.print(coordinate[i][0]);
 
-            if (contentHM.containsKey("rldep"+coordinate[i][0])){
-                // 遍历数组，打印 Sectors 文件
+                if (contentHM.containsKey("rldep" + coordinate[i][0])) {
+                    // 遍历数组，打印 Sectors 文件
 
-                // 小区基础信息：sector、cgi、bsic、bcch、band
-                String[][] sectors = contentHM.get("rldep"+coordinate[i][0]);
-                String[][] rxtcp = contentHM.get("rxtcp"+coordinate[i][0]);
-                String rxotg = bscName+"_"+rxtcp[0][1];
+                    // 小区基础信息：sector、cgi、bsic、bcch、band
+                    String[][] sectors = contentHM.get("rldep" + coordinate[i][0]);
+                    String[][] rxtcp = contentHM.get("rxtcp" + coordinate[i][0]);
+                    String rxotg = bscName + "_" + rxtcp[0][1];
 //                System.out.print(rxtcp[0][0]+"====");
 //                System.out.println(coordinate[i][0]);
 //                System.out.println(rxotg);
 
-                // 获取 CGI 内的信息
-                String[] cgi = sectors[0][1].split("-");
-                String MCC = cgi[0];
-                String MNC = cgi[1];
-                String LAC = cgi[2];
-                String CI = cgi[3];
+                    // 获取 CGI 内的信息
+                    String[] cgi = sectors[0][1].split("-");
+                    String MCC = cgi[0];
+                    String MNC = cgi[1];
+                    String LAC = cgi[2];
+                    String CI = cgi[3];
 
-                String sectorLine = "MSC\t"+
-                        bscName+"\tEricsson\t"+
-                        sectors[0][0].substring(0,6)+"\t"+
-                        coordinate[i][2]+"\t"+
-                        coordinate[i][1]+"\t"+
-                        sectors[0][0]+"\t\t\t"+
-                        LAC+"\t"+
-                        CI+"\tNew\t"+
-                        coordinate[i][5]+"\t"+
-                        sectors[0][3]+"\t"+
-                        sectors[0][2]+"\tFALSE\t"+
-                        rxotg+"\tTRUE\t20\tTRUE\t10\tRandom\tNo Preference\tFALSE\t"+
-                        MCC+"\t"+
-                        MNC;
-                sectorslist.add(sectorLine);
+                    String sectorLine = "MSC\t" +
+                            bscName + "\tEricsson\t" +
+                            sectors[0][0].substring(0, 6) + "\t" +
+                            coordinate[i][2] + "\t" +
+                            coordinate[i][1] + "\t" +
+                            sectors[0][0] + "\t\t\t" +
+                            LAC + "\t" +
+                            CI + "\tNew\t" +
+                            coordinate[i][5] + "\t" +
+                            sectors[0][3] + "\t" +
+                            sectors[0][2] + "\tFALSE\t" +
+                            rxotg + "\tTRUE\t20\tTRUE\t10\tRandom\tNo Preference\tFALSE\t" +
+                            MCC + "\t" +
+                            MNC;
+                    sectorslist = new ArrayList();
+                    sectorslist.add(sectorLine);
 //                System.out.println(sectorLine);
 
-            }else {
+                } else {
 //                    System.out.println("无"+coordinate[i][0]);
+                }
             }
-        }
 
 //        String[][] rlnrp = contentHM.get("rlnrp01DA121");
 //        for (int x=0;x<rlnrp.length;x++){
@@ -711,6 +711,7 @@ public class ProcessorLog {
 //            System.out.println();
 //        }
 
+        }
         return sectorslist;
     }
 
@@ -721,31 +722,32 @@ public class ProcessorLog {
      */
     public ArrayList createChannelGroupsList(String[][] coordinate,HashMap<String,String[][]> contentHM){
 
-        ArrayList channelGroupslist = new ArrayList();
+        ArrayList channelGroupslist = null;
+        if (contentHM != null && coordinate != null) {
 
-        String channelGroupHead = "Sector\tChannel Group\tSubcell\tBand\tExtended\tHopping method\t" +
-                "Contains BCCH\tHSN\tDTX\tPower control\tSubcell Signal Threshold\tSubcell Tx Power\t# TRXs\t# SDCCH TSs\t" +
-                "# Fixed GPRS TSs\tPriority\tTCH 1\tTCH 2\tTCH 3\tTCH 4\tTCH 5\tTCH 6\tTCH 7\tTCH 8\tTCH 9\tTCH 10\tTCH 11\t" +
-                "TCH 12\tTCH 13\tTCH 14\tTCH 15\tTCH 16\tTCH 17\tTCH 18\tTCH 19\tTCH 20\tTCH 21\tTCH 22\tTCH 23\tTCH 24\tTCH 25\t" +
-                "TCH 26\tTCH 27\tTCH 28\tTCH 29\tTCH 30\tTCH 31\tTCH 32\tTCH 33\tTCH 34\tTCH 35\tTCH 36\tTCH 37\tTCH 38\tTCH 39\t" +
-                "TCH 40\tTCH 41\tTCH 42\tTCH 43\tTCH 44\tTCH 45\tTCH 46\tTCH 47\tTCH 48\tTCH 49\tTCH 50\tTCH 51\tTCH 52\tTCH 53\t" +
-                "TCH 54\tTCH 55\tTCH 56\tTCH 57\tTCH 58\tTCH 59\tTCH 60\tTCH 61\tTCH 62\tTCH 63\tTCH 64\tMAIO 1\tMAIO 2\tMAIO 3\t" +
-                "MAIO 4\tMAIO 5\tMAIO 6\tMAIO 7\tMAIO 8\tMAIO 9\tMAIO 10\tMAIO 11\tMAIO 12\tMAIO 13\tMAIO 14\tMAIO 15\tMAIO 16";
+            String channelGroupHead = "Sector\tChannel Group\tSubcell\tBand\tExtended\tHopping method\t" +
+                    "Contains BCCH\tHSN\tDTX\tPower control\tSubcell Signal Threshold\tSubcell Tx Power\t# TRXs\t# SDCCH TSs\t" +
+                    "# Fixed GPRS TSs\tPriority\tTCH 1\tTCH 2\tTCH 3\tTCH 4\tTCH 5\tTCH 6\tTCH 7\tTCH 8\tTCH 9\tTCH 10\tTCH 11\t" +
+                    "TCH 12\tTCH 13\tTCH 14\tTCH 15\tTCH 16\tTCH 17\tTCH 18\tTCH 19\tTCH 20\tTCH 21\tTCH 22\tTCH 23\tTCH 24\tTCH 25\t" +
+                    "TCH 26\tTCH 27\tTCH 28\tTCH 29\tTCH 30\tTCH 31\tTCH 32\tTCH 33\tTCH 34\tTCH 35\tTCH 36\tTCH 37\tTCH 38\tTCH 39\t" +
+                    "TCH 40\tTCH 41\tTCH 42\tTCH 43\tTCH 44\tTCH 45\tTCH 46\tTCH 47\tTCH 48\tTCH 49\tTCH 50\tTCH 51\tTCH 52\tTCH 53\t" +
+                    "TCH 54\tTCH 55\tTCH 56\tTCH 57\tTCH 58\tTCH 59\tTCH 60\tTCH 61\tTCH 62\tTCH 63\tTCH 64\tMAIO 1\tMAIO 2\tMAIO 3\t" +
+                    "MAIO 4\tMAIO 5\tMAIO 6\tMAIO 7\tMAIO 8\tMAIO 9\tMAIO 10\tMAIO 11\tMAIO 12\tMAIO 13\tMAIO 14\tMAIO 15\tMAIO 16";
 
-        String[][] bsc = contentHM.get("bsccc");
+            String[][] bsc = contentHM.get("bsccc");
 
 //        System.out.println(channelGroupHead);
 
-        // 对坐标文件中的小区进行遍历，只处理坐标文件夹出现的小区
-        for (int i=1;i<coordinate.length;i++){
+            // 对坐标文件中的小区进行遍历，只处理坐标文件夹出现的小区
+            for (int i = 1; i < coordinate.length; i++) {
 //            System.out.print(coordinate[i][0]);
 
-            if (contentHM.containsKey("rlcfp"+coordinate[i][0])){
-                // 遍历数组，打印 ChannelGroups 文件
+                if (contentHM.containsKey("rlcfp" + coordinate[i][0])) {
+                    // 遍历数组，打印 ChannelGroups 文件
 //                String[][] ch_group = new String[4][14];    //保存4个信道组，每个信道组可能有14 or 66个元素（ch_group、hsn、dchno1-12?64）
-                String[][] ch_group = contentHM.get("rlcfp"+coordinate[i][0]);
-                String[][] sectors = contentHM.get("rldep"+coordinate[i][0]);
-                String[][] rlcpp = contentHM.get("rlcpp"+coordinate[i][0]);
+                    String[][] ch_group = contentHM.get("rlcfp" + coordinate[i][0]);
+                    String[][] sectors = contentHM.get("rldep" + coordinate[i][0]);
+                    String[][] rlcpp = contentHM.get("rlcpp" + coordinate[i][0]);
 
 //                for (int x=0;x<ch_group.length;x++){
 //                    for (int y=0;y<ch_group[x].length;y++){
@@ -754,53 +756,53 @@ public class ProcessorLog {
 //                    System.out.println();
 //                }
 
-                for (int x=0;x<ch_group.length;x++){
+                    for (int x = 0; x < ch_group.length; x++) {
 
-                    if (ch_group[x][0] != "N/A"){   //首先，判断信道是存在的
+                        if (ch_group[x][0] != "N/A") {   //首先，判断信道是存在的
 
-                        // 判断信道存储的频率为什么类型：1~124 PGSM、975~1024 EGSM、N/A
-                        String extended = "N/A";
-                        if (ch_group[x][4] != "N/A" && Integer.parseInt(ch_group[x][4]) != 0 && Integer.parseInt(ch_group[x][4])<=124){
-                            extended = "PGSM";
-                            for (int j=5;j<ch_group[x].length;j++){
-                                if (ch_group[x][j].equals("N/A"))break;
-                                if ((Integer.parseInt(ch_group[x][j])>=975 && Integer.parseInt(ch_group[x][j])<=1024) || Integer.parseInt(ch_group[x][j])==0){
-                                    extended = "N/A";
-                                    break;
+                            // 判断信道存储的频率为什么类型：1~124 PGSM、975~1024 EGSM、N/A
+                            String extended = "N/A";
+                            if (ch_group[x][4] != "N/A" && Integer.parseInt(ch_group[x][4]) != 0 && Integer.parseInt(ch_group[x][4]) <= 124) {
+                                extended = "PGSM";
+                                for (int j = 5; j < ch_group[x].length; j++) {
+                                    if (ch_group[x][j].equals("N/A")) break;
+                                    if ((Integer.parseInt(ch_group[x][j]) >= 975 && Integer.parseInt(ch_group[x][j]) <= 1024) || Integer.parseInt(ch_group[x][j]) == 0) {
+                                        extended = "N/A";
+                                        break;
+                                    }
+                                }
+                            } else if (ch_group[x][4] != "N/A" && ((Integer.parseInt(ch_group[x][4]) >= 975 && Integer.parseInt(ch_group[x][4]) <= 1024) || Integer.parseInt(ch_group[x][4]) == 0)) {
+                                extended = "EGSM";
+                                for (int j = 5; j < ch_group[x].length; j++) {
+                                    if (ch_group[x][j].equals("N/A")) break;
+                                    if (Integer.parseInt(ch_group[x][j]) < 124 && Integer.parseInt(ch_group[x][j]) == 0) {
+                                        extended = "N/A";
+                                        break;
+                                    }
                                 }
                             }
-                        }else if (ch_group[x][4] != "N/A" && ((Integer.parseInt(ch_group[x][4])>=975 && Integer.parseInt(ch_group[x][4])<=1024)|| Integer.parseInt(ch_group[x][4])==0)){
-                            extended = "EGSM";
-                            for (int j=5;j<ch_group[x].length;j++){
-                                if (ch_group[x][j].equals("N/A"))break;
-                                if (Integer.parseInt(ch_group[x][j])<124 && Integer.parseInt(ch_group[x][j])==0){
-                                    extended = "N/A";
-                                    break;
-                                }
+
+                            // 判断跳频方式
+                            String hoppingMethod = "Non hopping";
+                            if (ch_group[x][2].contains("ON")) {
+                                hoppingMethod = "Base band";
                             }
-                        }
 
-                        // 判断跳频方式
-                        String hoppingMethod = "Non hopping";
-                        if (ch_group[x][2].contains("ON")){
-                            hoppingMethod = "Base band";
-                        }
-
-                        // 判断是否为BCCH频点所在信道,并计算信道的频点数
-                        String ContainsBCCH = "FALSE";
-                        int frequencyCount = 0;
-                        for (int j=4;j<ch_group[x].length;j++){
-                            // 如果遇到 N/A 说明后面没有参数了,可以退出
-                            if (ch_group[x][j].equals("N/A"))break;
-                            // 有参数就比较参数是不是主频,是的话标记这一信道组为 bcch 信道
-                            if (ch_group[x][j].equals(sectors[0][3])){
-                                ContainsBCCH = "TRUE";
+                            // 判断是否为BCCH频点所在信道,并计算信道的频点数
+                            String ContainsBCCH = "FALSE";
+                            int frequencyCount = 0;
+                            for (int j = 4; j < ch_group[x].length; j++) {
+                                // 如果遇到 N/A 说明后面没有参数了,可以退出
+                                if (ch_group[x][j].equals("N/A")) break;
+                                // 有参数就比较参数是不是主频,是的话标记这一信道组为 bcch 信道
+                                if (ch_group[x][j].equals(sectors[0][3])) {
+                                    ContainsBCCH = "TRUE";
 //                                break;
+                                }
+                                frequencyCount++;
                             }
-                            frequencyCount++;
-                        }
 
-                        // 计算信道的频点数，bcch也包含在内了
+                            // 计算信道的频点数，bcch也包含在内了
 //                        int frequencyCount = 0;
 //                        for (int j=4;j<ch_group[x].length;j++){
 //                            if (ch_group[x][j].equals("N/A")){
@@ -809,38 +811,40 @@ public class ProcessorLog {
 //                            frequencyCount++;
 //                        }
 
-                        String channelGroupLine = coordinate[i][0]+"\t"+
-                                ch_group[x][0]+"\tUL\t"+
-                                sectors[0][4].substring(3)+"\t"+
-                                extended+"\t"+
-                                hoppingMethod+"\t"+
-                                ContainsBCCH+"\t"+
-                                ch_group[x][1]+"\tDownlink and Uplink\tDownlink and Uplink\tN/A\t"+
-                                rlcpp[0][1]+"\t"+
-                                frequencyCount+"\t"+
-                                ch_group[x][3]+"\t1\tNormal\t"+
-                                ch_group[x][4]+"\t"+
-                                ch_group[x][5]+"\t"+
-                                ch_group[x][6]+"\t"+
-                                ch_group[x][7]+"\t"+
-                                ch_group[x][8]+"\t"+
-                                ch_group[x][9]+"\t"+
-                                ch_group[x][10]+"\t"+
-                                ch_group[x][11]+"\t"+
-                                ch_group[x][12]+"\t"+
-                                ch_group[x][13]+"\t"+
-                                ch_group[x][14]+"\t"+
-                                ch_group[x][15]+"\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\t" +
-                                "N/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\t" +
-                                "N/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\t" +
-                                "N/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A";
-                        channelGroupslist.add(channelGroupLine);
+                            String channelGroupLine = coordinate[i][0] + "\t" +
+                                    ch_group[x][0] + "\tUL\t" +
+                                    sectors[0][4].substring(3) + "\t" +
+                                    extended + "\t" +
+                                    hoppingMethod + "\t" +
+                                    ContainsBCCH + "\t" +
+                                    ch_group[x][1] + "\tDownlink and Uplink\tDownlink and Uplink\tN/A\t" +
+                                    rlcpp[0][1] + "\t" +
+                                    frequencyCount + "\t" +
+                                    ch_group[x][3] + "\t1\tNormal\t" +
+                                    ch_group[x][4] + "\t" +
+                                    ch_group[x][5] + "\t" +
+                                    ch_group[x][6] + "\t" +
+                                    ch_group[x][7] + "\t" +
+                                    ch_group[x][8] + "\t" +
+                                    ch_group[x][9] + "\t" +
+                                    ch_group[x][10] + "\t" +
+                                    ch_group[x][11] + "\t" +
+                                    ch_group[x][12] + "\t" +
+                                    ch_group[x][13] + "\t" +
+                                    ch_group[x][14] + "\t" +
+                                    ch_group[x][15] + "\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\t" +
+                                    "N/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\t" +
+                                    "N/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\t" +
+                                    "N/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A";
+                            channelGroupslist = new ArrayList();
+                            channelGroupslist.add(channelGroupLine);
 //                        System.out.println(channelGroupLine);
-                    }
+                        }
 
 //                    for (int y=0;y<ch_group[x].length;y++){
 //                        System.out.print(ch_group[x][y]+" ");
 //                    }
+                    }
                 }
             }
         }
@@ -854,34 +858,36 @@ public class ProcessorLog {
      */
     public ArrayList createHandoversList(String[][] coordinate,HashMap<String,String[][]> contentHM){
 
-        ArrayList handoverslist = new ArrayList();
-
-        String handoverHead = "Serving Sector\tTarget Sector\tHO Attempts\tHO Successful Attempts";
+        ArrayList handoverslist = null;
+        if (contentHM != null && coordinate != null) {
+            String handoverHead = "Serving Sector\tTarget Sector\tHO Attempts\tHO Successful Attempts";
 
 //        handoverslist.add(handoverHead);
 //        System.out.println(handoverHead);
 
-        // 对坐标文件中的小区进行遍历，只处理坐标文件夹出现的小区
-        for (int i=1;i<coordinate.length;i++){
+            // 对坐标文件中的小区进行遍历，只处理坐标文件夹出现的小区
+            for (int i = 1; i < coordinate.length; i++) {
 //            System.out.print(coordinate[i][0]);
 
-            if (contentHM.containsKey("rlnrp"+coordinate[i][0])){
-                // 遍历数组，打印 handovers 文件
+                if (contentHM.containsKey("rlnrp" + coordinate[i][0])) {
+                    // 遍历数组，打印 handovers 文件
 
-                String[][] rlnrp = contentHM.get("rlnrp"+coordinate[i][0]);
+                    String[][] rlnrp = contentHM.get("rlnrp" + coordinate[i][0]);
 //                System.out.println(rlnrp[0][0]+"===="+coordinate[i][0]);
 
-                for (int j=0;j<rlnrp.length;j++){
+                    for (int j = 0; j < rlnrp.length; j++) {
 
 //                    String servingSector = rlnrp[j][0];
-                    for (int k=1;k<rlnrp[j].length;k++){
-                        if (rlnrp[j][k].equals("N/A"))break;
-                        String handoverLine = rlnrp[j][0]+"\t"+rlnrp[j][k]+"\t5\tN/A";
-                        handoverslist.add(handoverLine);
+                        for (int k = 1; k < rlnrp[j].length; k++) {
+                            if (rlnrp[j][k].equals("N/A")) break;
+                            String handoverLine = rlnrp[j][0] + "\t" + rlnrp[j][k] + "\t5\tN/A";
+                            handoverslist = new ArrayList();
+                            handoverslist.add(handoverLine);
 //                        System.out.println(handoverLine);
+                        }
                     }
-                }
 
+                }
             }
         }
         return handoverslist;

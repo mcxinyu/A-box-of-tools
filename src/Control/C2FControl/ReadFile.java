@@ -47,13 +47,17 @@ public class ReadFile {
      * @return string string
      */
     public File[] readMultiText(File[] files) {
-        File[] filesList;
-        if (files[0].isDirectory()){
-            System.out.println("文件夹数量： "+files.length);
-            filesList = files[0].listFiles();
-        }else {
-            System.out.println("文件数量： "+files.length);
-            filesList = files;
+        File[] filesList = null;
+        if (files.length != 0) {
+            if (files[0].isDirectory()) {
+                System.out.println("文件夹数量： " + files.length);
+                if (files[0].listFiles().length != 0) {
+                    filesList = files[0].listFiles();
+                }
+            } else {
+                System.out.println("文件数量： " + files.length);
+                filesList = files;
+            }
         }
         return filesList;
     }
