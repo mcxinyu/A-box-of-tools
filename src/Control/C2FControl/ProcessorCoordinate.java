@@ -79,7 +79,7 @@ public class ProcessorCoordinate {
             }
         }else {
             System.out.println("坐标文件不存在");
-            notice = "坐标文件不存在";
+            notice = "坐标文件不存在或已被删除";
         }
         return cellCoordinate;
     }

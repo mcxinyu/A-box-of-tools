@@ -1,5 +1,10 @@
 package Control.C2FControl;
 
+import Common.MyTools;
+import Common.progressBar;
+
+import javax.swing.*;
+import java.awt.*;
 import java.io.*;
 import java.util.*;
 
@@ -8,7 +13,7 @@ import java.util.*;
  * 用于处理 cdd 文本文件，得到 cdd 参数
  * Created by 跃峰 on 2016/1/27.
  */
-public class ProcessorLog {
+public class ProcessorLog extends JDialog{
     /**
      * The entry point of application.
      *
@@ -155,29 +160,33 @@ public class ProcessorLog {
      * @param coordinatesList 坐标文件返回的内容，程序只处理坐标文件中出现的小区名
      * @return 返回的数组中包含了三个文件的内容:sector/channelGroup/handover
      */
+    String currFileName = "";
     public ArrayList[][] processorMultiLog(File[] fileList,String[][] coordinatesList){
         ArrayList[][] forteArray = null;
         if (fileList != null && coordinatesList != null) {
             // forteArray 分别顺序包含:sector/channelGroup/handover
             forteArray = new ArrayList[3][fileList.length];
-
             // 遍历 fileList 一个个 cdd 文件处理后赋值给 forteArray 数组
             for (int i = 0; i < fileList.length; i++) {
                 if (fileList[i].isFile()) {
-//            System.out.println("开始处理"+fileList[i]);
+//                    System.out.println("开始处理"+fileList[i]);
                     HashMap contentHM = processorSingleLog(fileList[i]);
-
+                    currFileName = fileList[i].getName();
                     forteArray[0][i] = createSectorsList(coordinatesList, contentHM);
                     forteArray[1][i] = createChannelGroupsList(coordinatesList, contentHM);
                     forteArray[2][i] = createHandoversList(coordinatesList, contentHM);
-//            System.out.println("完成"+fileList[i]);
+                    System.out.println("完成"+fileList[i]);
                 }
-                System.out.println("cdd 文件处理完毕！");
             }
+            System.out.println("cdd 文件处理完毕！");
         }else {
             System.out.println("读取文件出错");
         }
         return forteArray;
+    }
+
+    public String getCurrFileName() {
+        return currFileName;
     }
 
     /**
