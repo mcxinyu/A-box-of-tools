@@ -44,7 +44,7 @@ public class ReadFile {
      * 读取多个文件
      *
      * @param files 文件夹、者多个文件、单个文件 的数组
-     * @return string string
+     * @return File[] 文件列表
      */
     public File[] readMultiText(File[] files) {
         File[] filesList = null;
@@ -58,6 +58,8 @@ public class ReadFile {
                 System.out.println("文件数量： " + files.length);
                 filesList = files;
             }
+        }else {
+            System.out.println("readMultiText 收到文件为空");
         }
         return filesList;
     }

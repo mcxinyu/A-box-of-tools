@@ -174,6 +174,8 @@ public class ProcessorLog {
                 }
                 System.out.println("cdd 文件处理完毕！");
             }
+        }else {
+            System.out.println("读取文件出错");
         }
         return forteArray;
     }

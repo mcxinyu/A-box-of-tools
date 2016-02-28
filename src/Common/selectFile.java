@@ -25,6 +25,7 @@ public class selectFile {
             jfc.setFileFilter(new FileNameExtensionFilter("文本文件", "txt", "log"));
         }
 
+        //返回值为 state 即 APPROVE_OPTION 0，CANCEL_OPTION 1
         int state = jfc.showOpenDialog(null);
 
         files = jfc.getSelectedFiles();

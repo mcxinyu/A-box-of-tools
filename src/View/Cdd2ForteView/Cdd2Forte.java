@@ -2,6 +2,7 @@ package View.Cdd2ForteView;
 
 import Common.saveFile;
 import Common.selectFile;
+import Common.myProperties;
 import Control.C2FControl.ProcessorCoordinate;
 import Control.C2FControl.ProcessorLog;
 import Control.C2FControl.ReadFile;
@@ -9,14 +10,13 @@ import View.CheckPlanView.GBC;
 import Common.WelcomeArea;
 import Common.ControlBtnArea;
 import Common.MyTools;
-import javafx.scene.control.Alert;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
+
 
 /**
  * cdd2forte 的界面部分
@@ -28,8 +28,14 @@ public class Cdd2Forte extends JFrame implements ActionListener{
     JPanel controlBtnArea;
     JButton backBtn,nextBtn,homeBtn,okBtn,aboutBtn,readCoordinateBtn ,readCddBtn,export2ForteBtn,otherBtn;
     JPanel contentsArea;
-    JLabel temp1,temp2,text,progressBar1,progressBar2,otherJlb;
-    JCheckBox jcb1,jcb2;
+    JLabel temp1,temp2,text,otherJlb;
+    JTextArea progressBar1,progressBar2;
+    JCheckBox jcb1;
+    myProperties mp = new myProperties();
+    String path = null;
+    String[][] cellCoordinate = null;
+    ArrayList[][] forteArray = null;
+    String coorPath = null;
 
     public static void main(String[] args) {
         Cdd2Forte c2f = new Cdd2Forte();
@@ -45,8 +51,13 @@ public class Cdd2Forte extends JFrame implements ActionListener{
         text.setFont(MyTools.fontPlain13);
         temp1 = new JLabel("                    ");
         temp2 = new JLabel("                    ");
-        progressBar1 = new JLabel("请先读取坐标文件");
-        progressBar2 = new JLabel("");
+        progressBar1 = new JTextArea("请先读取坐标文件",2,1);
+        progressBar1.setEditable(false);
+        progressBar1.setLineWrap(true);
+        progressBar1.setBackground(new Color(240,240,240));
+        progressBar2 = new JTextArea("",2,1);
+        progressBar2.setEditable(false);
+        progressBar1.setBackground(new Color(240,240,240));
 
         readCoordinateBtn = new JButton(" 读取坐标文件 ");
         readCoordinateBtn.setFont(MyTools.fontBold18);
@@ -55,19 +66,30 @@ public class Cdd2Forte extends JFrame implements ActionListener{
         readCoordinateBtn.addActionListener(this);
 
         jcb1 = new JCheckBox("使用之前保存的坐标文件");
-        jcb1.setEnabled(false);
         otherJlb = new JLabel("保存或替换之前的坐标文件");
+
+        path = mp.readProperties("c2f.properties");
+        if (path==null){
+            jcb1.setEnabled(false);
+        }else {
+            jcb1.setEnabled(true);
+        }
+
+        //注册监听
+        jcb1.setActionCommand("jcb1");
+        jcb1.addActionListener(this);
 
         readCddBtn = new JButton("读取 cdd-log");
         readCddBtn.setFont(MyTools.fontBold18);
-//        readCddBtn.setEnabled(false);
+        readCddBtn.setEnabled(false);
+
         //注册监听
         readCddBtn.setActionCommand("readCddBtn");
         readCddBtn.addActionListener(this);
 
         export2ForteBtn = new JButton("导出 forte 环境");
         export2ForteBtn.setFont(MyTools.fontBold18);
-//        export2ForteBtn.setEnabled(false);
+        export2ForteBtn.setEnabled(false);
         //注册监听
         export2ForteBtn.setActionCommand("export2ForteBtn");
         export2ForteBtn.addActionListener(this);
@@ -85,10 +107,10 @@ public class Cdd2Forte extends JFrame implements ActionListener{
         contentsArea.add(readCddBtn,new GBC(2,1,2,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(20,20).setInsets(0,0,0,1));
         contentsArea.add(jcb1,new GBC(0,2,2,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(0,5).setInsets(0,1));
         contentsArea.add(progressBar1,new GBC(0,3,4,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(0,5).setInsets(0,1));
-        contentsArea.add(progressBar2,new GBC(0,4,4,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(0,5).setInsets(0,1));
-        contentsArea.add(export2ForteBtn,new GBC(0,5,4,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(20,20).setInsets(0,0));
-        contentsArea.add(otherJlb,new GBC(0,6,3,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(5,5).setInsets(0,1));
-        contentsArea.add(otherBtn,new GBC(3,6,1,1).setAnchor(GBC.WEST).setIpad(0,5).setInsets(5,1));
+//        contentsArea.add(progressBar2,new GBC(0,4,4,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(0,5).setInsets(0,1));
+        contentsArea.add(export2ForteBtn,new GBC(0,4,4,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(20,20).setInsets(0,0));
+        contentsArea.add(otherJlb,new GBC(0,5,3,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(5,5).setInsets(0,1));
+        contentsArea.add(otherBtn,new GBC(3,5,1,1).setAnchor(GBC.WEST).setIpad(0,5).setInsets(5,1));
 
         //控制栏
         aboutBtn = new JButton(new ImageIcon("images/about.png"));
@@ -132,8 +154,6 @@ public class Cdd2Forte extends JFrame implements ActionListener{
         frame.setVisible(true);
     }
 
-    String[][] cellCoordinate = null;
-    ArrayList[][] forteArray = null;
     @Override
     public void actionPerformed(ActionEvent e) {
         ProcessorLog pl = new ProcessorLog();
@@ -142,10 +162,12 @@ public class Cdd2Forte extends JFrame implements ActionListener{
                 Object[] options = {"确定","我手贱"};
                 int response=JOptionPane.showOptionDialog(this, "再次读取会清空上一次的数据！", "thinkPad",JOptionPane.YES_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
                 if(response==0) {
+                    coorPath = null;
                     cellCoordinate = null;
                     forteArray = null;
                     readCddBtn.setEnabled(false);
                     export2ForteBtn.setEnabled(false);
+                    otherBtn.setEnabled(false);
                 }else if(response==1) {
                 }
             }
@@ -166,11 +188,12 @@ public class Cdd2Forte extends JFrame implements ActionListener{
                         progressBar1.setText(pc.getNotice());
                         readCddBtn.setEnabled(true);
                         otherBtn.setEnabled(true);
-                    } else {
+                        coorPath = fileList[0].getPath();
+                    }else {
                         cellCoordinate = null;
                         progressBar1.setText("坐标文件错误!");
                     }
-                } else if (state == 1) {
+                }else if (state == 1) {
                     if (cellCoordinate == null) {
                         progressBar1.setText("未选择坐标文件");
                     }
@@ -196,10 +219,15 @@ public class Cdd2Forte extends JFrame implements ActionListener{
                     //如果点击确定
                     if (fileList != null) {
                         forteArray = pl.processorMultiLog(fileList, cellCoordinate);
+                        if (pl.getNotice().contains("错误")){
+                            forteArray = null;
+                        }
                         progressBar2.setText(pl.getNotice());
                         if (forteArray != null) {
                             export2ForteBtn.setEnabled(true);
                         }
+                    }else {
+                        System.out.println("未选择cdd文件");
                     }
                 } else if (state == 1) {
                     progressBar2.setText("未选择 cdd-log 文件");
@@ -210,9 +238,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
             int state = save.saveFile("导出 forte 环境",1);
             if (state == 0){
                 pl.createForteFile(forteArray,save.getFile().getPath());
-                System.out.println("可以保存");
             }else if (state == 1){
-                System.out.println("取消保存");
             }
         }else if (e.getActionCommand() == "aboutBtn"){
             new C2FNotice();
@@ -221,9 +247,55 @@ public class Cdd2Forte extends JFrame implements ActionListener{
         }else if (e.getActionCommand().equals("okBtn")){
         }else if (e.getActionCommand().equals("homeBtn")){
             JOptionPane.showMessageDialog(null,"其他功能还在测试，暂时不可用。","主功能",JOptionPane. WARNING_MESSAGE);
-        }
-        else if (e.getActionCommand().equals("otherBtn")){
+        }else if (e.getActionCommand().equals("otherBtn")){
+            mp.writeProperties("c2f.properties",coorPath);
+            path = mp.readProperties("c2f.properties");
+            jcb1.setEnabled(true);
             JOptionPane.showMessageDialog(null,"成功");
+        }else if (e.getActionCommand().equals("jcb1")){
+            if (jcb1.isSelected()){
+                if (cellCoordinate != null){
+                    Object[] options = {"确定","我手贱"};
+                    int response=JOptionPane.showOptionDialog(this, "再次读取会清空上一次的数据！", "thinkPad",JOptionPane.YES_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+                    if(response==0) {
+                        coorPath = null;
+                        cellCoordinate = null;
+                        forteArray = null;
+                        progressBar2.setText("");
+                        otherBtn.setEnabled(false);
+                        readCddBtn.setEnabled(false);
+                        export2ForteBtn.setEnabled(false);
+                    }else if(response==1) {
+                        jcb1.setSelected(false);
+                    }
+                }
+                if (cellCoordinate == null) {
+                    readCoordinateBtn.setEnabled(false);
+                    readCddBtn.setEnabled(true);
+                    ProcessorCoordinate pc = new ProcessorCoordinate();
+                    cellCoordinate = pc.processorSingleLog(new File(path));
+                    progressBar1.setText(path);
+                }
+            }else {
+                if (forteArray != null){
+                    Object[] options = {"确定","我手贱"};
+                    int response=JOptionPane.showOptionDialog(this, "再次读取会清空上一次的 cdd-log 数据！", "thinkPad",JOptionPane.YES_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+                    if(response==0) {
+                        forteArray = null;
+                        export2ForteBtn.setEnabled(false);
+                        progressBar2.setText("");
+                    }else if(response==1) {
+                        jcb1.setSelected(true);
+                    }
+                }
+                if (forteArray == null) {
+                    readCoordinateBtn.setEnabled(true);
+                    readCddBtn.setEnabled(false);
+                    cellCoordinate = null;
+                    forteArray = null;
+                    progressBar1.setText("未选择坐标文件");
+                }
+            }
         }
     }
 }
