@@ -93,10 +93,9 @@ public class ProcessorLog{
                         sectorsString = (String[]) sectorslist.toArray(sectorsString);
 
                         for (int j = 0; j < sectorsString.length; j++) {
-                            System.out.println(sectorsString[j]);
-//                        byte[] contentInBytes = sectorsString[j].getBytes();
+//                            byte[] contentInBytes = sectorsString[j].getBytes();
 //                            System.out.println(sectorsString[j]);
-                            handoversFW.write(sectorsString[j]+"\r\n");
+                            sectorsFW.write(sectorsString[j]+"\r\n");
                         }
                     }
                 }
@@ -263,7 +262,7 @@ public class ProcessorLog{
                                 sectors[0][1] = ss[j+1].substring(9,29).trim();   //cgi
                                 sectors[0][2] = ss[j+1].substring(30,32);   //bsic
                                 sectors[0][3] = ss[j+1].substring(36,43).trim();    //bcch
-                                sectors[0][4] = ss[j+4].substring(52,ss[j+4].length()); //band
+                                sectors[0][4] = ss[j+4].substring(52).trim(); //band
 //                                System.out.println(sectors[0]+"-"+sectors[1]+"-"+sectors[2]+"-"+sectors[3]+"-"+sectors[4]+"-"+sectors[5]);
                                 contentHM.put("rldep"+sectors[0][0],sectors);
 //                                String line = "MSC\t"+"bsc"+"\tEricsson\t"+sectors[0][0].substring(0,6)+"\t22.68933\t113.77698\t"+sectors[0][0]+"\t"+sectors[0][1]+"\t"+sectors[0][2]+"\tNew\t50\t"+sectors[0][4]+"\t"+sectors[0][3]+"\tTRUE\tRXOTG\tTRUE\t20\tTRUE\t10\tRandom\tNo Preference";
@@ -426,7 +425,7 @@ public class ProcessorLog{
 
                                     //开始从 RLCFP_CELL_LINE 表头所在行 以后 的行，循环取得其他参数；
                                     for (int m = l + 1; m < RLCFP_CELL_LINE.length; m++) {
-                                        if (RLCFP_CELL_LINE[m] != null && RLCFP_CELL_LINE[m].substring(0, 3).trim() != "END" && RLCFP_CELL_LINE[m].length()>=65) {
+                                        if (RLCFP_CELL_LINE[m] != null && RLCFP_CELL_LINE[m].substring(0, 3).trim() != "END" && RLCFP_CELL_LINE[m].length()>=64) {
                                             if (CHGR_COUNT == 1) {
                                                 //取出第一个信道组数据
                                                 ch_group[0][0] = RLCFP_CELL_LINE[CHGR_LINE[0]].substring(0, 3).trim();    //CHGR
@@ -443,6 +442,7 @@ public class ProcessorLog{
 //                                            System.out.println("信道组数"+CHGR_COUNT);
 //                                            String line = RLCFPsector+"\t0\tUL\t1800\tN/A\tNon hopping\tTRUE\t3\tDownlink and Uplink\tDownlink and Uplink\tN/A\t47\t4\t1\t1\tNormal\t567\t575\t627\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A";
 //                                            System.out.println(line);
+//                                                System.out.println("有一个信道组");
 
                                             } else if (CHGR_COUNT == 2) {
                                                 //取出第一个信道组数据
@@ -470,7 +470,7 @@ public class ProcessorLog{
                                                 }
                                                 contentHM.put("rlcfp"+RLCFPsector,ch_group);
 
-//                                            System.out.println("有二个信道组");
+//                                                System.out.println("有二个信道组");
                                             } else if (CHGR_COUNT == 3) {
                                                 //取出第一个信道组数据
                                                 ch_group[0][0] = RLCFP_CELL_LINE[CHGR_LINE[0]].substring(0, 3).trim();    //CHGR
@@ -511,7 +511,7 @@ public class ProcessorLog{
                                                 }
                                                 contentHM.put("rlcfp"+RLCFPsector,ch_group);
 
-//                                            System.out.println("有三个信道组");
+//                                                System.out.println("有三个信道组");
                                             } else if (CHGR_COUNT == 4) {
                                                 //取出第一个信道组数据
                                                 ch_group[0][0] = RLCFP_CELL_LINE[CHGR_LINE[0]].substring(0, 3).trim();    //CHGR
@@ -561,7 +561,7 @@ public class ProcessorLog{
                                                     }
                                                 }
                                                 contentHM.put("rlcfp"+RLCFPsector,ch_group);
-//                                            System.out.println("有四个信道组");
+//                                                System.out.println("有四个信道组");
                                             }
                                         }
                                     }
@@ -789,9 +789,10 @@ public class ProcessorLog{
 
             // 对坐标文件中的小区进行遍历，只处理坐标文件夹出现的小区
             for (int i = 1; i < validCoordinate.length; i++) {
-//            System.out.print(coordinate[i][0]);
+//            System.out.println(validCoordinate[i][0]);
 
                 if (contentHM.containsKey("rlcfp" + validCoordinate[i][0])) {
+
                     // 遍历数组，打印 ChannelGroups 文件
 //                String[][] ch_group = new String[4][68];    //保存4个信道组，每个信道组可能有14 or 68个元素（ch_group、hsn、dchno1-12?64）
                     String[][] ch_group = contentHM.get("rlcfp" + validCoordinate[i][0]);
@@ -806,6 +807,7 @@ public class ProcessorLog{
 //                }
 
                     for (int x = 0; x < ch_group.length; x++) {
+//                        System.out.println("cgcgcgcgccgcgcgcgcg");
 
                         if (ch_group[x][0] != "N/A") {   //首先，判断信道是存在的
 
@@ -900,7 +902,6 @@ public class ProcessorLog{
                                     "N/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A";
 
                             channelGroupslist.add(channelGroupLine);
-//                        System.out.println(channelGroupLine);
                         }
 
 //                    for (int y=0;y<ch_group[x].length;y++){
