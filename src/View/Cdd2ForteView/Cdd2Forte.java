@@ -10,14 +10,16 @@ import View.CheckPlanView.GBC;
 import Common.WelcomeArea;
 import Common.ControlBtnArea;
 import Common.MyTools;
+
 import javax.swing.*;
+import javax.swing.text.DateFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.TimerTask;
-import java.util.Timer;
+import java.util.Calendar;
+import java.util.Date;
 
 
 /**
@@ -158,6 +160,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
         frame.setVisible(true);
     }
 
+
     @Override
     public void actionPerformed(ActionEvent e) {
         pl = new ProcessorLog();
@@ -189,7 +192,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
                     //如果点击确定
                     ProcessorCoordinate pc = new ProcessorCoordinate();
                     if (fileList != null && fileList.length == 1) {
-                        System.out.println("ccccccccccccc" + fileList.length);
+//                        System.out.println("ccccccccccccc" + fileList.length);
                         cellCoordinate = pc.processorSingleLog(fileList[0]);
                     }
                     if (pc.getNotice().contains("处理完毕")) {
@@ -219,21 +222,27 @@ public class Cdd2Forte extends JFrame implements ActionListener{
             }
             if (forteArray == null){
                 int state;
-                progressBar2.setVisible(false);
-                progressBar2.setText("");
+                progressBar2.setVisible(true);
+                progressBar2.setText("正在处理 cdd-log 文件...");
+
                 selectFile select = new selectFile();
                 state = select.selectFile("读取 cdd-log", "text");
                 File[] fileList = new ReadFile().readMultiText(select.getFile());
                 if (state == 0) {
                     //如果点击确定
                     if (fileList != null) {
+                        long startTime=System.currentTimeMillis();
+
                         forteArray = pl.processorMultiLog(fileList, cellCoordinate);
-                        progressBar2.setVisible(true);
-                        progressBar2.setText("CDD 处理完毕");
+
+                        long endTime=System.currentTimeMillis();
+                        System.out.println("程序运行时间： "+(endTime-startTime)/1000+"s");
+                        JOptionPane.showMessageDialog(null,"cdd-log 读取成功");
+                        progressBar2.setText(pl.getNotice());
                         if (pl.getNotice().contains("错误")){
                             forteArray = null;
+                            progressBar2.setText("cdd-log 文件错误！");
                         }
-                        progressBar2.setText(pl.getNotice());
                         if (forteArray != null) {
                             export2ForteBtn.setEnabled(true);
                         }
@@ -241,7 +250,6 @@ public class Cdd2Forte extends JFrame implements ActionListener{
                         System.out.println("未选择cdd文件");
                     }
                 } else if (state == 1) {
-                    progressBar2.setVisible(true);
                     progressBar2.setText("未选择 cdd-log 文件");
                 }
             }
@@ -288,7 +296,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
                     readCddBtn.setEnabled(true);
                     ProcessorCoordinate pc = new ProcessorCoordinate();
                     cellCoordinate = pc.processorSingleLog(new File(path));
-//                    progressBar1.setText("坐标文件："+path);
+                    progressBar1.setText("选定："+path);
                     if (pc.getNotice().contains("不存在")){
                         progressBar1.setText(pc.getNotice());
                         readCddBtn.setEnabled(false);
@@ -318,5 +326,4 @@ public class Cdd2Forte extends JFrame implements ActionListener{
             }
         }
     }
-
 }
