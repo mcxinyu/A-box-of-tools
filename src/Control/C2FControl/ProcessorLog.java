@@ -241,7 +241,7 @@ public class ProcessorLog{
                         String[][] sectorState = new String[1][1];
                         String[] RLSTP_LINE = logContent[i].split("\\r|\\n");
                         for (int k = 0; k < RLSTP_LINE.length; k++) {
-                            if (RLSTP_LINE[k].length()>=28) {
+                            if (RLSTP_LINE[k].trim().length()>=28) {
                                 String sector = RLSTP_LINE[k].substring(0,9).trim();
                                 sectorState[0][0] = RLSTP_LINE[k].substring(10,18).trim();
 //                                System.out.println(sector);
@@ -265,13 +265,12 @@ public class ProcessorLog{
                                 sectors[0][4] = ss[j+4].substring(52).trim(); //band
 //                                System.out.println(sectors[0]+"-"+sectors[1]+"-"+sectors[2]+"-"+sectors[3]+"-"+sectors[4]+"-"+sectors[5]);
                                 contentHM.put("rldep"+sectors[0][0],sectors);
-//                                String line = "MSC\t"+"bsc"+"\tEricsson\t"+sectors[0][0].substring(0,6)+"\t22.68933\t113.77698\t"+sectors[0][0]+"\t"+sectors[0][1]+"\t"+sectors[0][2]+"\tNew\t50\t"+sectors[0][4]+"\t"+sectors[0][3]+"\tTRUE\tRXOTG\tTRUE\t20\tTRUE\t10\tRandom\tNo Preference";
-//                                System.out.println(line);
+                                //String line = "MSC\t"+"bsc"+"\tEricsson\t"+sectors[0][0].substring(0,6)+"\t22.68933\t113.77698\t"+sectors[0][0]+"\t"+sectors[0][1]+"\t"+sectors[0][2]+"\tNew\t50\t"+sectors[0][4]+"\t"+sectors[0][3]+"\tTRUE\tRXOTG\tTRUE\t20\tTRUE\t10\tRandom\tNo Preference";
+                                //System.out.println(line);
                             }
                             j++;
                         }
 //                    System.out.println("小区数： "+(ss.length-3)/9);
-
                     }
 
                     // 判断指令块是否为 RLCPP；读取功率
@@ -283,8 +282,8 @@ public class ProcessorLog{
 
                             if (RLCPP_CELL[k].contains("TYPE")){
                                 for (int l=k;l<RLCPP_CELL.length;l++){
-                                    if (RLCPP_CELL[l].contains("END"))break;
-                                    if ((!RLCPP_CELL[l].contains("UL") || !RLCPP_CELL[l].contains("OL")) && RLCPP_CELL[l].length()>=32){
+                                    //if (RLCPP_CELL[l].contains("END"))break;
+                                    if ((!RLCPP_CELL[l].contains("UL") || !RLCPP_CELL[l].contains("OL")) && RLCPP_CELL[l].length()>=31){
                                         String[][] rlcpp = new String[1][2];
                                         rlcpp[0][0] = RLCPP_CELL[l].substring(0,9).trim();    // 小区名
                                         rlcpp[0][1] = RLCPP_CELL[l].substring(15,22).trim();   // BSPWRB
@@ -363,7 +362,6 @@ public class ProcessorLog{
 
                                 // 取得  RLCFP_CELL_LINE 表头所在行，其实如果没有错误的话，一般都是第三行；
                                 if (RLCFP_CELL_LINE[l]!=null && RLCFP_CELL_LINE[l].contains("SDCCHAC")){
-//                                RLCFPsector = RLCFP_CELL_LINE[l-2].substring(0,7);
 //                                System.out.println(RLCFPsector);
 
                                     //开始从 RLCFP_CELL_LINE 表头所在行 以后 的行，循环取得其他参数；
@@ -412,7 +410,8 @@ public class ProcessorLog{
                             for (int l=0;l<RLCFP_CELL_LINE.length;l++) {
                                 // 取得  RLCFP_CELL_LINE 表头所在行，其实如果没有错误的话，一般都是第三行；
                                 if (RLCFP_CELL_LINE[l]!=null && RLCFP_CELL_LINE[l].contains("SDCCHAC")) {
-                                    String RLCFPsector = RLCFP_CELL_LINE[l-2].substring(0).trim();
+                                    String RLCFPsector = RLCFP_CELL_LINE[l-2].trim();
+                                    //System.out.println(RLCFPsector);
                                     String[][] ch_group = new String[4][68];    //保存4个信道组，每个信道组可能有16 or 68个元素（ch_group、hsn、hopping、sdcch、dchno1-12?64）
                                     // 初始化 ch_group[][]，因为取不到参数的时候，需要标记为 N/A；
                                     for (int x=0;x<ch_group.length;x++){
@@ -425,6 +424,7 @@ public class ProcessorLog{
 
                                     //开始从 RLCFP_CELL_LINE 表头所在行 以后 的行，循环取得其他参数；
                                     for (int m = l + 1; m < RLCFP_CELL_LINE.length; m++) {
+                                        //String RLCFPsector = RLCFP_CELL_LINE[l-2].trim();
                                         if (RLCFP_CELL_LINE[m] != null && RLCFP_CELL_LINE[m].substring(0, 3).trim() != "END" && RLCFP_CELL_LINE[m].length()>=64) {
                                             if (CHGR_COUNT == 1) {
                                                 //取出第一个信道组数据
@@ -565,16 +565,15 @@ public class ProcessorLog{
                                             }
                                         }
                                     }
+                                    //for (int x=0;x<4;x++){
+                                    //    for (int y=0;y<ch_group[x].length;y++){
+                                    //        System.out.print(ch_group[x][y]+" ");;
+                                    //    }
+                                    //    System.out.println();
+                                    //}
+                                    //System.out.println("处理完： " + RLCFPsector);
                                 }
                             }
-
-//                        for (int x=0;x<4;x++){
-//                            for (int y=0;y<ch_group[x].length;y++){
-//                                System.out.print(ch_group[x][y]+" ");;
-//                            }
-//                            System.out.println();
-//                        }
-//                        System.out.println("处理完： " + RLCFPsector);
 
                         }
                     }
@@ -669,6 +668,8 @@ public class ProcessorLog{
                 if (validValueCHECK > validValue)break;
                 if (contentHM.containsKey("rlstp" + coordinate[i][0])) {
                     validCoordinate[validValueCHECK] = coordinate[i];
+                    System.out.println(coordinate[i][0]);
+                    System.out.println(validCoordinate[validValueCHECK][0]);
                     validValueCHECK++;
                 }
             }
@@ -770,7 +771,7 @@ public class ProcessorLog{
      * @param contentHM 接收CDD文件传递过来的 contentHM HashMap；
      */
     public ArrayList createChannelGroupsList(String[][] validCoordinate,HashMap<String,String[][]> contentHM){
-//        String[][] validCoordinate = this.checkValidCoordinate(coordinate,contentHM);
+        //String[][] validCoordinate = this.checkValidCoordinate(coordinate,contentHM);
         ArrayList channelGroupslist = null;
         if (contentHM != null && validCoordinate != null) {
             channelGroupslist = new ArrayList();
@@ -789,7 +790,7 @@ public class ProcessorLog{
 
             // 对坐标文件中的小区进行遍历，只处理坐标文件夹出现的小区
             for (int i = 1; i < validCoordinate.length; i++) {
-//            System.out.println(validCoordinate[i][0]);
+            //System.out.println(validCoordinate[i][0]);
 
                 if (contentHM.containsKey("rlcfp" + validCoordinate[i][0])) {
 
@@ -862,7 +863,7 @@ public class ProcessorLog{
 //                            frequencyCount++;
 //                        }
 
-                            String channelGroupLine = validCoordinate[i][0] + "\t" +
+                            String channelGroupLine = sectors[0][0] + "\t" +
                                     ch_group[x][0] + "\tUL\t" +
                                     sectors[0][4].substring(3) + "\t" +
                                     extended + "\t" +
@@ -896,10 +897,10 @@ public class ProcessorLog{
                                     ch_group[x][25] + "\t" +
                                     ch_group[x][26] + "\t" +
                                     ch_group[x][27] + "\t" +
-                                    ch_group[x][28] + "tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\t" +
-                                    "N/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/AN/A\tN/A\t" +
+                                    ch_group[x][28] + "\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\t" +
                                     "N/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\t" +
-                                    "N/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A";
+                                    "N/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\t" +
+                                    "N/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A";
 
                             channelGroupslist.add(channelGroupLine);
                         }
