@@ -67,7 +67,7 @@ public class ProcessorLog{
 
             String channelGroupHead = "Sector\tChannel Group\tSubcell\tBand\tExtended\tHopping method\tContains BCCH\tHSN\tDTX\tPower control\tSubcell Signal Threshold\tSubcell Tx Power\t# TRXs\t# SDCCH TSs\t# Fixed GPRS TSs\tPriority\tTCH 1\tTCH 2\tTCH 3\tTCH 4\tTCH 5\tTCH 6\tTCH 7\tTCH 8\tTCH 9\tTCH 10\tTCH 11\tTCH 12\tTCH 13\tTCH 14\tTCH 15\tTCH 16\tTCH 17\tTCH 18\tTCH 19\tTCH 20\tTCH 21\tTCH 22\tTCH 23\tTCH 24\tTCH 25\tTCH 26\tTCH 27\tTCH 28\tTCH 29\tTCH 30\tTCH 31\tTCH 32\tTCH 33\tTCH 34\tTCH 35\tTCH 36\tTCH 37\tTCH 38\tTCH 39\tTCH 40\tTCH 41\tTCH 42\tTCH 43\tTCH 44\tTCH 45\tTCH 46\tTCH 47\tTCH 48\tTCH 49\tTCH 50\tTCH 51\tTCH 52\tTCH 53\tTCH 54\tTCH 55\tTCH 56\tTCH 57\tTCH 58\tTCH 59\tTCH 60\tTCH 61\tTCH 62\tTCH 63\tTCH 64\tMAIO 1\tMAIO 2\tMAIO 3\tMAIO 4\tMAIO 5\tMAIO 6\tMAIO 7\tMAIO 8\tMAIO 9\tMAIO 10\tMAIO 11\tMAIO 12\tMAIO 13\tMAIO 14\tMAIO 15\tMAIO 16";
 
-            String handoverHead = "Serving Sector\tTarget Sector\tHO Attempts\tHO Successful Attempts";
+            String handoverHead = "Serving Sector\tTarget Sector\tHysteresis\tSector Threshold";
 
             try (FileWriter sectorsFW = new FileWriter(sectors);
                  FileWriter channelGroupsFW = new FileWriter(channelGroups);
@@ -429,7 +429,7 @@ public class ProcessorLog{
                                         }
                                     }
 
-                                    System.out.println(RLCFPsector);
+                                    //System.out.println(RLCFPsector);
 
                                     //开始从 RLCFP_CELL_LINE 表头所在行 以后 的行，循环取得其他参数；
                                     for (int m = l + 1; m < RLCFP_CELL_LINE.length; m++) {
@@ -1120,7 +1120,7 @@ public class ProcessorLog{
         if (contentHM != null && validCoordinate != null) {
             handoverslist = new ArrayList();
 
-            //String handoverHead = "Serving Sector\tTarget Sector\tHO Attempts\tHO Successful Attempts";
+            //String handoverHead = "Serving Sector\tTarget Sector\tHysteresis\tSector Threshold";
 
 //        handoverslist.add(handoverHead);
 //        System.out.println(handoverHead);
