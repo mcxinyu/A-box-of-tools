@@ -50,13 +50,15 @@ public class ReadFile {
         File[] filesList = null;
         if (files.length != 0) {
             if (files[0].isDirectory()) {
-                System.out.println("文件夹数量： " + files.length);
+                //System.out.println("文件夹数量： " + files.length);
                 if (files[0].listFiles().length != 0) {
                     filesList = files[0].listFiles();
+                    System.out.println("处理了： "+files[0].getPath());
                 }
             } else {
-                System.out.println("文件数量： " + files.length);
+                //System.out.println("文件数量： " + files.length);
                 filesList = files;
+                System.out.println("处理了该文件夹中的文件： "+filesList[0].getPath());
             }
         }else {
             System.out.println("readMultiText 收到文件为空");

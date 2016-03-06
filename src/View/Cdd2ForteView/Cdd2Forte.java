@@ -1,25 +1,17 @@
 package View.Cdd2ForteView;
 
-import Common.saveFile;
-import Common.selectFile;
-import Common.myProperties;
+import Common.*;
 import Control.C2FControl.ProcessorCoordinate;
 import Control.C2FControl.ProcessorLog;
 import Control.C2FControl.ReadFile;
 import View.CheckPlanView.GBC;
-import Common.WelcomeArea;
-import Common.ControlBtnArea;
-import Common.MyTools;
 
 import javax.swing.*;
-import javax.swing.text.DateFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 
 /**
@@ -27,6 +19,7 @@ import java.util.Date;
  * Created by 跃峰 on 2016/1/27.
  */
 public class Cdd2Forte extends JFrame implements ActionListener{
+    //static Logger logger = Logger.getLogger(Cdd2Forte.class);
     JFrame frame;
     JPanel welcomeArea;
     JPanel controlBtnArea;
@@ -44,6 +37,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
 
     public static void main(String[] args) {
         Cdd2Forte c2f = new Cdd2Forte();
+        //new DistributOutputStream();
     }
     public Cdd2Forte(){
         MyTools.windowsFeel();
@@ -167,7 +161,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
         if (e.getActionCommand() == "readCoordinateBtn"){
             if (cellCoordinate != null){
                 Object[] options = {"确定","我手贱"};
-                int response=JOptionPane.showOptionDialog(this, "再次读取会清空上一次的数据！", "thinkPad",JOptionPane.YES_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+                int response=JOptionPane.showOptionDialog(this, "再次读取该数据会清空上一次的数据！", "thinkPad",JOptionPane.YES_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
                 if(response==0) {
                     coorPath = null;
                     cellCoordinate = null;
@@ -213,7 +207,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
         }else if (e.getActionCommand() == "readCddBtn"){
             if (forteArray != null){
                 Object[] options = {"确定","我手贱"};
-                int response=JOptionPane.showOptionDialog(this, "再次读取会清空上一次的 cdd-log 数据！", "thinkPad",JOptionPane.YES_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+                int response=JOptionPane.showOptionDialog(this, "再次读取该数据会清空上一次的数据！", "thinkPad",JOptionPane.YES_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
                 if(response==0) {
                     forteArray = null;
                     export2ForteBtn.setEnabled(false);
@@ -231,16 +225,23 @@ public class Cdd2Forte extends JFrame implements ActionListener{
                 if (state == 0) {
                     //如果点击确定
                     if (fileList != null) {
-                        long startTime=System.currentTimeMillis();
-
-                        forteArray = pl.processorMultiLog(fileList, cellCoordinate);
-
-                        long endTime=System.currentTimeMillis();
-                        System.out.println("程序运行时间： "+(endTime-startTime)/1000+"s");
-                        JOptionPane.showMessageDialog(null,"cdd-log 读取成功");
-                        progressBar2.setText(pl.getNotice());
+                        try {
+                            long startTime=System.currentTimeMillis();
+                            forteArray = pl.processorMultiLog(fileList, cellCoordinate);
+                            long endTime=System.currentTimeMillis();
+                            System.out.println("cdd读取时间： "+(endTime-startTime)/1000+"s");
+                            JOptionPane.showMessageDialog(null,"cdd-log 读取成功");
+                            progressBar2.setVisible(true);
+                            progressBar2.setText(pl.getNotice());
+                        }catch (Exception e1){
+                            e1.printStackTrace();
+                            progressBar2.setVisible(false);
+                            progressBar2.setText("");
+                            JOptionPane.showMessageDialog(null,"cdd-log 读取失败，文件错误！");
+                        }
                         if (pl.getNotice().contains("错误")){
                             forteArray = null;
+                            progressBar2.setVisible(true);
                             progressBar2.setText("cdd-log 文件错误！");
                         }
                         if (forteArray != null) {
@@ -250,6 +251,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
                         System.out.println("未选择cdd文件");
                     }
                 } else if (state == 1) {
+                    progressBar2.setVisible(true);
                     progressBar2.setText("未选择 cdd-log 文件");
                 }
             }
@@ -277,7 +279,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
             if (jcb1.isSelected()){
                 if (cellCoordinate != null){
                     Object[] options = {"确定","我手贱"};
-                    int response=JOptionPane.showOptionDialog(this, "再次读取会清空上一次的数据！", "thinkPad",JOptionPane.YES_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+                    int response=JOptionPane.showOptionDialog(this, "再次读取该数据会清空上一次的数据！", "thinkPad",JOptionPane.YES_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
                     if(response==0) {
                         coorPath = null;
                         cellCoordinate = null;
@@ -306,7 +308,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
             }else {
                 if (forteArray != null){
                     Object[] options = {"确定","我手贱"};
-                    int response=JOptionPane.showOptionDialog(this, "再次读取会清空上一次的 cdd-log 数据！", "thinkPad",JOptionPane.YES_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+                    int response=JOptionPane.showOptionDialog(this, "再次读取该数据会清空上一次的数据！", "thinkPad",JOptionPane.YES_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
                     if(response==0) {
                         forteArray = null;
                         export2ForteBtn.setEnabled(false);

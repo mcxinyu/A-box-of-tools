@@ -1,8 +1,6 @@
 package Control.C2FControl;
 
-import com.sun.corba.se.impl.naming.cosnaming.NamingUtils;
-
-import java.io.*;
+import java.io.File;
 
 /**
  * 处理 coordinate 文件
@@ -71,7 +69,8 @@ public class ProcessorCoordinate {
 //                System.out.println();
                 }
                 notice = "坐标处理完毕：" + coordinateFile.getName();
-                System.out.println("处理完毕： "+(coordinates.length-1));
+                //System.out.println("处理完毕： "+(coordinates.length-1));
+                System.out.println("处理完毕： "+coordinateFile.getPath());
             }else {
                 cellCoordinate = null;
                 System.out.println("坐标文件错误");
