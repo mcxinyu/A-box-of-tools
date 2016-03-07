@@ -25,10 +25,11 @@ public class ProcessorCoordinate {
         String[][] cellCoordinate = null;
         // 传进来的 coordinateFile 可能是文件夹，也可能是 null
         if (coordinateFile != null && coordinateFile.isFile()) {
-//        String[] coordinates = ReadFile.readSingleText(coordinateFile).split("\\r|\\n");  // osx 系统
+        //String[] coordinates = ReadFile.readSingleText(coordinateFile).split("\\r|\\n");  // osx 系统
             String[] coordinates = ReadFile.readSingleText(coordinateFile).split("\\r\\n"); //windows 系统
 
-//        System.out.println(coordinates[0].length());
+            //System.out.println(coordinates[0].length());
+            //System.out.println(coordinates[0]);
 //        for (int c=0;c<coordinates.length;c++){
 //            System.out.println(coordinates[0]);
 //        }
@@ -52,8 +53,8 @@ public class ProcessorCoordinate {
 //                System.out.println();
                 }
                 notice = "坐标处理完毕：" + coordinateFile.getName();
-                System.out.println("处理完毕： "+(coordinates.length-1));
-            } else if (coordinates[0].length() == 14 || coordinates[0].length() == 20) {
+                System.out.println("processorSingleLog处理完毕： "+(coordinates.length-1));
+            } else if (coordinates[0].length() == 13 ||coordinates[0].length() == 14 || coordinates[0].length() == 20) {
                 for (int i = 0; i < coordinates.length; i++) {
                     String[] temp = coordinates[i].split("\\t");
                     cellCoordinate[i][0] = temp[0].toUpperCase(); //Sector
@@ -70,14 +71,14 @@ public class ProcessorCoordinate {
                 }
                 notice = "坐标处理完毕：" + coordinateFile.getName();
                 //System.out.println("处理完毕： "+(coordinates.length-1));
-                System.out.println("处理完毕： "+coordinateFile.getPath());
+                System.out.println("processorSingleLog处理完毕： "+coordinateFile.getPath());
             }else {
                 cellCoordinate = null;
-                System.out.println("坐标文件错误");
+                System.out.println("processorSingleLog坐标文件错误");
                 notice = "坐标文件错误";
             }
         }else {
-            System.out.println("坐标文件不存在");
+            System.out.println("processorSingleLog坐标文件不存在");
             notice = "坐标文件不存在或已被删除";
         }
         return cellCoordinate;

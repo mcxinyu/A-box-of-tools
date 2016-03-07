@@ -15,7 +15,7 @@ public class DistributOutputStream extends OutputStream {
     public DistributOutputStream(){
         try {
             // 创建一个文件流
-            FileOutputStream fos = new FileOutputStream("console.log");
+            FileOutputStream fos = new FileOutputStream("console.log",true);
             // 先保存原来的标准输出
             OutputStream cos = System.out;
             // 创建一个分发流分发到文件流和标准输出

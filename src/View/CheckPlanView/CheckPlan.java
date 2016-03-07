@@ -4,13 +4,13 @@ package View.CheckPlanView;
  * View.CheckPlanView 的界面承载
  */
 import Common.ControlBtnArea;
-import Common.WelcomeArea;
 import Common.MyTools;
+import Common.WelcomeArea;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.*;
 
 public class CheckPlan extends JFrame implements ActionListener{
     JFrame checkPlan;
@@ -25,7 +25,7 @@ public class CheckPlan extends JFrame implements ActionListener{
         MyTools.windowsFeel();
 
         //欢迎栏
-        welcomeArea =new WelcomeArea("images/CheckPlan_64.png","  一箱工具 - 变频方案检查表");
+        welcomeArea =new WelcomeArea(new ImageIcon(this.getClass().getResource("/icons/CheckPlan_64.png")),"  一箱工具 - 变频方案检查表");
 
         //内容栏
         checkPlanStep1 = new CheckPlanStep1();

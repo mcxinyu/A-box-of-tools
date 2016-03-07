@@ -5,17 +5,17 @@ package View.HomeView;
  * 版本号：0.1.0
  * a.b.c a++UI改动，b++功能增加，c++小修改
  */
+import Common.WelcomeArea;
 import View.Cdd2ForteView.Cdd2Forte;
 import View.CheckPlanView.CheckPlan;
-import Common.WelcomeArea;
 import View.FileSplitView.FileSplit;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import javax.swing.*;
 
 public class Home extends JFrame implements ActionListener{
     WelcomeArea welcome;
@@ -28,7 +28,7 @@ public class Home extends JFrame implements ActionListener{
     }
     public Home() {
 
-        welcome =new WelcomeArea("images/boxtool_64.png","  欢迎使用 一箱工具 应用");
+        welcome =new WelcomeArea(new ImageIcon(this.getClass().getResource("/icons/boxtool_64.png")),"  欢迎使用 一箱工具 应用");
 
         cdd2forteBtn = new HomeFunctionBtn("images/cdd2forte_128.png","cdd2forte","   使用 cdd-log 生成 forte 环境          （目前只支持爱立信设备）",200,0);
         checkPlanBtn = new HomeFunctionBtn("images/CheckPlan_128.png","变频方案检查表","  现网 cdd/cdd_Channel 与变频      方案生成网优之家检查表",400,0);

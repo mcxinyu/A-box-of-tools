@@ -29,7 +29,7 @@ public class FileSplit extends JFrame {
     public FileSplit(){
         MyTools.windowsFeel();
         //欢迎栏
-        welcomeArea =new WelcomeArea("images/split_64.png","  一箱工具 - 文本文件分割");
+        welcomeArea =new WelcomeArea(new ImageIcon(this.getClass().getResource("/icons/split_64.png")),"  一箱工具 - 文本文件分割");
 
         temp1 = new JLabel("      ");
         temp2 = new JLabel("  包含： ");

@@ -1,6 +1,5 @@
 package View.Cdd2ForteView;
 
-import Common.WelcomeArea;
 import Common.MyTools;
 
 import javax.swing.*;
@@ -24,13 +23,13 @@ public class C2FNotice extends JDialog {
         note1.setEditable(false);
         note1.setFont(MyTools.fontBold13);
 
-        JLabel forteType = new JLabel(new ImageIcon("images/forteType.png"));
+        JLabel forteType = new JLabel(new ImageIcon(this.getClass().getResource("/icons/forteType.png")));
         JTextArea note2 = new JTextArea("  也可以只包含主要内容，表头需要按顺序为：小区号、经度、纬度、方位角。");
         note2.setBackground(new Color(230,230,230));
         note2.setEditable(false);
         note2.setFont(MyTools.fontBold13);
 
-        JLabel coustomType = new JLabel(new ImageIcon("images/coustomType.png"));
+        JLabel coustomType = new JLabel(new ImageIcon(this.getClass().getResource("/icons/coustomType.png")));
         JTextArea note3 = new JTextArea("（2）选择 CDD 文件的时候，可以单个文件处理，也可以选择整个文件夹。");
         note3.setBackground(new Color(230,230,230));
         note3.setEditable(false);
@@ -66,7 +65,7 @@ public class C2FNotice extends JDialog {
         frame.setBackground(new Color(230,230,230));
         frame.setSize(550,450);
         frame.setTitle("一箱工具 - cdd2forte - 使用帮助");
-        frame.setIconImage (Toolkit.getDefaultToolkit().getImage("images/about.png"));
+        frame.setIconImage (Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/icons/about.png")));
         frame.setResizable(false);//固定窗体大小
         frame.setLocationRelativeTo(null);//打开时相对window居中
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

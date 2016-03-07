@@ -5,13 +5,14 @@ package Common;
  */
 import javax.swing.*;
 import java.awt.*;
+
 //欢迎栏区域
 public class WelcomeArea extends JPanel {
     JLabel logo,welcomeText,stepsText;
     int x,y;
     //参数：图片路径，标题。
-    public WelcomeArea(String image, String titleText){
-        logo = new JLabel(new ImageIcon(image));
+    public WelcomeArea(ImageIcon image, String titleText){
+        logo = new JLabel(image);
         welcomeText = new JLabel(titleText);
         welcomeText.setFont(MyTools.fontBold26);
 //        stepsText = new JLabel("  导入数据 ( x of y )");

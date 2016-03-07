@@ -5,7 +5,6 @@ import Control.C2FControl.ProcessorCoordinate;
 import Control.C2FControl.ProcessorLog;
 import Control.C2FControl.ReadFile;
 import View.CheckPlanView.GBC;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -19,7 +18,6 @@ import java.util.ArrayList;
  * Created by 跃峰 on 2016/1/27.
  */
 public class Cdd2Forte extends JFrame implements ActionListener{
-    //static Logger logger = Logger.getLogger(Cdd2Forte.class);
     JFrame frame;
     JPanel welcomeArea;
     JPanel controlBtnArea;
@@ -28,7 +26,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
     JLabel temp1,temp2,text,otherJlb;
     JTextArea progressBar1,progressBar2;
     JCheckBox jcb1;
-    myProperties mp = new myProperties();
+    c2fProperties mp = new c2fProperties();
     ProcessorLog pl = null;
     String path = null;
     String[][] cellCoordinate = null;
@@ -37,13 +35,14 @@ public class Cdd2Forte extends JFrame implements ActionListener{
 
     public static void main(String[] args) {
         Cdd2Forte c2f = new Cdd2Forte();
-        //new DistributOutputStream();
+        new DistributOutputStream();
     }
     public Cdd2Forte(){
         MyTools.windowsFeel();
 
         //欢迎栏
-        welcomeArea =new WelcomeArea("images/cdd2forte_64.png","  一箱工具 - cdd2forte");
+        //welcomeArea =new WelcomeArea("src/icons/cdd2forte_64.png","  一箱工具 - cdd2forte");
+        welcomeArea =new WelcomeArea(new ImageIcon(Cdd2Forte.class.getResource("/icons/cdd2forte_64.png")),"  一箱工具 - cdd2forte");
 
         //contentsArea
         text = new JLabel("使用 cdd-log 生成 forte 环境，目前只支持爱立信设备。");
@@ -69,7 +68,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
         otherJlb = new JLabel("保存或替换之前的坐标文件");
 
         path = mp.readProperties("c2f.properties");
-        if (path==null){
+        if (path.equals("")){
             jcb1.setEnabled(false);
         }else {
             jcb1.setEnabled(true);
@@ -113,7 +112,8 @@ public class Cdd2Forte extends JFrame implements ActionListener{
         contentsArea.add(otherBtn,new GBC(3,6,1,1).setAnchor(GBC.WEST).setIpad(0,5).setInsets(5,1));
 
         //控制栏
-        aboutBtn = new JButton(new ImageIcon("images/about.png"));
+        //aboutBtn = new JButton(new ImageIcon("src/icons/about.png"));
+        aboutBtn = new JButton(new ImageIcon(Cdd2Forte.class.getResource("/icons/about.png")));
         backBtn = new JButton("< 上一步");
         nextBtn = new JButton("下一步 >");
         okBtn = new JButton(" 完  成 ");
@@ -145,7 +145,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
 
         //设置窗体
         frame.setTitle("一箱工具 - cdd2forte");
-        frame.setIconImage (Toolkit.getDefaultToolkit().getImage("images/boxtool_64.png"));
+        frame.setIconImage (Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/icons/boxtool_64.png")));
 
         frame.setSize(626,500);
         frame.setResizable(false);//固定窗体大小

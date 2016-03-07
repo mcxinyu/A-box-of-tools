@@ -1,9 +1,6 @@
 package Common;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * Created by 跃峰 on 2016/2/28.
@@ -12,7 +9,7 @@ public class tempBAR extends JDialog implements Runnable{
     JDialog frame;
     JLabel proBar;
     public tempBAR() {
-        proBar = new JLabel(new ImageIcon("images/proBar.gif"));
+        proBar = new JLabel(new ImageIcon("src/icons/proBar.gif"));
 
         frame = new JDialog();
         frame.add(proBar);

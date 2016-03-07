@@ -1,0 +1,20 @@
+<component name="ArtifactManager">
+  <artifact build-on-make="true" name="A-box-of-tools:jar">
+    <output-path>$PROJECT_DIR$/resources/A_box_of_tools_jar</output-path>
+    <root id="root">
+      <element id="archive" name="A-box-of-tools.jar">
+        <element id="directory" name="META-INF">
+          <element id="file-copy" path="$PROJECT_DIR$/resources/META-INF/MANIFEST.MF" />
+        </element>
+        <element id="module-output" name="A-box-of-tools" />
+      </element>
+      <element id="directory" name="config">
+        <element id="file-copy" path="$PROJECT_DIR$/config/c2f.properties" />
+      </element>
+      <element id="directory" name="lib">
+        <element id="library" level="project" name="sqljdbc42" />
+        <element id="file-copy" path="$PROJECT_DIR$/ExtJar/apache-log4j-1.2.17/log4j-1.2.17.jar" />
+      </element>
+    </root>
+  </artifact>
+</component>
