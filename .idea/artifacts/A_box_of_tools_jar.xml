@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact build-on-make="true" name="A-box-of-tools:jar">
+  <artifact name="A-box-of-tools:jar">
     <output-path>$PROJECT_DIR$/resources/A_box_of_tools_jar</output-path>
     <root id="root">
       <element id="archive" name="A-box-of-tools.jar">

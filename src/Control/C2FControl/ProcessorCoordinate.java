@@ -28,8 +28,8 @@ public class ProcessorCoordinate {
         //String[] coordinates = ReadFile.readSingleText(coordinateFile).split("\\r|\\n");  // osx 系统
             String[] coordinates = ReadFile.readSingleText(coordinateFile).split("\\r\\n"); //windows 系统
 
-            //System.out.println(coordinates[0].length());
-            //System.out.println(coordinates[0]);
+            System.out.println(coordinates[0].length());
+            System.out.println(coordinates[0]);
 //        for (int c=0;c<coordinates.length;c++){
 //            System.out.println(coordinates[0]);
 //        }
@@ -54,7 +54,7 @@ public class ProcessorCoordinate {
                 }
                 notice = "坐标处理完毕：" + coordinateFile.getName();
                 System.out.println("processorSingleLog处理完毕： "+(coordinates.length-1));
-            } else if (coordinates[0].length() == 13 ||coordinates[0].length() == 14 || coordinates[0].length() == 20) {
+            } else if (coordinates[0].length() == 13 ||coordinates[0].length() == 14 || coordinates[0].length() == 20 || coordinates[0].length() == 33) {
                 for (int i = 0; i < coordinates.length; i++) {
                     String[] temp = coordinates[i].split("\\t");
                     cellCoordinate[i][0] = temp[0].toUpperCase(); //Sector

@@ -30,10 +30,15 @@ public class C2FNotice extends JDialog {
         note2.setFont(MyTools.fontBold13);
 
         JLabel coustomType = new JLabel(new ImageIcon(this.getClass().getResource("/icons/coustomType.png")));
-        JTextArea note3 = new JTextArea("（2）选择 CDD 文件的时候，可以单个文件处理，也可以选择整个文件夹。");
+        JTextArea note3 = new JTextArea("（2）根据坐标文件的小区列表生成 forte 文件，遂务必保持坐标文件中的小区勿重复出现。");
         note3.setBackground(new Color(230,230,230));
         note3.setEditable(false);
         note3.setFont(MyTools.fontBold13);
+
+        JTextArea note5 = new JTextArea("（3）选择 CDD 文件的时候，可以单个文件处理，也可以选择整个文件夹。");
+        note5.setBackground(new Color(230,230,230));
+        note5.setEditable(false);
+        note5.setFont(MyTools.fontBold13);
 
         JTextArea note4 = new JTextArea("联 系 我： mcxinyu@foxmail.com");
         note4.setBackground(new Color(230,230,230));
@@ -50,6 +55,7 @@ public class C2FNotice extends JDialog {
         center.add(note2);
         center.add(coustomType);
         center.add(note3);
+        center.add(note5);
 
         JPanel south = new JPanel();
         south.setBackground(new Color(230,230,230));
@@ -63,7 +69,7 @@ public class C2FNotice extends JDialog {
 
         frame.setModal(true);
         frame.setBackground(new Color(230,230,230));
-        frame.setSize(550,450);
+        frame.setSize(550,500);
         frame.setTitle("一箱工具 - cdd2forte - 使用帮助");
         frame.setIconImage (Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/icons/about.png")));
         frame.setResizable(false);//固定窗体大小
