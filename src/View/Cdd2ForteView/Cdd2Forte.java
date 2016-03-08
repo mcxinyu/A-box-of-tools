@@ -26,7 +26,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
     JLabel temp1,temp2,text,otherJlb;
     JTextArea progressBar1,progressBar2;
     JCheckBox jcb1;
-    c2fProperties mp = new c2fProperties();
+    manageProperties mp = new manageProperties();
     ProcessorLog pl = null;
     String path = null;
     String[][] cellCoordinate = null;
@@ -67,7 +67,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
         jcb1 = new JCheckBox("使用之前保存的坐标文件");
         otherJlb = new JLabel("保存或替换之前的坐标文件");
 
-        path = mp.readProperties("c2f.properties");
+        path = mp.readProperties("c2f.properties","coordinatePath");
         if (path.equals("")){
             jcb1.setEnabled(false);
         }else {
@@ -128,12 +128,12 @@ public class Cdd2Forte extends JFrame implements ActionListener{
         backBtn.addActionListener(this);
         nextBtn.setActionCommand("nextBtn");
         nextBtn.addActionListener(this);
-        homeBtn.setActionCommand("homeBtn");
-        homeBtn.addActionListener(this);
         okBtn.setActionCommand("cancelBtn");
         okBtn.addActionListener(this);
+        homeBtn.setActionCommand("homeBtn");
+        homeBtn.addActionListener(this);
 
-        controlBtnArea = new ControlBtnArea(backBtn,nextBtn,okBtn,homeBtn,aboutBtn);
+        controlBtnArea = new ControlBtnArea(aboutBtn,backBtn,nextBtn,okBtn,homeBtn);
 
         //添加入Frame
         frame = new JFrame();
@@ -150,7 +150,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
         frame.setSize(626,500);
         frame.setResizable(false);//固定窗体大小
         frame.setLocationRelativeTo(null);//打开时相对window居中
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible(true);
     }
 
@@ -271,8 +271,8 @@ public class Cdd2Forte extends JFrame implements ActionListener{
         }else if (e.getActionCommand().equals("homeBtn")){
             JOptionPane.showMessageDialog(null,"其他功能还在测试，暂时不可用。","主功能",JOptionPane. WARNING_MESSAGE);
         }else if (e.getActionCommand().equals("otherBtn")){
-            mp.writeProperties("c2f.properties",coorPath);
-            path = mp.readProperties("c2f.properties");
+            mp.writeProperties("c2f.properties","coordinatePath",coorPath);
+            path = mp.readProperties("c2f.properties","coordinatePath");
             jcb1.setEnabled(true);
             JOptionPane.showMessageDialog(null,"成功");
         }else if (e.getActionCommand().equals("jcb1")){

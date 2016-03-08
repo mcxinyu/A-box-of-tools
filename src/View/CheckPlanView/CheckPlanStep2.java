@@ -9,7 +9,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 
 class CheckPlanStep2 extends JPanel implements ActionListener{
     //检查方案步骤二：导出数据面板
@@ -22,11 +21,11 @@ class CheckPlanStep2 extends JPanel implements ActionListener{
         result = new Result();
         result.setBorder(BorderFactory.createTitledBorder("检查告警"));
 
-        detailsJlb = new JLabel("点击 导出检查表 用于在网优之家检查。");
-        detailsBtn = new JButton(" 详情报告 ");
-
-        exportJlb =new JLabel("点击 查看 方案告警小区详情列表。");
+        exportJlb = new JLabel("点击 导出检查表 用于在网优之家检查。");
         exportBtn = new JButton("导出检查表");
+
+        detailsJlb =new JLabel("点击 查看 方案告警小区详情列表。");
+        detailsBtn = new JButton(" 详情报告 ");
 
         //后续还需要判断 remind 是否勾选保存
         saveData = new JCheckBox("保存新导入的 cdd、cdd_Channel 以备下次使用,并删除上次保存的数据。");
@@ -45,8 +44,8 @@ class CheckPlanStep2 extends JPanel implements ActionListener{
         setLayout(new GridBagLayout());
         add(result,new GBC(0,0,2,1).setFill(GBC.HORIZONTAL).setWeight(5,5).setAnchor(GBC.WEST).setInsets(1));
 
-        add(detailsJlb,new GBC(0,1).setFill(GBC.HORIZONTAL).setWeight(5,5).setAnchor(GBC.WEST).setInsets(10,0));
-        add(detailsBtn,new GBC(1,1).setFill(GBC.NONE).setWeight(5,5).setAnchor(GBC.WEST).setInsets(10,0));
+        //add(detailsJlb,new GBC(0,1).setFill(GBC.HORIZONTAL).setWeight(5,5).setAnchor(GBC.WEST).setInsets(10,0));
+        //add(detailsBtn,new GBC(1,1).setFill(GBC.NONE).setWeight(5,5).setAnchor(GBC.WEST).setInsets(10,0));
 
         add(exportJlb,new GBC(0,2).setFill(GBC.HORIZONTAL).setWeight(5,5).setAnchor(GBC.WEST).setInsets(10,0));
         add(exportBtn,new GBC(1,2).setFill(GBC.NONE).setWeight(5,5).setAnchor(GBC.WEST).setInsets(10,0));

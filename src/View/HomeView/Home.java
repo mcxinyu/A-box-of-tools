@@ -30,10 +30,10 @@ public class Home extends JFrame implements ActionListener{
 
         welcome =new WelcomeArea(new ImageIcon(this.getClass().getResource("/icons/boxtool_64.png")),"  欢迎使用 一箱工具 应用");
 
-        cdd2forteBtn = new HomeFunctionBtn("images/cdd2forte_128.png","cdd2forte","   使用 cdd-log 生成 forte 环境          （目前只支持爱立信设备）",200,0);
-        checkPlanBtn = new HomeFunctionBtn("images/CheckPlan_128.png","变频方案检查表","  现网 cdd/cdd_Channel 与变频      方案生成网优之家检查表",400,0);
-        fileSplitBtn = new HomeFunctionBtn("images/split_128.png","文本分割合并","可将文本文件分割为小文件，解决    excel 无法打开大文件的困难。",200,200);
-        placeholderBtn3 = new HomeFunctionBtn("images/ad_128.png","广告位出租","                    上广告",400,200);
+        cdd2forteBtn = new HomeFunctionBtn(new ImageIcon(this.getClass().getResource("/icons/cdd2forte_128.png")),"cdd2forte","   使用 cdd-log 生成 forte 环境          （目前只支持爱立信设备）",200,0);
+        checkPlanBtn = new HomeFunctionBtn(new ImageIcon(this.getClass().getResource("/icons/CheckPlan_128.png")),"变频方案检查表","  现网 cdd/cdd_Channel 与变频      方案生成网优之家检查表",400,0);
+        fileSplitBtn = new HomeFunctionBtn(new ImageIcon(this.getClass().getResource("/icons/split_128.png")),"文本分割合并","可将文本文件分割为小文件，解决    excel 无法打开大文件的困难。",200,200);
+        placeholderBtn3 = new HomeFunctionBtn(new ImageIcon(this.getClass().getResource("/icons/ad_128.png")),"广告位出租","                    上广告",400,200);
         placeholderBtn3.button.setEnabled(false);
 
         functionalArea = new JPanel(null);
@@ -60,7 +60,7 @@ public class Home extends JFrame implements ActionListener{
         j1.add(functionalArea,BorderLayout.CENTER);
         //设置窗体
         j1.setTitle("一箱工具");
-        j1.setIconImage (Toolkit.getDefaultToolkit ().getImage ("images/boxtool_64.png"));
+        j1.setIconImage (Toolkit.getDefaultToolkit ().getImage (this.getClass().getResource("/icons/boxtool_64.png")));
         j1.setSize(800,500);
         j1.setResizable(false);//固定窗体大小
         j1.setLocationRelativeTo(null);//打开时相对window居中

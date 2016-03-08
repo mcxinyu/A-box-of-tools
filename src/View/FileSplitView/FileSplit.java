@@ -112,7 +112,7 @@ public class FileSplit extends JFrame {
 
         //设置窗体
         frame.setTitle("一箱工具 - 分本文件分割");
-        frame.setIconImage (Toolkit.getDefaultToolkit().getImage("images/boxtool_128.png"));
+        frame.setIconImage (Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/icons/boxtool_64.png")));
         frame.setSize(626,500);
         frame.setResizable(false);//固定窗体大小
         frame.setLocationRelativeTo(null);//打开时相对window居中

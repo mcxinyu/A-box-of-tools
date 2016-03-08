@@ -9,54 +9,54 @@ import java.awt.*;
 
 public class ControlBtnArea extends JPanel {
     //控制 上一步、下一步、完成、取消 的按钮
-    JButton backBtn,nextBtn,okBtn,cancelBtn,aboutThis;
-    public ControlBtnArea(JButton backBtn, JButton nextBtn, JButton okBtn, JButton cancelBtn){
-        this.backBtn = backBtn;
-        this.nextBtn = backBtn;
-        this.okBtn = okBtn;
-        this.cancelBtn = cancelBtn;
+    JButton btn1,btn2,btn3,btn4,btn5;
+    public ControlBtnArea(JButton btn1, JButton btn2, JButton btn3, JButton btn4){
+        this.btn1 = btn1;
+        this.btn2 = btn2;
+        this.btn3 = btn3;
+        this.btn4 = btn4;
 
-        backBtn.setBackground(new Color(230,230,230));
-        nextBtn.setBackground(new Color(230,230,230));
-        okBtn.setBackground(new Color(230,230,230));
-        cancelBtn.setBackground(new Color(230,230,230));
+        btn1.setBackground(new Color(230,230,230));
+        btn2.setBackground(new Color(230,230,230));
+        btn3.setBackground(new Color(230,230,230));
+        btn4.setBackground(new Color(230,230,230));
 
-        backBtn.setFocusPainted(false);
-        nextBtn.setFocusPainted(false);
-        okBtn.setFocusPainted(false);
-        cancelBtn.setFocusPainted(false);
+        btn1.setFocusPainted(false);
+        btn2.setFocusPainted(false);
+        btn3.setFocusPainted(false);
+        btn4.setFocusPainted(false);
 
-        add(backBtn);
-        add(nextBtn);
-        add(okBtn);
-        add(cancelBtn);
+        add(btn1);
+        add(btn2);
+        add(btn3);
+        add(btn4);
         setLayout(new FlowLayout(FlowLayout.RIGHT));
         setBackground(new Color(230,230,230));
     }
-    public ControlBtnArea(JButton backBtn, JButton nextBtn, JButton okBtn, JButton cancelBtn,JButton aboutThis){
-        this.backBtn = backBtn;
-        this.nextBtn = backBtn;
-        this.okBtn = okBtn;
-        this.cancelBtn = cancelBtn;
-        this.aboutThis = aboutThis;
+    public ControlBtnArea(JButton btn1, JButton btn2, JButton btn3, JButton btn4,JButton btn5){
+        this.btn1 = btn1;
+        this.btn2 = btn2;
+        this.btn3 = btn3;
+        this.btn4 = btn4;
+        this.btn5 = btn5;
 
-        backBtn.setBackground(new Color(230,230,230));
-        nextBtn.setBackground(new Color(230,230,230));
-        okBtn.setBackground(new Color(230,230,230));
-        cancelBtn.setBackground(new Color(230,230,230));
-        aboutThis.setBackground(new Color(230,230,230));
+        btn1.setBackground(new Color(230,230,230));
+        btn2.setBackground(new Color(230,230,230));
+        btn3.setBackground(new Color(230,230,230));
+        btn4.setBackground(new Color(230,230,230));
+        btn5.setBackground(new Color(230,230,230));
 
-        backBtn.setFocusPainted(false);
-        nextBtn.setFocusPainted(false);
-        okBtn.setFocusPainted(false);
-        cancelBtn.setFocusPainted(false);
-        aboutThis.setFocusPainted(false);
+        btn1.setFocusPainted(false);
+        btn2.setFocusPainted(false);
+        btn3.setFocusPainted(false);
+        btn4.setFocusPainted(false);
+        btn5.setFocusPainted(false);
 
-        add(aboutThis);
-        add(backBtn);
-        add(nextBtn);
-        add(okBtn);
-        add(cancelBtn);
+        add(btn1);
+        add(btn2);
+        add(btn3);
+        add(btn4);
+        add(btn5);
         setLayout(new FlowLayout(FlowLayout.RIGHT));
 
         setBackground(new Color(230,230,230));
