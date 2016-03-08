@@ -28,8 +28,8 @@ public class ProcessorCoordinate {
         //String[] coordinates = ReadFile.readSingleText(coordinateFile).split("\\r|\\n");  // osx 系统
             String[] coordinates = ReadFile.readSingleText(coordinateFile).split("\\r\\n"); //windows 系统
 
-            System.out.println(coordinates[0].length());
-            System.out.println(coordinates[0]);
+            //System.out.println(coordinates[0].length());
+            //System.out.println(coordinates[0]);
 //        for (int c=0;c<coordinates.length;c++){
 //            System.out.println(coordinates[0]);
 //        }
