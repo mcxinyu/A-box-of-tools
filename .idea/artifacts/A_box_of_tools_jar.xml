@@ -11,10 +11,6 @@
       <element id="directory" name="config">
         <element id="file-copy" path="$PROJECT_DIR$/config/c2f.properties" />
       </element>
-      <element id="directory" name="lib">
-        <element id="library" level="project" name="sqljdbc42" />
-        <element id="file-copy" path="$PROJECT_DIR$/ExtJar/apache-log4j-1.2.17/log4j-1.2.17.jar" />
-      </element>
     </root>
   </artifact>
 </component>

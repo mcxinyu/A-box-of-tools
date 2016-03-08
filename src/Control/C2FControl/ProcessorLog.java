@@ -128,8 +128,10 @@ public class ProcessorLog{
                     }
                 }
                 System.out.println("导出成功！");
+                JOptionPane.showMessageDialog(null,"导出成功！");
             } catch (IOException e) {
                 e.printStackTrace();
+                JOptionPane.showMessageDialog(null,"导出失败，请检查文件是否打开！");
             }
         }
     }
@@ -256,6 +258,8 @@ public class ProcessorLog{
                             sectorState[0][0] = RLSTP_LINE[k].substring(10,18).trim();
 //                                System.out.println(sector);
                             contentHM.put("rlstp"+sector,sectorState);
+                        }else{
+
                         }
                     }
                 }
@@ -276,7 +280,7 @@ public class ProcessorLog{
 //                                System.out.println(sectors[0]+"-"+sectors[1]+"-"+sectors[2]+"-"+sectors[3]+"-"+sectors[4]+"-"+sectors[5]);
                             contentHM.put("rldep"+sectors[0][0],sectors);
                             //String line = "MSC\t"+"bsc"+"\tEricsson\t"+sectors[0][0].substring(0,6)+"\t22.68933\t113.77698\t"+sectors[0][0]+"\t"+sectors[0][1]+"\t"+sectors[0][2]+"\tNew\t50\t"+sectors[0][4]+"\t"+sectors[0][3]+"\tTRUE\tRXOTG\tTRUE\t20\tTRUE\t10\tRandom\tNo Preference";
-                            //System.out.println(line);
+                            //System.out.println(sectors[0][0]);
                         }
                         j++;
                     }
@@ -850,20 +854,29 @@ public class ProcessorLog{
         String[][] validCoordinate = null;
         if (contentHM != null && coordinate != null) {
             int validValue = 0;
+            //检查coordinate中有多少小区是现网cdd中有效的
             for (int i = 0; i < coordinate.length; i++) {
-                if (contentHM.containsKey("rlstp" + coordinate[i][0])) {
+                if (contentHM.containsKey("rldep" + coordinate[i][0])) {
                     validValue++;
                 }
             }
             validCoordinate = new String[validValue][];
             int validValueCHECK = 0;
+            //将coordinate中有效的小区复制到validCoordinate中
             for (int i = 0; i < coordinate.length; i++) {
                 if (validValueCHECK > validValue)break;
-                if (contentHM.containsKey("rlstp" + coordinate[i][0])) {
+                if (contentHM.containsKey("rldep" + coordinate[i][0])) {
                     validCoordinate[validValueCHECK] = coordinate[i];
                     validValueCHECK++;
                 }
             }
+            //遍历validCoordinate中的数据
+            //for (int i = 0; i < validCoordinate.length; i++) {
+            //    for (int j = 0; j < validCoordinate[i][j].length(); j++) {
+            //        System.out.print(validCoordinate[i][j]+" ");
+            //    }
+            //    System.out.println();
+            //}
         }
         return validCoordinate;
     }
@@ -891,11 +904,11 @@ public class ProcessorLog{
             }
 
 
-//            System.out.println(sectorHead);
+            //System.out.println(sectorHead);
 
             // 对坐标文件中的小区进行遍历，只处理坐标文件夹出现的小区
-            for (int i = 1; i < validCoordinate.length; i++) {
-//            System.out.println(validCoordinate[i][0]);
+            for (int i = 0; i < validCoordinate.length; i++) {
+            //System.out.println(validCoordinate[i][0]);
 
                 if (contentHM.containsKey("rldep" + validCoordinate[i][0])) {
                     // 遍历数组，打印 Sectors 文件
@@ -911,29 +924,31 @@ public class ProcessorLog{
 //                    System.out.println(validCoordinate[i][0]);
 //                    System.out.println(rxotg);
 
-                    // 获取 CGI 内的信息
-                    String[] cgi = sectors[0][1].split("-");
-                    String MCC = cgi[0];
-                    String MNC = cgi[1];
-                    String LAC = cgi[2];
-                    String CI = cgi[3];
+                    // 获取 CGI 内的信息,如果没有cgi则不处理该小区的数据
+                    if (!sectors[0][1].equals("")){
+                        String[] cgi = sectors[0][1].split("-");
+                        String MCC = cgi[0];
+                        String MNC = cgi[1];
+                        String LAC = cgi[2];
+                        String CI = cgi[3];
 
-                    String sectorLine = "MSC\t" +
-                            bscName + "\tEricsson\t" +
-                            sectors[0][0].substring(0, 6) + "\t" +
-                            validCoordinate[i][2] + "\t" +
-                            validCoordinate[i][1] + "\t" +
-                            sectors[0][0] + "\t\t\t" +
-                            LAC + "\t" +
-                            CI + "\tNew\t" +
-                            validCoordinate[i][5] + "\t" +
-                            sectors[0][3] + "\t" +
-                            sectors[0][2] + "\tFALSE\t" +
-                            rxotg + "\tTRUE\t20\tTRUE\t10\tRandom\tNo Preference\tFALSE\t" +
-                            MCC + "\t" +
-                            MNC;
+                        String sectorLine = "MSC\t" +
+                                bscName + "\tEricsson\t" +
+                                sectors[0][0].substring(0, 6) + "\t" +
+                                validCoordinate[i][2] + "\t" +
+                                validCoordinate[i][1] + "\t" +
+                                sectors[0][0] + "\t\t\t" +
+                                LAC + "\t" +
+                                CI + "\tNew\t" +
+                                validCoordinate[i][5] + "\t" +
+                                sectors[0][3] + "\t" +
+                                sectors[0][2] + "\tFALSE\t" +
+                                rxotg + "\tTRUE\t20\tTRUE\t10\tRandom\tNo Preference\tFALSE\t" +
+                                MCC + "\t" +
+                                MNC;
 
-                    sectorslist.add(sectorLine);
+                        sectorslist.add(sectorLine);
+                    }
 //                    System.out.println(sectorLine);
 
                 } else {
@@ -1051,52 +1066,54 @@ public class ProcessorLog{
 
                             //System.out.println(sectors[0][0]);
 
-                            String channelGroupLine = sectors[0][0] + "\t" +
-                                    ch_group[x][0] + "\tUL\t" +
-                                    sectors[0][4].substring(3) + "\t" +
-                                    extended + "\t" +
-                                    hoppingMethod + "\t" +
-                                    ContainsBCCH + "\t" +
-                                    ch_group[x][1] + "\tDownlink and Uplink\tDownlink and Uplink\tN/A\t" +
-                                    rlcpp[0][1] + "\t" +
-                                    frequencyCount + "\t" +
-                                    ch_group[x][3] + "\t1\tNormal\t" +
-                                    ch_group[x][4] + "\t" +
-                                    ch_group[x][5] + "\t" +
-                                    ch_group[x][6] + "\t" +
-                                    ch_group[x][7] + "\t" +
-                                    ch_group[x][8] + "\t" +
-                                    ch_group[x][9] + "\t" +
-                                    ch_group[x][10] + "\t" +
-                                    ch_group[x][11] + "\t" +
-                                    ch_group[x][12] + "\t" +
-                                    ch_group[x][13] + "\t" +
-                                    ch_group[x][14] + "\t" +
-                                    ch_group[x][15] + "\t" +
-                                    ch_group[x][16] + "\t" +
-                                    ch_group[x][17] + "\t" +
-                                    ch_group[x][18] + "\t" +
-                                    ch_group[x][19] + "\t" +
-                                    ch_group[x][20] + "\t" +
-                                    ch_group[x][21] + "\t" +
-                                    ch_group[x][22] + "\t" +
-                                    ch_group[x][23] + "\t" +
-                                    ch_group[x][24] + "\t" +
-                                    ch_group[x][25] + "\t" +
-                                    ch_group[x][26] + "\t" +
-                                    ch_group[x][27] + "\t" +
-                                    ch_group[x][28] + "\t" +
-                                    ch_group[x][29] + "\t" +
-                                    ch_group[x][30] + "\t" +
-                                    ch_group[x][31] + "\t" +
-                                    ch_group[x][32] + "\t" +
-                                    ch_group[x][33] + "\t" +
-                                    ch_group[x][34] + "\t" +
-                                    ch_group[x][35] + "\t" +
-                                    ch_group[x][36] + "\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\t" +
-                                    "N/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\t" +
-                                    "N/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A";
-                            channelGroupslist.add(channelGroupLine);
+                            if (!sectors[0][1].equals("")) {
+                                String channelGroupLine = sectors[0][0] + "\t" +
+                                        ch_group[x][0] + "\tUL\t" +
+                                        sectors[0][4].substring(3) + "\t" +
+                                        extended + "\t" +
+                                        hoppingMethod + "\t" +
+                                        ContainsBCCH + "\t" +
+                                        ch_group[x][1] + "\tDownlink and Uplink\tDownlink and Uplink\tN/A\t" +
+                                        rlcpp[0][1] + "\t" +
+                                        frequencyCount + "\t" +
+                                        ch_group[x][3] + "\t1\tNormal\t" +
+                                        ch_group[x][4] + "\t" +
+                                        ch_group[x][5] + "\t" +
+                                        ch_group[x][6] + "\t" +
+                                        ch_group[x][7] + "\t" +
+                                        ch_group[x][8] + "\t" +
+                                        ch_group[x][9] + "\t" +
+                                        ch_group[x][10] + "\t" +
+                                        ch_group[x][11] + "\t" +
+                                        ch_group[x][12] + "\t" +
+                                        ch_group[x][13] + "\t" +
+                                        ch_group[x][14] + "\t" +
+                                        ch_group[x][15] + "\t" +
+                                        ch_group[x][16] + "\t" +
+                                        ch_group[x][17] + "\t" +
+                                        ch_group[x][18] + "\t" +
+                                        ch_group[x][19] + "\t" +
+                                        ch_group[x][20] + "\t" +
+                                        ch_group[x][21] + "\t" +
+                                        ch_group[x][22] + "\t" +
+                                        ch_group[x][23] + "\t" +
+                                        ch_group[x][24] + "\t" +
+                                        ch_group[x][25] + "\t" +
+                                        ch_group[x][26] + "\t" +
+                                        ch_group[x][27] + "\t" +
+                                        ch_group[x][28] + "\t" +
+                                        ch_group[x][29] + "\t" +
+                                        ch_group[x][30] + "\t" +
+                                        ch_group[x][31] + "\t" +
+                                        ch_group[x][32] + "\t" +
+                                        ch_group[x][33] + "\t" +
+                                        ch_group[x][34] + "\t" +
+                                        ch_group[x][35] + "\t" +
+                                        ch_group[x][36] + "\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\t" +
+                                        "N/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\t" +
+                                        "N/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A";
+                                channelGroupslist.add(channelGroupLine);
+                            }
                         }
 
 //                    for (int y=0;y<ch_group[x].length;y++){
