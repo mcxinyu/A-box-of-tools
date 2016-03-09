@@ -4,7 +4,7 @@ package View.CheckPlanView;
  * 导入文件区域的显示界面，文件列表
  * 步骤一里面使用的
  */
-import View.HomeView.MyTools;
+import Common.MyTools;
 import javax.swing.*;
 import java.awt.*;
 

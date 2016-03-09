@@ -3,6 +3,8 @@ package View.HomeView;
  * Created by 跃峰 on 2015/12/8.
  * 主页功能按钮界面布局
  */
+import Common.MyTools;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -11,9 +13,9 @@ public class HomeFunctionBtn extends JButton {
     JPanel btnArea;
     JButton button;
     //参数：图片路径，按钮名称，说明文本，坐标x，坐标y。
-    public HomeFunctionBtn(String image,String btnName,String text,int x,int y){
+    public HomeFunctionBtn(ImageIcon image,String btnName,String text,int x,int y){
         //设置按钮里面图片与标签的位置垂直居中.
-        button = new JButton(btnName,new ImageIcon(image));
+        button = new JButton(btnName,image);
         button.setBackground(new Color(248,248,248));
         button.setSize(198,153);
         button.setFocusPainted(false);

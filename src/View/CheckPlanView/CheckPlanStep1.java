@@ -3,7 +3,7 @@ package View.CheckPlanView;
  * Created by 跃峰 on 2015/11/25.
  * View.CheckPlanView 的第一步，导入数据：现网cdd与cdd_Channel、方案
  */
-import View.HomeView.MyTools;
+import Common.MyTools;
 
 import javax.swing.*;
 import java.awt.*;
@@ -100,35 +100,42 @@ public class CheckPlanStep1 extends JPanel implements ItemListener,ActionListene
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        String filePath = "";
         //监听,调用 selectFile() 打开文件
         e.getActionCommand();
         if (e.getActionCommand() == "cdd") {
-            this.selectFile("现网 cdd",fresh_cdd);
+            filePath = this.selectFile("导入 现网 cdd");
+            fresh_cdd.filePath.setText(filePath);
         }else if (e.getActionCommand() == "channel"){
-            this.selectFile("cdd_Channel",fresh_channel);
+            filePath = this.selectFile("导入 cdd_Channel");
+            fresh_channel.filePath.setText(filePath);
         }else if (e.getActionCommand() == "plan"){
-            this.selectFile("变频方案",plan);
+            filePath = this.selectFile("导入 变频方案");
+            plan.filePath.setText(filePath);
         }
     }
 
-    public void selectFile (String title,FileItem btnName){
+    public String selectFile (String title){
         MyTools.windowsFeel();
+        String filePath = "";
+
         //用于新建一个打开文件的窗口
         // 数据名称、按钮名称
         JFileChooser jfc = new JFileChooser();
         jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        jfc.setDialogTitle("导入 " + title);
+        jfc.setDialogTitle(title);
         jfc.setFileFilter(new FileNameExtensionFilter("Excel文件", "xls", "xlsx"));
         int re = jfc.showOpenDialog(null);
         File file = jfc.getSelectedFile();
         if (re == 0 ){
             //如果点击确定，将选择的文件路径传给文本框
-            btnName.filePath.setText(file.getAbsolutePath());
+            filePath = file.getAbsolutePath();
         }
 //            else if (re == 1){
 //                //如果点击取消，清空文本框
 //                btnName.FilePath.setText("...");
 //            }
+        return filePath;
     }
 }
 

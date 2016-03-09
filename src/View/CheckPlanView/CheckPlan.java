@@ -3,12 +3,14 @@ package View.CheckPlanView;
  * Created by 跃峰 on 2015/11/25.
  * View.CheckPlanView 的界面承载
  */
-import View.HomeView.MyTools;
+import Common.ControlBtnArea;
+import Common.MyTools;
+import Common.WelcomeArea;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.*;
 
 public class CheckPlan extends JFrame implements ActionListener{
     JFrame checkPlan;
@@ -23,7 +25,7 @@ public class CheckPlan extends JFrame implements ActionListener{
         MyTools.windowsFeel();
 
         //欢迎栏
-        welcomeArea =new WelcomeArea("images/CheckPlan_64.png","  一箱工具 - 变频方案检查表");
+        welcomeArea =new WelcomeArea(new ImageIcon(this.getClass().getResource("/icons/CheckPlan_64.png")),"  一箱工具 - 变频方案检查表");
 
         //内容栏
         checkPlanStep1 = new CheckPlanStep1();
@@ -64,8 +66,7 @@ public class CheckPlan extends JFrame implements ActionListener{
 
         //设置窗体
         checkPlan.setTitle("一箱工具 - 变频方案检查表");
-        checkPlan.setIconImage (Toolkit.getDefaultToolkit().getImage("images/boxtool_64.png"));
-
+        checkPlan.setIconImage (Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/icons/boxtool_64.png")));
         checkPlan.setSize(626,500);
         checkPlan.setResizable(false);//固定窗体大小
         checkPlan.setLocationRelativeTo(null);//打开时相对window居中
@@ -78,14 +79,12 @@ public class CheckPlan extends JFrame implements ActionListener{
         if (e.getActionCommand().equals("backBtn")){
             checkPlanStep1.setVisible(true);
             checkPlanStep2.setVisible(false);
-
             backBtn.setEnabled(false);
             nextBtn.setEnabled(true);
             okBtn.setEnabled(true);
         }else if (e.getActionCommand().equals("nextBtn")){
             checkPlanStep1.setVisible(false);
             checkPlanStep2.setVisible(true);
-
             backBtn.setEnabled(true);
             nextBtn.setEnabled(false);
             okBtn.setEnabled(true);

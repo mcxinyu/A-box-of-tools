@@ -16,9 +16,10 @@ ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO
 THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A
 PARTICULAR PURPOSE.
 =====================================================================*/
-import java.sql.*;
-import java.io.*;
 import com.microsoft.sqlserver.jdbc.SQLServerCallableStatement;
+
+import java.io.Reader;
+import java.sql.*;
 
 public class executeStoredProcedure {
 
@@ -38,7 +39,7 @@ public class executeStoredProcedure {
           Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
           con = DriverManager.getConnection(connectionUrl);
  
-          // Create test data as an example.
+          // Create Common.logRecorder data as an example.
           StringBuffer buffer = new StringBuffer(4000);
           for (int i = 0; i < 4000; i++) 
              buffer.append( (char) ('A'));
@@ -51,7 +52,7 @@ public class executeStoredProcedure {
              pstmt.executeUpdate();
              pstmt.close();
 
-             // Query test data by using a stored procedure.
+             // Query Common.logRecorder data by using a stored procedure.
              CallableStatement cstmt = 
                 con.prepareCall("{call dbo.GetLargeDataValue(?, ?, ?, ?)}");
 
