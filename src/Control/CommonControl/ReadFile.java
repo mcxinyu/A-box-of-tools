@@ -1,4 +1,4 @@
-package Control.C2FControl;
+package Control.CommonControl;
 
 import java.io.*;
 

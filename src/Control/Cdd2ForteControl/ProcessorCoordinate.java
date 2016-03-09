@@ -1,4 +1,6 @@
-package Control.C2FControl;
+package Control.Cdd2ForteControl;
+
+import Control.CommonControl.ReadFile;
 
 import java.io.File;
 
@@ -14,14 +16,14 @@ public class ProcessorCoordinate {
 ////        File f = new File("D:\\SZ\\变频工作\\数据采集\\cellinfo\\coor.txt");
 //        File f = new File("/Users/huangyuefeng/Downloads/cdd20160122/coordination.txt");
 //        ProcessorCoordinate pc = new ProcessorCoordinate();
-//        pc.processorSingleLog(f);
+//        pc.readCoordinates(f);
 //
 //        long endTime=System.currentTimeMillis();
 //        System.out.println("程序运行时间： "+(endTime-startTime)+"ms");
 //    }
 
     String notice = "";
-    public String[][] processorSingleLog(File coordinateFile) {
+    public String[][] readCoordinates(File coordinateFile) {
         String[][] cellCoordinate = null;
         // 传进来的 coordinateFile 可能是文件夹，也可能是 null
         if (coordinateFile != null && coordinateFile.isFile()) {
@@ -30,9 +32,9 @@ public class ProcessorCoordinate {
 
             //System.out.println(coordinates[0].length());
             //System.out.println(coordinates[0]);
-//        for (int c=0;c<coordinates.length;c++){
-//            System.out.println(coordinates[0]);
-//        }
+            //for (int c=0;c<coordinates.length;c++){
+            //    System.out.println(coordinates[0]);
+            //}
 
             // cellCoordinate : Sector + Longitude + Latitude + LAC + CI + Azimuth;
             cellCoordinate = new String[coordinates.length][6];

@@ -1,6 +1,6 @@
-package Control.FSControl;
+package Control.FileSplitControl;
 
-import Control.C2FControl.ReadFile;
+import Control.CommonControl.ReadFile;
 
 import java.io.File;
 

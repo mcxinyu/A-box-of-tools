@@ -1,4 +1,6 @@
-package Control.C2FControl;
+package Control.Cdd2ForteControl;
+
+import Control.CommonControl.ReadFile;
 
 import javax.swing.*;
 import java.io.File;
@@ -27,13 +29,13 @@ public class ProcessorLog{
 ////        File f1 = new File("/Users/huangyuefeng/Downloads/coordination.txt");
 //        File f1 = new File("D:\\SZ\\变频工作\\数据采集\\cellinfo\\coor0301.txt");
 //        ProcessorCoordinate pc = new ProcessorCoordinate();
-//        String[][] coorS = pc.processorSingleLog(f1);
+//        String[][] coorS = pc.readCoordinates(f1);
 //
 //        //读取CDD
 ////        File f2 = new File("/Users/huangyuefeng/Downloads/cdd20160122/SZ01A.log");
 //        File f2 = new File("D:\\SZ\\变频工作\\数据采集\\CDD\\20160302\\SZ59A.Log");
 //        ProcessorLog pl = new ProcessorLog();
-//        HashMap hm = pl.processorSingleLog(f2);
+//        HashMap hm = pl.readCoordinates(f2);
 //        pl.createForteList(s,hm);
 //
 //        //读取CDD文件夹

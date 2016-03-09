@@ -1,9 +1,11 @@
 package View.Cdd2ForteView;
 
 import Common.*;
-import Control.C2FControl.ProcessorCoordinate;
-import Control.C2FControl.ProcessorLog;
-import Control.C2FControl.ReadFile;
+import Control.Cdd2ForteControl.ProcessorCoordinate;
+import Control.Cdd2ForteControl.ProcessorLog;
+import Control.CommonControl.ReadFile;
+import Control.CommonControl.saveFile;
+import Control.CommonControl.selectFile;
 import View.CheckPlanView.GBC;
 import javax.swing.*;
 import java.awt.*;
@@ -187,7 +189,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
                     ProcessorCoordinate pc = new ProcessorCoordinate();
                     if (fileList != null && fileList.length == 1) {
 //                        System.out.println("ccccccccccccc" + fileList.length);
-                        cellCoordinate = pc.processorSingleLog(fileList[0]);
+                        cellCoordinate = pc.readCoordinates(fileList[0]);
                     }
                     if (pc.getNotice().contains("处理完毕")) {
                         progressBar1.setText(pc.getNotice());
@@ -297,7 +299,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
                     readCoordinateBtn.setEnabled(false);
                     readCddBtn.setEnabled(true);
                     ProcessorCoordinate pc = new ProcessorCoordinate();
-                    cellCoordinate = pc.processorSingleLog(new File(path));
+                    cellCoordinate = pc.readCoordinates(new File(path));
                     progressBar1.setText("选定："+path);
                     if (pc.getNotice().contains("不存在")){
                         progressBar1.setText(pc.getNotice());

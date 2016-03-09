@@ -1,4 +1,6 @@
-package Common;
+package Control.CommonControl;
+
+import Common.MyTools;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
