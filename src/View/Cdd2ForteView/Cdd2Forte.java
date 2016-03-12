@@ -24,7 +24,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
     JPanel welcomeArea;
     JPanel controlBtnArea;
     JButton backBtn,nextBtn,homeBtn,okBtn,aboutBtn,readCoordinateBtn ,readCddBtn,export2ForteBtn,otherBtn;
-    JPanel contentsArea;
+    JPanel contentsArea,left,right;
     JLabel temp1,temp2,text,otherJlb;
     JTextArea progressBar1,progressBar2;
     JCheckBox jcb1;
@@ -44,7 +44,6 @@ public class Cdd2Forte extends JFrame implements ActionListener{
         MyTools.windowsFeel();
 
         //欢迎栏
-        //welcomeArea =new WelcomeArea("src/icons/cdd2forte_64.png","  一箱工具 - cdd2forte");
         welcomeArea =new WelcomeArea(new ImageIcon(Cdd2Forte.class.getResource("/icons/cdd2forte_64.png")),"  一箱工具 - cdd2forte");
 
         //contentsArea
@@ -55,11 +54,11 @@ public class Cdd2Forte extends JFrame implements ActionListener{
         progressBar1 = new JTextArea("请先读取坐标文件",1,1);
         progressBar1.setEditable(false);
         progressBar1.setLineWrap(true);
-        progressBar1.setBackground(new Color(240,240,240));
+        progressBar1.setBackground(new Color(238,238,238));
         progressBar2 = new JTextArea("",1,1);
         progressBar2.setEditable(false);
         progressBar2.setVisible(false);
-        progressBar2.setBackground(new Color(240,240,240));
+        progressBar2.setBackground(new Color(238,238,238));
 
         readCoordinateBtn = new JButton(" 读取坐标文件 ");
         readCoordinateBtn.setFont(MyTools.fontBold18);
@@ -104,6 +103,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
 
         //添加组件到 contentsArea
         contentsArea = new JPanel(new GridBagLayout());
+        contentsArea.setBackground(new Color(238,238,238));
         contentsArea.add(text,new GBC(0,0,4,1).setFill(GBC.VERTICAL).setAnchor(GBC.CENTER).setIpad(0,30).setInsets(0,1));
         contentsArea.add(readCoordinateBtn,new GBC(0,1,2,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(20,20).setInsets(0,1,0,0));
         contentsArea.add(readCddBtn,new GBC(2,1,2,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(20,20).setInsets(0,0,0,1));
@@ -115,7 +115,6 @@ public class Cdd2Forte extends JFrame implements ActionListener{
         contentsArea.add(otherBtn,new GBC(3,6,1,1).setAnchor(GBC.WEST).setIpad(0,5).setInsets(5,1));
 
         //控制栏
-        //aboutBtn = new JButton(new ImageIcon("src/icons/about.png"));
         aboutBtn = new JButton(new ImageIcon(Cdd2Forte.class.getResource("/icons/about.png")));
         backBtn = new JButton("< 上一步");
         nextBtn = new JButton("下一步 >");

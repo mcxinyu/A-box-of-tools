@@ -6,6 +6,7 @@ package View.ToCoordinateView;
  */
 
 import Common.ControlBtnArea;
+import Common.DistributOutputStream;
 import Common.MyTools;
 import Common.WelcomeArea;
 import Control.CommonControl.ReadFile;
@@ -30,10 +31,10 @@ public class ToCoordinate extends JFrame implements ActionListener {
     JLabel temp1,temp2,text,taps;
     JCheckBox jcb1,jcb2;
 
-    //public static void main(String[] args) {
-    //    new ToCoordinate();
-    //    new DistributOutputStream("toCoordiantes.log");
-    //}
+    public static void main(String[] args) {
+        new ToCoordinate();
+        new DistributOutputStream("toCoordiantes.log");
+    }
 
     public ToCoordinate(){
         MyTools.windowsFeel();
@@ -66,8 +67,9 @@ public class ToCoordinate extends JFrame implements ActionListener {
         toCoordinateBtn.setActionCommand("toCoordinateBtn");
         toCoordinateBtn.addActionListener(this);
 
-        //添加组件到 contentsArea
+        //添加组件到 contentsArea238,238,238
         contentsArea = new JPanel(new GridBagLayout());
+        contentsArea.setBackground(new Color(238,238,238));
         contentsArea.add(text,new GBC(0,0,4,1).setFill(GBC.VERTICAL).setAnchor(GBC.CENTER).setIpad(0,20).setInsets(0,1));
         contentsArea.add(readCellinfoBtn,new GBC(0,1,2,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(20,20).setInsets(0,1,0,0));
         contentsArea.add(toCoordinateBtn,new GBC(2,1,2,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(20,20).setInsets(0,0,0,1));

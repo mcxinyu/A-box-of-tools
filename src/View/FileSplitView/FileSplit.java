@@ -74,11 +74,11 @@ public class FileSplit extends JFrame {
         noticeOld = new JLabel("选中的文件中有 xxxx 行数据");
         noticeNew = new JLabel("文件将被分割为 x 个文件，每个文件最多包含 xxx 行");
         noticeJcb = new JCheckBox("完成后删除源文件");
-        noticeJcb.setBackground(new Color(204,204,204));
+        noticeJcb.setBackground(new Color(238,238,238));
         exportBtn = new JButton("③ 开 始 分 割");
 
         noticeArea = new JPanel(new GridBagLayout());
-        noticeArea.setBackground(new Color(204,204,204));
+        noticeArea.setBackground(new Color(238,238,238));
         noticeArea.add(temp1,new GBC(0,0,1,1));
         noticeArea.add(noticeOld,new GBC(1,0,1,1).setFill(GBC.BOTH).setAnchor(GBC.WEST).setIpad(5,5).setWeight(100,0));
         noticeArea.add(temp1,new GBC(0,1,1,1));

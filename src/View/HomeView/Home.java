@@ -93,7 +93,7 @@ public class Home extends JFrame implements ActionListener{
                 }
             });
         }else if (e.getActionCommand().equals("fileSplitBtn")){
-            j1.setVisible(false);
+            //j1.setVisible(false);
             j2 = new FileSplit();
             j2.addWindowListener(new WindowAdapter(){
                 public void windowClosing(WindowEvent e){
