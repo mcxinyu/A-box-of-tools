@@ -20,7 +20,7 @@ import java.util.ArrayList;
  * Created by 跃峰 on 2016/1/27.
  */
 public class Cdd2Forte extends JFrame implements ActionListener{
-    JFrame frame;
+    //JFrame frame;
     JPanel welcomeArea;
     JPanel controlBtnArea;
     JButton backBtn,nextBtn,homeBtn,okBtn,aboutBtn,readCoordinateBtn ,readCddBtn,export2ForteBtn,otherBtn;
@@ -35,10 +35,10 @@ public class Cdd2Forte extends JFrame implements ActionListener{
     ArrayList[][] forteArray = null;
     String coorPath = null;
 
-    //public static void main(String[] args) {
-    //    Cdd2Forte c2f = new Cdd2Forte();
-    //    new DistributOutputStream("cdd2forte.log");
-    //}
+    public static void main(String[] args) {
+        Cdd2Forte c2f = new Cdd2Forte();
+        new DistributOutputStream("cdd2forte.log");
+    }
 
     public Cdd2Forte(){
         MyTools.windowsFeel();
@@ -139,22 +139,22 @@ public class Cdd2Forte extends JFrame implements ActionListener{
         controlBtnArea = new ControlBtnArea(aboutBtn,backBtn,nextBtn,okBtn,homeBtn);
 
         //添加入Frame
-        frame = new JFrame();
-        frame.add(welcomeArea, BorderLayout.NORTH);
-        frame.add(contentsArea,BorderLayout.CENTER);
-        frame.add(temp1,BorderLayout.EAST);
-        frame.add(temp2,BorderLayout.WEST);
-        frame.add(controlBtnArea,BorderLayout.SOUTH);
+        //frame = new JFrame();
+        this.add(welcomeArea, BorderLayout.NORTH);
+        this.add(contentsArea,BorderLayout.CENTER);
+        this.add(temp1,BorderLayout.EAST);
+        this.add(temp2,BorderLayout.WEST);
+        this.add(controlBtnArea,BorderLayout.SOUTH);
 
         //设置窗体
-        frame.setTitle("一箱工具 - cdd2forte");
-        frame.setIconImage (Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/icons/boxtool_64.png")));
+        this.setTitle("一箱工具 - cdd2forte");
+        this.setIconImage (Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/icons/boxtool_64.png")));
 
-        frame.setSize(626,500);
-        frame.setResizable(false);//固定窗体大小
-        frame.setLocationRelativeTo(null);//打开时相对window居中
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setVisible(true);
+        this.setSize(626,500);
+        this.setResizable(false);//固定窗体大小
+        this.setLocationRelativeTo(null);//打开时相对window居中
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.setVisible(true);
     }
 
 

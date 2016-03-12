@@ -13,7 +13,7 @@ import java.awt.*;
  * Created by 跃峰 on 2016/2/3.
  */
 public class FileSplit extends JFrame {
-    JFrame frame;
+    //JFrame frame;
     JPanel welcomeArea;
     JPanel controlBtnArea;
     JButton backBtn,nextBtn,okBtn,cancelBtn,selectBtn,exportBtn;
@@ -105,19 +105,19 @@ public class FileSplit extends JFrame {
         controlBtnArea = new ControlBtnArea(backBtn,nextBtn,okBtn,cancelBtn);
 
         //添加入Frame
-        frame = new JFrame();
-        frame.add(welcomeArea, BorderLayout.NORTH);
-        frame.add(contentsArea,BorderLayout.CENTER);
-        frame.add(controlBtnArea,BorderLayout.SOUTH);
+        //frame = new JFrame();
+        this.add(welcomeArea, BorderLayout.NORTH);
+        this.add(contentsArea,BorderLayout.CENTER);
+        this.add(controlBtnArea,BorderLayout.SOUTH);
 
         //设置窗体
-        frame.setTitle("一箱工具 - 分本文件分割");
-        frame.setIconImage (Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/icons/boxtool_64.png")));
-        frame.setSize(626,500);
-        frame.setResizable(false);//固定窗体大小
-        frame.setLocationRelativeTo(null);//打开时相对window居中
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setVisible(true);
+        this.setTitle("一箱工具 - 分本文件分割");
+        this.setIconImage (Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/icons/boxtool_64.png")));
+        this.setSize(626,500);
+        this.setResizable(false);//固定窗体大小
+        this.setLocationRelativeTo(null);//打开时相对window居中
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.setVisible(true);
     }
 }
 
