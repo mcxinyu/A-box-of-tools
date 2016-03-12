@@ -8,6 +8,10 @@ package View.ToCoordinateView;
 import Common.ControlBtnArea;
 import Common.MyTools;
 import Common.WelcomeArea;
+import Control.CommonControl.ReadFile;
+import Control.CommonControl.saveFile;
+import Control.CommonControl.selectFile;
+import Control.ToCoordinateControl.cellinfo2Coordinates;
 import View.Cdd2ForteView.Cdd2Forte;
 import View.CheckPlanView.GBC;
 
@@ -15,6 +19,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 public class ToCoordinate extends JFrame implements ActionListener {
     JFrame frame;
@@ -22,11 +27,14 @@ public class ToCoordinate extends JFrame implements ActionListener {
     JPanel controlBtnArea;
     JButton backBtn,nextBtn,homeBtn,okBtn,aboutBtn,readCellinfoBtn,toCoordinateBtn;
     JPanel contentsArea;
-    JLabel temp1,temp2,text;
+    JLabel temp1,temp2,text,taps;
+    JCheckBox jcb1,jcb2;
 
-    public static void main(String[] args) {
-        new ToCoordinate();
-    }
+    //public static void main(String[] args) {
+    //    new ToCoordinate();
+    //    new DistributOutputStream("toCoordiantes.log");
+    //}
+
     public ToCoordinate(){
         MyTools.windowsFeel();
 
@@ -44,12 +52,18 @@ public class ToCoordinate extends JFrame implements ActionListener {
 
         toCoordinateBtn = new JButton("导出 Coordinates");
         toCoordinateBtn.setFont(MyTools.fontBold18);
-        //toCoordinateBtn.setEnabled(false);
+        toCoordinateBtn.setEnabled(false);
+
+        taps = new JLabel("开始读取 Cellinfo 吧");
+        jcb1 = new JCheckBox("剔除无效数据");
+        jcb1.setSelected(true);
+        jcb2 = new JCheckBox("保留中文名");
+        jcb2.setSelected(false);
 
         //注册监听
         readCellinfoBtn.setActionCommand("readCoordinateBtn");
         readCellinfoBtn.addActionListener(this);
-        toCoordinateBtn.setActionCommand("readCddBtn");
+        toCoordinateBtn.setActionCommand("toCoordinateBtn");
         toCoordinateBtn.addActionListener(this);
 
         //添加组件到 contentsArea
@@ -57,6 +71,10 @@ public class ToCoordinate extends JFrame implements ActionListener {
         contentsArea.add(text,new GBC(0,0,4,1).setFill(GBC.VERTICAL).setAnchor(GBC.CENTER).setIpad(0,20).setInsets(0,1));
         contentsArea.add(readCellinfoBtn,new GBC(0,1,2,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(20,20).setInsets(0,1,0,0));
         contentsArea.add(toCoordinateBtn,new GBC(2,1,2,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(20,20).setInsets(0,0,0,1));
+        contentsArea.add(taps,new GBC(0,2,4,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(20,5).setInsets(0,1));
+        contentsArea.add(jcb1,new GBC(0,3,3,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(20,5).setInsets(0,1));
+        contentsArea.add(jcb2,new GBC(2,3,4,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(20,5).setInsets(0,1));
+
 
         //控制栏
         aboutBtn = new JButton(new ImageIcon(Cdd2Forte.class.getResource("/icons/about.png")));
@@ -101,7 +119,48 @@ public class ToCoordinate extends JFrame implements ActionListener {
     }
 
 
+    String[][] cellinfo = null;
+    cellinfo2Coordinates c2c = null;
+
     @Override
     public void actionPerformed(ActionEvent e) {
+        c2c = new cellinfo2Coordinates();
+        if (e.getActionCommand().equals("readCoordinateBtn")){
+            toCoordinateBtn.setEnabled(false);
+            int state;
+            taps.setText("正在读取 Cellinfo...");
+            selectFile select = new selectFile();
+            state = select.selectFile("读取 Cellinfo 文件", "text");
+            File[] fileList = new ReadFile().readMultiText(select.getFile());
+            if (state == 0) {
+                //如果点击确定
+                if (fileList != null && fileList.length == 1) {
+                    try {
+                        cellinfo = c2c.readCellinfo(fileList[0]);
+                        taps.setText("Cellinfo 中读取到 "+ cellinfo.length +" 个小区的数据");
+                        JOptionPane.showMessageDialog(null,"Cellinfo 读取成功");
+                        toCoordinateBtn.setEnabled(true);
+                    }catch (Exception e1){
+                        e1.printStackTrace();
+                        JOptionPane.showMessageDialog(null,"Cellinfo 文件错误");
+                        cellinfo = null;
+                        taps.setText("重新选取 Cellinfo 文件");
+                        toCoordinateBtn.setEnabled(false);
+                    }
+                }
+            }else if (state == 1) {
+                taps.setText("开始读取 Cellinfo 吧");
+            }
+        }else if (e.getActionCommand().equals("toCoordinateBtn")){
+            saveFile save = new saveFile();
+            int state = save.saveFile("导出 Coordinates 文件",1);
+            if (state == 0){
+                if (cellinfo!=null) {
+                    String[][] coordinate = c2c.toCoordinates(cellinfo);
+                    c2c.createCoordinatesFile(coordinate, save.getFile().getPath(),jcb1.isSelected(),jcb2.isSelected());
+                }
+            }else if (state == 1){
+            }
+        }
     }
 }

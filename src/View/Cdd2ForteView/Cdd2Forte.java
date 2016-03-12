@@ -35,10 +35,11 @@ public class Cdd2Forte extends JFrame implements ActionListener{
     ArrayList[][] forteArray = null;
     String coorPath = null;
 
-    public static void main(String[] args) {
-        Cdd2Forte c2f = new Cdd2Forte();
-        new DistributOutputStream();
-    }
+    //public static void main(String[] args) {
+    //    Cdd2Forte c2f = new Cdd2Forte();
+    //    new DistributOutputStream("cdd2forte.log");
+    //}
+
     public Cdd2Forte(){
         MyTools.windowsFeel();
 
@@ -192,6 +193,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
                         cellCoordinate = pc.readCoordinates(fileList[0]);
                     }
                     if (pc.getNotice().contains("处理完毕")) {
+                        //JOptionPane.showMessageDialog(null,"读取成功");
                         progressBar1.setText(pc.getNotice());
                         readCddBtn.setEnabled(true);
                         otherBtn.setEnabled(true);

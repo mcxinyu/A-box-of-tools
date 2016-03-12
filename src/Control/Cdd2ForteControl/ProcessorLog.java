@@ -75,9 +75,9 @@ public class ProcessorLog{
                  FileWriter channelGroupsFW = new FileWriter(channelGroups);
                  FileWriter handoversFW = new FileWriter(handovers)) {
                 // 如果文件不存在就创建一个新的
-                if (!sectors.exists()) {sectors.createNewFile();}
-                if (!channelGroups.exists()) {channelGroups.createNewFile();}
-                if (!handovers.exists()) {handovers.createNewFile();}
+                //if (!sectors.exists()) {sectors.createNewFile();}
+                //if (!channelGroups.exists()) {channelGroups.createNewFile();}
+                //if (!handovers.exists()) {handovers.createNewFile();}
 
                 // 打印表头
                 sectorsFW.write(sectorHead + "\r\n");
@@ -133,7 +133,7 @@ public class ProcessorLog{
                 JOptionPane.showMessageDialog(null,"导出成功！");
             } catch (IOException e) {
                 e.printStackTrace();
-                JOptionPane.showMessageDialog(null,"导出失败，请检查文件是否打开！");
+                JOptionPane.showMessageDialog(null,"导出失败，另一个程序正在使用此文件！");
             }
         }
     }
