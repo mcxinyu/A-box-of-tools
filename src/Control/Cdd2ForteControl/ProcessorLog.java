@@ -55,126 +55,6 @@ public class ProcessorLog{
 //    }
 
     /**
-     *
-     * @param forteArray 包含了三个文件的内容:sector/channelGroup/handover
-     * @param exportPath 文件保存的位置
-     */
-    public void createForteFile(ArrayList[][] forteArray,String exportPath){
-        if (forteArray != null) {
-            File sectors = new File(exportPath + "\\Sectors.txt");
-            File channelGroups = new File(exportPath + "\\ChannelGroups.txt");
-            File handovers = new File(exportPath + "\\Handovers.txt");
-
-            String sectorHead = "MSC\tBSC\tVendor\tSite\tLatitude\tLongitude\tSector\tID\tMaster\tLAC\tCI\tKeywords\tAzimuth\tBCCH frequency\tBSIC\tIntracell HO\tSynchronization group\tAMR HR Allocation\tAMR HR Threshold\tHR Allocation\tHR Threshold\tTCH allocation priority\tGPRS allocation priority\tRemote\tMCC\tMNC";
-
-            String channelGroupHead = "Sector\tChannel Group\tSubcell\tBand\tExtended\tHopping method\tContains BCCH\tHSN\tDTX\tPower control\tSubcell Signal Threshold\tSubcell Tx Power\t# TRXs\t# SDCCH TSs\t# Fixed GPRS TSs\tPriority\tTCH 1\tTCH 2\tTCH 3\tTCH 4\tTCH 5\tTCH 6\tTCH 7\tTCH 8\tTCH 9\tTCH 10\tTCH 11\tTCH 12\tTCH 13\tTCH 14\tTCH 15\tTCH 16\tTCH 17\tTCH 18\tTCH 19\tTCH 20\tTCH 21\tTCH 22\tTCH 23\tTCH 24\tTCH 25\tTCH 26\tTCH 27\tTCH 28\tTCH 29\tTCH 30\tTCH 31\tTCH 32\tTCH 33\tTCH 34\tTCH 35\tTCH 36\tTCH 37\tTCH 38\tTCH 39\tTCH 40\tTCH 41\tTCH 42\tTCH 43\tTCH 44\tTCH 45\tTCH 46\tTCH 47\tTCH 48\tTCH 49\tTCH 50\tTCH 51\tTCH 52\tTCH 53\tTCH 54\tTCH 55\tTCH 56\tTCH 57\tTCH 58\tTCH 59\tTCH 60\tTCH 61\tTCH 62\tTCH 63\tTCH 64\tMAIO 1\tMAIO 2\tMAIO 3\tMAIO 4\tMAIO 5\tMAIO 6\tMAIO 7\tMAIO 8\tMAIO 9\tMAIO 10\tMAIO 11\tMAIO 12\tMAIO 13\tMAIO 14\tMAIO 15\tMAIO 16";
-
-            String handoverHead = "Serving Sector\tTarget Sector\tHysteresis\tSector Threshold";
-
-            try (FileWriter sectorsFW = new FileWriter(sectors);
-                 FileWriter channelGroupsFW = new FileWriter(channelGroups);
-                 FileWriter handoversFW = new FileWriter(handovers)) {
-                // 如果文件不存在就创建一个新的
-                //if (!sectors.exists()) {sectors.createNewFile();}
-                //if (!channelGroups.exists()) {channelGroups.createNewFile();}
-                //if (!handovers.exists()) {handovers.createNewFile();}
-
-                // 打印表头
-                sectorsFW.write(sectorHead + "\r\n");
-                channelGroupsFW.write(channelGroupHead + "\r\n");
-                handoversFW.write(handoverHead + "\r\n");
-
-                // 处理 sectors 文件
-                for (int i = 0; i < forteArray[0].length; i++) {
-//                    ArrayList sectorslist = forteArray[0][i];
-//                    Iterator it1 = sectorslist.iterator();
-//
-//                    if (forteArray[0][i] == null) {
-//                        it1.next();
-//                    }else {
-//                        while (it1.hasNext()) {
-//                            sectorsFW.write(it1.next() + "\r\n");
-//                        }
-//                    }
-
-                    if (forteArray[0][i] != null) {
-                        ArrayList sectorslist = forteArray[0][i];
-                        String[] sectorsString = new String[sectorslist.size()];
-                        sectorsString = (String[]) sectorslist.toArray(sectorsString);
-
-                        for (int j = 0; j < sectorsString.length; j++) {
-//                            byte[] contentInBytes = sectorsString[j].getBytes();
-//                            System.out.println(sectorsString[j]);
-                            sectorsFW.write(sectorsString[j]+"\r\n");
-                        }
-                    }
-                }
-                // 处理 channelGroups 文件
-                for (int i = 0; i < forteArray[1].length; i++) {
-                    if (forteArray[1][i] != null) {
-                        ArrayList channelGroupslist = forteArray[1][i];
-                        Iterator it1 = channelGroupslist.iterator();
-                        while (it1.hasNext()) {
-                            channelGroupsFW.write(it1.next() + "\r\n");
-                        }
-                    }
-                }
-                // 处理 handovers 文件
-                for (int i = 0; i < forteArray[2].length; i++) {
-                    if (forteArray[2][i] != null) {
-                        ArrayList handoverslist = forteArray[2][i];
-                        Iterator it1 = handoverslist.iterator();
-                        while (it1.hasNext()) {
-                            handoversFW.write(it1.next() + "\r\n");
-                        }
-                    }
-                }
-                System.out.println("导出成功！");
-                JOptionPane.showMessageDialog(null,"导出成功！");
-            } catch (IOException e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(null,"导出失败，另一个程序正在使用此文件！");
-            }
-        }
-    }
-
-    /**
-     * 批量处理cdd文件，将文件列表中的文件一个个处理后再调用生成相应文件的方法，最后返回一个包含内容的数组
-     * @param fileList cdd 文件列表
-     * @param coordinatesList 坐标文件返回的内容，程序只处理坐标文件中出现的小区名
-     * @return 返回的数组中包含了三个文件的内容:sector/channelGroup/handover
-     */
-//    String currFileName = "";
-    public ArrayList[][] processorMultiLog(File[] fileList,String[][] coordinatesList){
-        ArrayList[][] forteArray = null;
-        if (fileList != null && coordinatesList != null) {
-            // forteArray 分别顺序包含:sector/channelGroup/handover
-            forteArray = new ArrayList[3][fileList.length];
-            // 遍历 fileList 一个个 cdd 文件处理后赋值给 forteArray 数组
-            for (int i = 0; i < fileList.length; i++) {
-                if (fileList[i].isFile()) {
-                    System.out.println("开始处理"+fileList[i]);
-                    HashMap contentHM = processorSingleLog(fileList[i]);
-                    String[][] validCoordinate = this.checkValidCoordinate(coordinatesList,contentHM);
-//                    currFileName = fileList[i].getName();
-                    forteArray[0][i] = createSectorsList(validCoordinate, contentHM);
-                    forteArray[1][i] = createChannelGroupsList(validCoordinate, contentHM);
-                    forteArray[2][i] = createHandoversList(validCoordinate, contentHM);
-                    //System.out.println("完成"+fileList[i]);
-                }
-            }
-            System.out.println("cdd 文件处理完毕！");
-        }else {
-            System.out.println("读取文件出错");
-        }
-        return forteArray;
-    }
-
-//    public String getCurrFileName() {
-//        return currFileName;
-//    }
-
-    /**
      * Processor single CDD log.
      *
      * @param logFile the log file
@@ -852,37 +732,6 @@ public class ProcessorLog{
         return notice;
     }
 
-    public String[][] checkValidCoordinate(String[][] coordinate,HashMap<String,String[][]> contentHM){
-        String[][] validCoordinate = null;
-        if (contentHM != null && coordinate != null) {
-            int validValue = 0;
-            //检查coordinate中有多少小区是现网cdd中有效的
-            for (int i = 0; i < coordinate.length; i++) {
-                if (contentHM.containsKey("rldep" + coordinate[i][0])) {
-                    validValue++;
-                }
-            }
-            validCoordinate = new String[validValue][];
-            int validValueCHECK = 0;
-            //将coordinate中有效的小区复制到validCoordinate中
-            for (int i = 0; i < coordinate.length; i++) {
-                if (validValueCHECK > validValue)break;
-                if (contentHM.containsKey("rldep" + coordinate[i][0])) {
-                    validCoordinate[validValueCHECK] = coordinate[i];
-                    validValueCHECK++;
-                }
-            }
-            //遍历validCoordinate中的数据
-            //for (int i = 0; i < validCoordinate.length; i++) {
-            //    for (int j = 0; j < validCoordinate[i][j].length(); j++) {
-            //        System.out.print(validCoordinate[i][j]+" ");
-            //    }
-            //    System.out.println();
-            //}
-        }
-        return validCoordinate;
-    }
-
     /**
      * 生成 sectors 一个网元文件应该运行一次该方法;
      * @param validCoordinate 接收坐标文件传递过来的 coordinate[][] 数组；
@@ -1172,4 +1021,152 @@ public class ProcessorLog{
         return handoverslist;
     }
 
+    /**
+     * 检查 coordinate 中有多少小区是现网cdd中有效的
+     * @param coordinate
+     * @param contentHM
+     * @return
+     */
+    public String[][] checkValidCoordinate(String[][] coordinate,HashMap<String,String[][]> contentHM){
+        String[][] validCoordinate = null;
+        if (contentHM != null && coordinate != null) {
+            int validValue = 0;
+            //检查coordinate中有多少小区是现网cdd中有效的
+            for (int i = 0; i < coordinate.length; i++) {
+                if (contentHM.containsKey("rldep" + coordinate[i][0])) {
+                    validValue++;
+                }
+            }
+            validCoordinate = new String[validValue][];
+            int validValueCHECK = 0;
+            //将coordinate中有效的小区复制到validCoordinate中
+            for (int i = 0; i < coordinate.length; i++) {
+                if (validValueCHECK > validValue)break;
+                if (contentHM.containsKey("rldep" + coordinate[i][0])) {
+                    validCoordinate[validValueCHECK] = coordinate[i];
+                    validValueCHECK++;
+                }
+            }
+            //遍历validCoordinate中的数据
+            //for (int i = 0; i < validCoordinate.length; i++) {
+            //    for (int j = 0; j < validCoordinate[i][j].length(); j++) {
+            //        System.out.print(validCoordinate[i][j]+" ");
+            //    }
+            //    System.out.println();
+            //}
+        }
+        return validCoordinate;
+    }
+
+    /**
+     * 批量处理cdd文件，将文件列表中的文件一个个处理后再调用生成相应文件的方法，最后返回一个包含内容的数组
+     * @param fileList cdd 文件列表
+     * @param coordinatesList 坐标文件返回的内容，程序只处理坐标文件中出现的小区名
+     * @return 返回的数组中包含了三个文件的内容:sector/channelGroup/handover
+     */
+    public ArrayList[][] processorMultiLog(File[] fileList,String[][] coordinatesList){
+        ArrayList[][] forteArray = null;
+        if (fileList != null && coordinatesList != null) {
+            // forteArray 分别顺序包含:sector/channelGroup/handover
+            forteArray = new ArrayList[3][fileList.length];
+            // 遍历 fileList 一个个 cdd 文件处理后赋值给 forteArray 数组
+            for (int i = 0; i < fileList.length; i++) {
+                if (fileList[i].isFile()) {
+                    System.out.println("开始处理"+fileList[i]);
+                    HashMap contentHM = processorSingleLog(fileList[i]);
+                    //String[][] validCoordinate = this.checkValidCoordinate(coordinatesList,contentHM);
+                    //System.out.println(coordinatesList.length);
+                    forteArray[0][i] = createSectorsList(coordinatesList, contentHM);
+                    forteArray[1][i] = createChannelGroupsList(coordinatesList, contentHM);
+                    forteArray[2][i] = createHandoversList(coordinatesList, contentHM);
+                    //System.out.println("完成"+fileList[i]);
+                }
+            }
+            System.out.println("cdd 文件处理完毕！");
+        }else {
+            System.out.println("读取文件出错");
+        }
+        return forteArray;
+    }
+
+    /**
+     *
+     * @param forteArray 包含了三个文件的内容:sector/channelGroup/handover
+     * @param exportPath 文件保存的位置
+     */
+    public void createForteFile(ArrayList[][] forteArray,String exportPath){
+        if (forteArray != null) {
+            File sectors = new File(exportPath + "\\Sectors.txt");
+            File channelGroups = new File(exportPath + "\\ChannelGroups.txt");
+            File handovers = new File(exportPath + "\\Handovers.txt");
+
+            String sectorHead = "MSC\tBSC\tVendor\tSite\tLatitude\tLongitude\tSector\tID\tMaster\tLAC\tCI\tKeywords\tAzimuth\tBCCH frequency\tBSIC\tIntracell HO\tSynchronization group\tAMR HR Allocation\tAMR HR Threshold\tHR Allocation\tHR Threshold\tTCH allocation priority\tGPRS allocation priority\tRemote\tMCC\tMNC";
+
+            String channelGroupHead = "Sector\tChannel Group\tSubcell\tBand\tExtended\tHopping method\tContains BCCH\tHSN\tDTX\tPower control\tSubcell Signal Threshold\tSubcell Tx Power\t# TRXs\t# SDCCH TSs\t# Fixed GPRS TSs\tPriority\tTCH 1\tTCH 2\tTCH 3\tTCH 4\tTCH 5\tTCH 6\tTCH 7\tTCH 8\tTCH 9\tTCH 10\tTCH 11\tTCH 12\tTCH 13\tTCH 14\tTCH 15\tTCH 16\tTCH 17\tTCH 18\tTCH 19\tTCH 20\tTCH 21\tTCH 22\tTCH 23\tTCH 24\tTCH 25\tTCH 26\tTCH 27\tTCH 28\tTCH 29\tTCH 30\tTCH 31\tTCH 32\tTCH 33\tTCH 34\tTCH 35\tTCH 36\tTCH 37\tTCH 38\tTCH 39\tTCH 40\tTCH 41\tTCH 42\tTCH 43\tTCH 44\tTCH 45\tTCH 46\tTCH 47\tTCH 48\tTCH 49\tTCH 50\tTCH 51\tTCH 52\tTCH 53\tTCH 54\tTCH 55\tTCH 56\tTCH 57\tTCH 58\tTCH 59\tTCH 60\tTCH 61\tTCH 62\tTCH 63\tTCH 64\tMAIO 1\tMAIO 2\tMAIO 3\tMAIO 4\tMAIO 5\tMAIO 6\tMAIO 7\tMAIO 8\tMAIO 9\tMAIO 10\tMAIO 11\tMAIO 12\tMAIO 13\tMAIO 14\tMAIO 15\tMAIO 16";
+
+            String handoverHead = "Serving Sector\tTarget Sector\tHysteresis\tSector Threshold";
+
+            try (FileWriter sectorsFW = new FileWriter(sectors);
+                 FileWriter channelGroupsFW = new FileWriter(channelGroups);
+                 FileWriter handoversFW = new FileWriter(handovers)) {
+                // 如果文件不存在就创建一个新的
+                //if (!sectors.exists()) {sectors.createNewFile();}
+                //if (!channelGroups.exists()) {channelGroups.createNewFile();}
+                //if (!handovers.exists()) {handovers.createNewFile();}
+
+                // 打印表头
+                sectorsFW.write(sectorHead + "\r\n");
+                channelGroupsFW.write(channelGroupHead + "\r\n");
+                handoversFW.write(handoverHead + "\r\n");
+
+                // 处理 sectors 文件
+                for (int i = 0; i < forteArray[0].length; i++) {
+                    if (forteArray[0][i] != null) {
+                        ArrayList sectorslist = forteArray[0][i];
+                        Iterator it1 = sectorslist.iterator();
+                        while (it1.hasNext()) {
+                            sectorsFW.write(it1.next() + "\r\n");
+                        }
+                    }
+
+//                    if (forteArray[0][i] != null) {
+//                        ArrayList sectorslist = forteArray[0][i];
+//                        String[] sectorsString = new String[sectorslist.size()];
+//                        sectorsString = (String[]) sectorslist.toArray(sectorsString);
+//
+//                        for (int j = 0; j < sectorsString.length; j++) {
+////                            byte[] contentInBytes = sectorsString[j].getBytes();
+////                            System.out.println(sectorsString[j]);
+//                            sectorsFW.write(sectorsString[j]+"\r\n");
+//                        }
+//                    }
+                }
+                // 处理 channelGroups 文件
+                for (int i = 0; i < forteArray[1].length; i++) {
+                    if (forteArray[1][i] != null) {
+                        ArrayList channelGroupslist = forteArray[1][i];
+                        Iterator it1 = channelGroupslist.iterator();
+                        while (it1.hasNext()) {
+                            channelGroupsFW.write(it1.next() + "\r\n");
+                        }
+                    }
+                }
+                // 处理 handovers 文件
+                for (int i = 0; i < forteArray[2].length; i++) {
+                    if (forteArray[2][i] != null) {
+                        ArrayList handoverslist = forteArray[2][i];
+                        Iterator it1 = handoverslist.iterator();
+                        while (it1.hasNext()) {
+                            handoversFW.write(it1.next() + "\r\n");
+                        }
+                    }
+                }
+                System.out.println("导出成功！");
+                JOptionPane.showMessageDialog(null,"导出成功！");
+            } catch (IOException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null,"导出失败，另一个程序正在使用此文件！");
+            }
+        }
+    }
 }
