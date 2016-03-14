@@ -17,7 +17,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class RenameFiles extends JFrame implements ActionListener {
-    JFrame frame;
+    //JFrame frame;
     JPanel welcomeArea,fileArea,controlBtnArea,doArea,noticeArea,contentsArea;
     JPanel selectBar,replaceText,addText,format;
     JButton selectFileBtn,renameBtn,backBtn,nextBtn,homeBtn,okBtn,aboutBtn;
@@ -160,20 +160,19 @@ public class RenameFiles extends JFrame implements ActionListener {
         controlBtnArea = new ControlBtnArea(backBtn,nextBtn,okBtn,homeBtn);
 
         //添加入Frame
-        frame = new JFrame();
-        frame.add(welcomeArea, BorderLayout.NORTH);
-        frame.add(contentsArea,BorderLayout.CENTER);
-        frame.add(controlBtnArea,BorderLayout.SOUTH);
+        //frame = new JFrame();
+        this.add(welcomeArea, BorderLayout.NORTH);
+        this.add(contentsArea,BorderLayout.CENTER);
+        this.add(controlBtnArea,BorderLayout.SOUTH);
 
         //设置窗体
-        frame.setTitle("一箱工具 - 批量文件重命名");
-        frame.setIconImage (Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/icons/boxtool_64.png")));
-
-        frame.setSize(600,400);
-        frame.setResizable(false);//固定窗体大小
-        frame.setLocationRelativeTo(null);//打开时相对window居中
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setVisible(true);
+        this.setTitle("一箱工具 - 批量文件重命名");
+        this.setIconImage (Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/icons/boxtool_64.png")));
+        this.setSize(600,400);
+        this.setResizable(false);//固定窗体大小
+        this.setLocationRelativeTo(null);//打开时相对window居中
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.setVisible(true);
     }
 
     @Override

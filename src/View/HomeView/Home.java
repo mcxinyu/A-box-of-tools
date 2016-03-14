@@ -5,6 +5,7 @@ package View.HomeView;
  * 版本号：0.1.0
  * a.b.c a++UI改动，b++功能增加，c++小修改
  */
+import Common.DistributOutputStream;
 import Common.WelcomeArea;
 import View.Cdd2ForteView.Cdd2Forte;
 import View.FileSplitView.FileSplit;
@@ -13,10 +14,7 @@ import View.ToCoordinateView.ToCoordinate;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 
 public class Home extends JFrame implements ActionListener{
     WelcomeArea welcome;
@@ -78,15 +76,16 @@ public class Home extends JFrame implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals("cdd2forteBtn")){
-//            j1.setVisible(false);
+            j1.setVisible(false);
             j2 = new Cdd2Forte();
+            new DistributOutputStream("cdd2forte.log");
             j2.addWindowListener(new WindowAdapter(){
                 public void windowClosing(WindowEvent e){
                     j1.setVisible(true);
                 }
             });
         }else if (e.getActionCommand().equals("renameFilesBtn")){
-//            j1.setVisible(false);
+            j1.setVisible(false);
             j2 = new RenameFiles();
             j2.addWindowListener(new WindowAdapter(){
                 public void windowClosing(WindowEvent e){
@@ -94,7 +93,7 @@ public class Home extends JFrame implements ActionListener{
                 }
             });
         }else if (e.getActionCommand().equals("fileSplitBtn")){
-//            j1.setVisible(false);
+            //j1.setVisible(false);
             j2 = new FileSplit();
             j2.addWindowListener(new WindowAdapter(){
                 public void windowClosing(WindowEvent e){
@@ -102,10 +101,12 @@ public class Home extends JFrame implements ActionListener{
                 }
             });
         }else if (e.getActionCommand().equals("toCOordinateBtn")){
-//            j1.setVisible(false);
+            j1.setVisible(false);
             j2 = new ToCoordinate();
+            new DistributOutputStream("toCoordiantes.log");
             j2.addWindowListener(new WindowAdapter(){
-                public void windowClosing(WindowEvent e){
+                @Override
+                public void windowClosing(WindowEvent e) {
                     j1.setVisible(true);
                 }
             });
