@@ -25,6 +25,7 @@ public class RenameFiles extends JFrame implements ActionListener {
     JTextArea selectFileList;
     JTextField findJTF,addJTF,replaceJTF,customFromatJTF,startFromNumJTF;
     JComboBox renameStyle,frontORbehid,nameFormat,location;
+    JScrollPane selectFileListScroll;
 
     public static void main(String[] args) {
         new RenameFiles();
@@ -37,21 +38,26 @@ public class RenameFiles extends JFrame implements ActionListener {
         welcomeArea =new WelcomeArea(new ImageIcon(Cdd2Forte.class.getResource("/icons/rename_64.png")),"  一箱工具 - 批量文件重命名");
 
         // 选择的项目、文件
-        selectJL = new JLabel("  选取要重命名的文件（夹）");
-        selectJL.setFont(MyTools.fontPlain13);
+        selectJL = new JLabel("选取要重命名的项目");
+        selectJL.setFont(MyTools.fontBold13);
         selectFileBtn = new JButton(" 选 取 ");
-        selectBar = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        selectBar = new JPanel(new FlowLayout(FlowLayout.LEFT,10,5));
         selectBar.add(selectJL);
         selectBar.add(selectFileBtn);
 
-        selectFileList = new JTextArea();
+        selectFileList = new JTextArea("selectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileListselectFileList");
+        selectFileList.setLineWrap(true);
+        //selectFileList.setColumns(9);
+        selectFileList.setEnabled(false);
+        selectFileListScroll = new JScrollPane(selectFileList);
+        selectFileListScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         fileArea = new JPanel(new BorderLayout());
         fileArea.add(selectBar,BorderLayout.NORTH);
-        fileArea.add(selectFileList,BorderLayout.CENTER);
+        fileArea.add(selectFileListScroll,BorderLayout.CENTER);
 
         //contentsArea
-        text = new JLabel("  给选取的项目重命名：");
-        text.setFont(MyTools.fontPlain13);
+        text = new JLabel("    给选取的项目重命名");
+        text.setFont(MyTools.fontBold13);
 
         // 重命名方式
         renameStyle = new JComboBox();
@@ -61,9 +67,9 @@ public class RenameFiles extends JFrame implements ActionListener {
 
         // 替换文本
         findJL = new JLabel("查找名称：");
-        findJTF = new JTextField("--------------");
+        findJTF = new JTextField(15);
         replaceJL = new JLabel("替换名称为：");
-        replaceJTF =new JTextField("--------------");
+        replaceJTF =new JTextField(15);
 
         replaceText = new JPanel(new FlowLayout(FlowLayout.LEFT));
         replaceText.setVisible(true);
@@ -73,7 +79,7 @@ public class RenameFiles extends JFrame implements ActionListener {
         replaceText.add(replaceJTF);
 
         // 添加文本
-        addJTF = new JTextField("--------------");
+        addJTF = new JTextField(15);
         frontORbehid = new JComboBox();
         frontORbehid.addItem(" 于名称之后 ");
         frontORbehid.addItem(" 于名称之前 ");
@@ -93,11 +99,11 @@ public class RenameFiles extends JFrame implements ActionListener {
         location.addItem(" 于名称之后 ");
         location.addItem(" 于名称之前 ");
         customFromatJL =  new JLabel("名称主体：");
-        customFromatJTF = new JTextField("--------------");
+        customFromatJTF = new JTextField(15);
         startFromNum = new JLabel("开始数字为：");
-        startFromNumJTF = new JTextField("--------------");
+        startFromNumJTF = new JTextField(15);
 
-        format = new JPanel(new GridLayout(2,4));
+        format = new JPanel(new GridLayout(2,4,10,5));
         format.setVisible(false);
         format.add(nameFormatJL);
         format.add(nameFormat);
@@ -109,13 +115,13 @@ public class RenameFiles extends JFrame implements ActionListener {
         format.add(startFromNumJTF);
 
         doArea = new JPanel(new GridBagLayout());
-        doArea.add(renameStyle,new GBC(0,0).setFill(GBC.NONE).setAnchor(GBC.WEST).setIpad(0,0).setInsets(0,10).setWeight(100,0));
+        doArea.add(renameStyle,new GBC(0,0).setFill(GBC.NONE).setAnchor(GBC.WEST).setIpad(0,0).setInsets(5,10).setWeight(100,0));
         doArea.add(replaceText,new GBC(0,1).setFill(GBC.NONE).setAnchor(GBC.WEST).setIpad(0,0).setInsets(0,10).setWeight(100,0));
         doArea.add(addText,new GBC(0,2).setFill(GBC.NONE).setAnchor(GBC.WEST).setIpad(0,0).setInsets(0,10).setWeight(100,0));
         doArea.add(format,new GBC(0,3).setFill(GBC.NONE).setAnchor(GBC.WEST).setIpad(0,0).setInsets(0,10).setWeight(100,0));
 
         // 提醒部分
-        egJL = new JLabel("示 例：");
+        egJL = new JLabel("   示 例： ");
         egConJL = new JLabel("1111.jpg");
         //renameBtn = new JButton("重新命名");
 
@@ -127,7 +133,7 @@ public class RenameFiles extends JFrame implements ActionListener {
 
         //添加组件到 contentsArea
         contentsArea = new JPanel(new GridBagLayout());
-        contentsArea.add(fileArea,new GBC(0,0).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(0,30).setInsets(10,0));
+        contentsArea.add(fileArea,new GBC(0,0).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(0,60).setInsets(10,5));
         contentsArea.add(text,new GBC(0,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(0,0).setInsets(0,1));
         contentsArea.add(doArea,new GBC(0,2).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(0,0).setWeight(100,100).setInsets(0,1));
         contentsArea.add(noticeArea,new GBC(0,3).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(0,20).setInsets(0,1));
@@ -136,7 +142,7 @@ public class RenameFiles extends JFrame implements ActionListener {
         //aboutBtn = new JButton(new ImageIcon(Cdd2Forte.class.getResource("/icons/about.png")));
         backBtn = new JButton("< 上一步");
         nextBtn = new JButton("下一步 >");
-        okBtn = new JButton(" 重新命名 ");
+        okBtn = new JButton(" 重命名 ");
         homeBtn = new JButton(" 主功能 ");
         //aboutBtn.setEnabled(false);
         backBtn.setEnabled(false);
@@ -168,7 +174,7 @@ public class RenameFiles extends JFrame implements ActionListener {
         //设置窗体
         this.setTitle("一箱工具 - 批量文件重命名");
         this.setIconImage (Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/icons/boxtool_64.png")));
-        this.setSize(600,400);
+        this.setSize(600,430);
         this.setResizable(false);//固定窗体大小
         this.setLocationRelativeTo(null);//打开时相对window居中
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
