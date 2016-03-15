@@ -25,6 +25,7 @@ public class selectFile {
             jfc.setFileFilter(new FileNameExtensionFilter("Excel文件", "xls", "xlsx"));
         }else if (fileType =="text"){
             jfc.setFileFilter(new FileNameExtensionFilter("文本文件", "txt", "log"));
+        }else if (fileType == null){
         }
 
         //返回值为 state 即 APPROVE_OPTION 0，CANCEL_OPTION 1

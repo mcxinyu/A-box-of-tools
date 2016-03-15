@@ -42,7 +42,6 @@ public class ReadFile {
 
     /**
      * 读取多个文件
-     *
      * @param files 文件夹、者多个文件、单个文件 的数组
      * @return File[] 文件列表
      */
