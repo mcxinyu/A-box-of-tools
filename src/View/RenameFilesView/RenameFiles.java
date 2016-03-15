@@ -18,20 +18,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-public class RenameFiles extends JFrame implements ActionListener {
+public class RenameFiles extends JFrame implements ActionListener,Runnable {
     //JFrame frame;
     JPanel welcomeArea,fileArea,controlBtnArea,doArea,noticeArea,contentsArea;
     JPanel selectBar,replaceText,addText,format,fileListArea;
     JButton selectFileBtn,addBtn,backBtn,nextBtn,homeBtn,okBtn,aboutBtn;
     JLabel selectJL,text,findJL,replaceJL,egJL,egConJL,nameFormatJL,locationJL,customFromatJL,startFromNum;
-    JTextArea selectFileList;
     JTextField findJTF,addJTF,replaceJTF,customFromatJTF,startFromNumJTF;
     JComboBox renameStyle,frontORbehid,nameFormat,location;
     JScrollPane fileListAreaScroll;
     int height = 66;
 
     public static void main(String[] args) {
-        new RenameFiles();
+        RenameFiles rn = new RenameFiles();
+        //Thread thread = new Thread(rn);
+        //thread.start();
     }
 
     public RenameFiles(){
@@ -45,6 +46,7 @@ public class RenameFiles extends JFrame implements ActionListener {
         selectJL.setFont(MyTools.fontBold13);
         selectFileBtn = new JButton(" 选 取 ");
         addBtn = new JButton(" 添 加 ");
+        addBtn.setVisible(false);
         selectBar = new JPanel(new FlowLayout(FlowLayout.LEFT,10,5));
         selectBar.add(selectJL);
         selectBar.add(selectFileBtn);
@@ -163,11 +165,13 @@ public class RenameFiles extends JFrame implements ActionListener {
 
         controlBtnArea = new ControlBtnArea(backBtn,nextBtn,okBtn,homeBtn);
 
-        //设置监听
+        //设置监听addBtn
         renameStyle.setActionCommand("renameStyle");
         renameStyle.addActionListener(this);
         selectFileBtn.setActionCommand("selectFileBtn");
         selectFileBtn.addActionListener(this);
+        addBtn.setActionCommand("addBtn");
+        addBtn.addActionListener(this);
 
         backBtn.setActionCommand("backBtn");
         backBtn.addActionListener(this);
@@ -197,9 +201,10 @@ public class RenameFiles extends JFrame implements ActionListener {
     int count = 0;
     int oneLineWidth = 10;
     int totalLineHeight = 10;
+    File[] filesList = null;
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println(oneLineWidth);
+        //System.out.println(oneLineWidth);
         if (e.getActionCommand().equals("renameStyle")){
             if (renameStyle.getSelectedIndex() == 0){
                 replaceText.setVisible(true);
@@ -215,35 +220,81 @@ public class RenameFiles extends JFrame implements ActionListener {
                 format.setVisible(true);
             }
         }else if (e.getActionCommand().equals("selectFileBtn")){
-            int state;
-            selectFile select = new selectFile();
-            state = select.selectFile("选取项目", null);
-            File[] filesList = select.getFile();
-            if (state == 0) {
-                //如果点击确定
-                count++;
-                for (int i = 0; i < filesList.length; i++) {
-                    String fileName = " "+filesList[i].getName()+" ";
-                    JLabel jl = new JLabel(fileName);
-
-                    jl.setOpaque(true);
-                    jl.setBackground(new Color(84,189,241));
-                    fileListArea.add(jl);
-
-                    System.out.println(jl.getFontMetrics(jl.getFont()).getHeight());
-                    oneLineWidth += jl.getFontMetrics(jl.getFont()).stringWidth(jl.getText()) +5;  //合计每行的 JLabel 的宽度和间隔
-                    if (oneLineWidth >= 580){
-                        totalLineHeight += jl.getFontMetrics(jl.getFont()).getHeight() + 5;  //当 JLabel 的宽度大于JPanel的宽度时，总高度加一个 JLabel 的高度和间隔
-                        if (totalLineHeight >= height){
-                            height = totalLineHeight;    //当行高的高度大于原来设置的高度时，设置原来的高度等于总高度
-                            fileListArea.setPreferredSize(new Dimension(580, totalLineHeight + 20));  //设置JPanel的高度为总高度，为什么加76？
-                        }
-                        oneLineWidth = jl.getFontMetrics(jl.getFont()).stringWidth(jl.getText()) + 10;  //值得再考虑！！每次没有放满一行后的元素宽度
-                    }
+            if (filesList != null){
+                Object[] options = {"确定","我手贱"};
+                int response=JOptionPane.showOptionDialog(this, "清空已选取的项目？", "thinkPad",JOptionPane.YES_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+                if(response==0) {
+                    filesList = null;
+                    fileListArea.removeAll();
+                    fileListArea.setPreferredSize(new Dimension(580, 66));
+                    fileListArea.revalidate();
+                    fileListArea.repaint();
+                    addBtn.setVisible(false);
                 }
-                fileListArea.revalidate();
-            }else if (state == 1) {
             }
+            if (filesList == null) {
+                int state;
+                selectFile select = new selectFile();
+                state = select.selectFile("选取项目", null);
+                filesList = select.getFile();
+                if (state == 0) {
+                    //如果点击确定
+                    for (int i = 0; i < filesList.length; i++) {
+                        String fileName = " " + filesList[i].getName() + " ";
+                        JLabel jl = new JLabel(fileName);
+                        jl.setOpaque(true);
+                        jl.setBackground(new Color(84, 189, 241));
+                        fileListArea.add(jl);
+                        //System.out.println(jl.getFontMetrics(jl.getFont()).getHeight());
+                        oneLineWidth += jl.getFontMetrics(jl.getFont()).stringWidth(jl.getText()) + 5;  //合计每行的 JLabel 的宽度和间隔
+                        if (oneLineWidth >= 580) {
+                            totalLineHeight += jl.getFontMetrics(jl.getFont()).getHeight() + 5;  //当 JLabel 的宽度大于JPanel的宽度时，总高度加一个 JLabel 的高度和间隔
+                            if (totalLineHeight >= height) {
+                                height = totalLineHeight;    //当行高的高度大于原来设置的高度时，设置原来的高度等于总高度
+                                fileListArea.setPreferredSize(new Dimension(580, totalLineHeight + 20));  //设置JPanel的高度为总高度，为什么加76？
+                            }
+                            oneLineWidth = jl.getFontMetrics(jl.getFont()).stringWidth(jl.getText()) + 10;  //值得再考虑！！每次没有放满一行后的元素宽度
+                        }
+                    }
+                    addBtn.setVisible(true);
+                    fileListArea.revalidate();
+                }
+            }
+        }else if (e.getActionCommand().equals("addBtn")){
+            if (filesList != null) {
+                int state;
+                selectFile select = new selectFile();
+                state = select.selectFile("添加项目", null);
+                filesList = select.getFile();
+                if (state == 0) {
+                    //如果点击确定
+                    for (int i = 0; i < filesList.length; i++) {
+                        String fileName = " " + filesList[i].getName() + " ";
+                        JLabel jl = new JLabel(fileName);
+                        jl.setOpaque(true);
+                        jl.setBackground(new Color(84, 189, 241));
+                        fileListArea.add(jl);
+
+                        oneLineWidth += jl.getFontMetrics(jl.getFont()).stringWidth(jl.getText()) + 5;  //合计每行的 JLabel 的宽度和间隔
+                        if (oneLineWidth >= 580) {
+                            totalLineHeight += jl.getFontMetrics(jl.getFont()).getHeight() + 5;  //当 JLabel 的宽度大于JPanel的宽度时，总高度加一个 JLabel 的高度和间隔
+                            if (totalLineHeight >= height) {
+                                height = totalLineHeight;    //当行高的高度大于原来设置的高度时，设置原来的高度等于总高度
+                                fileListArea.setPreferredSize(new Dimension(580, totalLineHeight + 21));  //设置JPanel的高度为总高度，为什么加76？
+                            }
+                            oneLineWidth = jl.getFontMetrics(jl.getFont()).stringWidth(jl.getText()) + 10;  //值得再考虑！！每次没有放满一行后的元素宽度
+                        }
+                    }
+                    fileListArea.revalidate();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void run() {
+        if (filesList != null){
+            egConJL.setText(filesList[0].getName());
         }
     }
 }
