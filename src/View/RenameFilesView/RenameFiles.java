@@ -227,7 +227,7 @@ public class RenameFiles extends JFrame implements ActionListener {
                     JLabel jl = new JLabel(fileName);
 
                     jl.setOpaque(true);
-                    jl.setBackground(new Color(50, 173, 82));
+                    jl.setBackground(new Color(84,189,241));
                     fileListArea.add(jl);
 
                     System.out.println(jl.getFontMetrics(jl.getFont()).getHeight());
