@@ -31,8 +31,8 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
 
     public static void main(String[] args) {
         RenameFiles rn = new RenameFiles();
-        //Thread thread = new Thread(rn);
-        //thread.start();
+        Thread thread = new Thread(rn);
+        thread.start();
     }
 
     public RenameFiles(){
@@ -137,7 +137,7 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
 
         // 提醒部分
         egJL = new JLabel("   示 例： ");
-        egConJL = new JLabel("1111.jpg");
+        egConJL = new JLabel("example.java");
         //renameBtn = new JButton("重新命名");
 
         noticeArea = new JPanel(new BorderLayout());
@@ -194,7 +194,7 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
         this.setSize(600,430);
         this.setResizable(false);//固定窗体大小
         this.setLocationRelativeTo(null);//打开时相对window居中
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
     }
 
@@ -293,8 +293,22 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
 
     @Override
     public void run() {
-        if (filesList != null){
-            egConJL.setText(filesList[0].getName());
+        int time = 0;
+        while (true){
+            try {
+                Thread.sleep(1000);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            time++;
+            if (filesList != null){
+                egConJL.setText(filesList[0].getName());
+            }else if (filesList == null){
+                egConJL.setText("example.java");
+            }
+            //if (time == 9){
+            //    break;
+            //}
         }
     }
 }
