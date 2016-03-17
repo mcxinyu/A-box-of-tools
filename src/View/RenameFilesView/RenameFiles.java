@@ -14,18 +14,17 @@ import View.CheckPlanView.GBC;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.io.File;
 
 public class RenameFiles extends JFrame implements ActionListener,Runnable {
     //JFrame frame;
     JPanel welcomeArea,fileArea,controlBtnArea,doArea,noticeArea,contentsArea;
     JPanel selectBar,replaceText,addText,format,fileListArea;
-    JButton selectFileBtn,addBtn,backBtn,nextBtn,homeBtn,okBtn,aboutBtn;
+    JButton selectFileBtn,addBtn,backBtn,nextBtn,homeBtn,renameBtn,aboutBtn;
     JLabel selectJL,text,findJL,replaceJL,egJL,egConJL,nameFormatJL,locationJL,customFromatJL,startFromNum;
     JTextField findJTF,addJTF,replaceJTF,customFromatJTF,startFromNumJTF;
-    JComboBox renameStyle,frontORbehid,nameFormat,location;
+    JComboBox renameStyle,nameFormat,location_add,location_fromat;
     JScrollPane fileListAreaScroll;
     int height = 66;
 
@@ -51,13 +50,6 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
         selectBar.add(selectJL);
         selectBar.add(selectFileBtn);
         selectBar.add(addBtn);
-
-        //selectFileList = new JTextArea();
-        //selectFileList.setLineWrap(true);
-        //selectFileList.setColumns(5);
-        //selectFileList.setEditable(false);
-        //selectFileListScroll = new JScrollPane(selectFileList);
-        //selectFileListScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
         fileListArea = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
         fileListArea.setPreferredSize(new Dimension(580, height));
@@ -95,13 +87,13 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
 
         // 添加文本
         addJTF = new JTextField(15);
-        frontORbehid = new JComboBox();
-        frontORbehid.addItem(" 于名称之后 ");
-        frontORbehid.addItem(" 于名称之前 ");
+        location_add = new JComboBox();
+        location_add.addItem(" 于名称之后 ");
+        location_add.addItem(" 于名称之前 ");
         addText = new JPanel(new FlowLayout(FlowLayout.LEFT));
         addText.setVisible(false);
         addText.add(addJTF);
-        addText.add(frontORbehid);
+        addText.add(location_add);
 
         // 格式
         nameFormatJL = new JLabel("名称格式：");
@@ -110,20 +102,49 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
         nameFormat.addItem(" 名称和计数 ");
         nameFormat.addItem(" 名称和日期 ");
         locationJL = new JLabel("位 置：");
-        location = new JComboBox();
-        location.addItem(" 于名称之后 ");
-        location.addItem(" 于名称之前 ");
+        location_fromat = new JComboBox();
+        location_fromat.addItem(" 于名称之后 ");
+        location_fromat.addItem(" 于名称之前 ");
         customFromatJL =  new JLabel("名称主体：");
         customFromatJTF = new JTextField(15);
         startFromNum = new JLabel("开始数字为：");
         startFromNumJTF = new JTextField(15);
+        startFromNumJTF.setText("0");
+        startFromNumJTF.addKeyListener(new KeyAdapter(){    //监听，限制只输入数字
+            public void keyTyped(KeyEvent e) {
+                int keyChar = e.getKeyChar();
+                if(keyChar >= KeyEvent.VK_0 && keyChar <= KeyEvent.VK_9){
+                }else{
+                    //if (startFromNumJTF.getText().length()==0){
+                    //    startFromNumJTF.setText("0");
+                    //}
+                    e.consume(); //关键，屏蔽掉非法输入
+                }
+            }
+        });
+        startFromNumJTF.addFocusListener(new FocusAdapter() {   //监听，设置占位符
+            @Override
+            public void focusGained(FocusEvent e) {
+                //System.out.println("focusGained");
+                if (startFromNumJTF.isEditable() && startFromNumJTF.getText().equals("0")){ //如果不是可编辑的状态，那么点击的时候就置空
+                    startFromNumJTF.setText("");
+                }
+            }
+            @Override
+            public void focusLost(FocusEvent e) {
+                //System.out.println("focusLost");
+                if (startFromNumJTF.getText().length()==0){ //如果为空就设置默认值
+                    startFromNumJTF.setText("0");
+                }
+            }
+        });
 
         format = new JPanel(new GridLayout(2,4,10,5));
         format.setVisible(false);
         format.add(nameFormatJL);
         format.add(nameFormat);
         format.add(locationJL);
-        format.add(location);
+        format.add(location_fromat);
         format.add(customFromatJL);
         format.add(customFromatJTF);
         format.add(startFromNum);
@@ -157,13 +178,13 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
         //aboutBtn = new JButton(new ImageIcon(Cdd2Forte.class.getResource("/icons/about.png")));
         backBtn = new JButton("< 上一步");
         nextBtn = new JButton("下一步 >");
-        okBtn = new JButton(" 重命名 ");
+        renameBtn = new JButton(" 重命名 ");
         homeBtn = new JButton(" 主功能 ");
         //aboutBtn.setEnabled(false);
         backBtn.setEnabled(false);
         nextBtn.setEnabled(false);
 
-        controlBtnArea = new ControlBtnArea(backBtn,nextBtn,okBtn,homeBtn);
+        controlBtnArea = new ControlBtnArea(backBtn,nextBtn,renameBtn,homeBtn);
 
         //设置监听addBtn
         renameStyle.setActionCommand("renameStyle");
@@ -172,13 +193,17 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
         selectFileBtn.addActionListener(this);
         addBtn.setActionCommand("addBtn");
         addBtn.addActionListener(this);
+        nameFormat.setActionCommand("nameFormat");
+        nameFormat.addActionListener(this);
+        startFromNumJTF.setActionCommand("startFromNumJTF");
+        startFromNumJTF.addActionListener(this);
 
         backBtn.setActionCommand("backBtn");
         backBtn.addActionListener(this);
         nextBtn.setActionCommand("nextBtn");
         nextBtn.addActionListener(this);
-        okBtn.setActionCommand("cancelBtn");
-        okBtn.addActionListener(this);
+        renameBtn.setActionCommand("renameBtn");
+        renameBtn.addActionListener(this);
         homeBtn.setActionCommand("homeBtn");
         homeBtn.addActionListener(this);
 
@@ -219,6 +244,16 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
                 addText.setVisible(false);
                 format.setVisible(true);
             }
+        }else if(e.getActionCommand().equals("nameFormat")){
+            if (nameFormat.getSelectedIndex() == 0){
+                startFromNumJTF.setEditable(true);
+            }else if (nameFormat.getSelectedIndex() == 1){
+                startFromNumJTF.setEditable(true);
+            }else if (nameFormat.getSelectedIndex() == 2){
+                startFromNumJTF.setEditable(false);
+            }
+        }else if(e.getActionCommand().equals("startFromNumJTF")){
+
         }else if (e.getActionCommand().equals("selectFileBtn")){
             if (filesList != null){
                 Object[] options = {"确定","我手贱"};
@@ -306,9 +341,6 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
             }else if (filesList == null){
                 egConJL.setText("example.java");
             }
-            //if (time == 9){
-            //    break;
-            //}
         }
     }
 }
