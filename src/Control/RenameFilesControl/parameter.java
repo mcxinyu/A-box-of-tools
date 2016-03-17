@@ -5,9 +5,9 @@ package Control.RenameFilesControl;
  */
 public class parameter {
 
-    //位置，前0，后1
-    static final int front = 0;
-    static final int behind = 1;
+    //位置，前1，后0
+    static final int behind = 0;
+    static final int front = 1;
 
     //格式，索引0，计数1，日期2
     static final int index = 0;

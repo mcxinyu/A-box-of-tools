@@ -9,6 +9,7 @@ import Common.ControlBtnArea;
 import Common.MyTools;
 import Common.WelcomeArea;
 import Control.CommonControl.selectFile;
+import Control.RenameFilesControl.Rename;
 import View.Cdd2ForteView.Cdd2Forte;
 import View.CheckPlanView.GBC;
 
@@ -16,6 +17,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class RenameFiles extends JFrame implements ActionListener,Runnable {
     //JFrame frame;
@@ -55,7 +61,7 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
         fileListArea.setPreferredSize(new Dimension(580, height));
         fileListAreaScroll = new JScrollPane(fileListArea);
         fileListAreaScroll.setPreferredSize(new Dimension(580, 90));
-        fileListAreaScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        fileListAreaScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         fileListAreaScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         fileArea = new JPanel(new BorderLayout());
@@ -68,11 +74,11 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
 
         // 重命名方式
         renameStyle = new JComboBox();
-        renameStyle.addItem(" 替换文本 ");
-        renameStyle.addItem(" 添加文本 ");
-        renameStyle.addItem(" 格式 ");
+        renameStyle.addItem(" 替换文本 ");  //0
+        renameStyle.addItem(" 添加文本 ");  //1
+        renameStyle.addItem(" 格式 ");    //2
 
-        // 替换文本
+        // 替换文本0
         findJL = new JLabel("查找名称：");
         findJTF = new JTextField(15);
         replaceJL = new JLabel("替换名称为：");
@@ -85,35 +91,39 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
         replaceText.add(replaceJL);
         replaceText.add(replaceJTF);
 
-        // 添加文本
+        // 添加文本1
         addJTF = new JTextField(15);
         location_add = new JComboBox();
-        location_add.addItem(" 于名称之后 ");
-        location_add.addItem(" 于名称之前 ");
+        location_add.addItem(" 于名称之后 ");    //0
+        location_add.addItem(" 于名称之前 ");    //1
         addText = new JPanel(new FlowLayout(FlowLayout.LEFT));
         addText.setVisible(false);
         addText.add(addJTF);
         addText.add(location_add);
 
-        // 格式
+        // 格式2
         nameFormatJL = new JLabel("名称格式：");
         nameFormat = new JComboBox();
-        nameFormat.addItem(" 名称和索引 ");
-        nameFormat.addItem(" 名称和计数 ");
-        nameFormat.addItem(" 名称和日期 ");
+        nameFormat.addItem(" 名称和索引 ");  //0
+        nameFormat.addItem(" 名称和计数 ");  //1
+        nameFormat.addItem(" 名称和日期 ");  //2
         locationJL = new JLabel("位 置：");
         location_fromat = new JComboBox();
-        location_fromat.addItem(" 于名称之后 ");
-        location_fromat.addItem(" 于名称之前 ");
-        customFromatJL =  new JLabel("名称主体：");
+        location_fromat.addItem(" 于名称之后 "); //0
+        location_fromat.addItem(" 于名称之前 "); //1
+        customFromatJL =  new JLabel("自定名称：");
         customFromatJTF = new JTextField(15);
         startFromNum = new JLabel("开始数字为：");
         startFromNumJTF = new JTextField(15);
         startFromNumJTF.setText("0");
-        startFromNumJTF.addKeyListener(new KeyAdapter(){    //监听，限制只输入数字
+        startFromNumJTF.addKeyListener(new KeyAdapter(){    //监听，限制只输入数字,最大2147483648
             public void keyTyped(KeyEvent e) {
                 int keyChar = e.getKeyChar();
                 if(keyChar >= KeyEvent.VK_0 && keyChar <= KeyEvent.VK_9){
+                    if (!startFromNumJTF.getText().equals("") && Long.parseLong(startFromNumJTF.getText())>2147483647){
+                        JOptionPane.showMessageDialog(null,"超过最大值2147483647");
+                        startFromNumJTF.setText("214748300");
+                    }
                 }else{
                     //if (startFromNumJTF.getText().length()==0){
                     //    startFromNumJTF.setText("0");
@@ -158,7 +168,7 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
 
         // 提醒部分
         egJL = new JLabel("   示 例： ");
-        egConJL = new JLabel("example.java");
+        egConJL = new JLabel("example.txt");
         //renameBtn = new JButton("重新命名");
 
         noticeArea = new JPanel(new BorderLayout());
@@ -226,6 +236,7 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
     int count = 0;
     int oneLineWidth = 10;
     int totalLineHeight = 10;
+    List<File> fileListArray = null;
     File[] filesList = null;
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -252,14 +263,13 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
             }else if (nameFormat.getSelectedIndex() == 2){
                 startFromNumJTF.setEditable(false);
             }
-        }else if(e.getActionCommand().equals("startFromNumJTF")){
-
         }else if (e.getActionCommand().equals("selectFileBtn")){
             if (filesList != null){
                 Object[] options = {"确定","我手贱"};
                 int response=JOptionPane.showOptionDialog(this, "清空已选取的项目？", "thinkPad",JOptionPane.YES_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
                 if(response==0) {
                     filesList = null;
+                    fileListArray = null;
                     fileListArea.removeAll();
                     fileListArea.setPreferredSize(new Dimension(580, 66));
                     fileListArea.revalidate();
@@ -272,6 +282,7 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
                 selectFile select = new selectFile();
                 state = select.selectFile("选取项目", null);
                 filesList = select.getFile();
+                fileListArray = new ArrayList();
                 if (state == 0) {
                     //如果点击确定
                     for (int i = 0; i < filesList.length; i++) {
@@ -280,6 +291,7 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
                         jl.setOpaque(true);
                         jl.setBackground(new Color(84, 189, 241));
                         fileListArea.add(jl);
+                        fileListArray.add(filesList[i]);
                         //System.out.println(jl.getFontMetrics(jl.getFont()).getHeight());
                         oneLineWidth += jl.getFontMetrics(jl.getFont()).stringWidth(jl.getText()) + 5;  //合计每行的 JLabel 的宽度和间隔
                         if (oneLineWidth >= 580) {
@@ -293,6 +305,9 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
                     }
                     addBtn.setVisible(true);
                     fileListArea.revalidate();
+                }else if (state == 1){
+                    filesList = null;
+                    fileListArray = null;
                 }
             }
         }else if (e.getActionCommand().equals("addBtn")){
@@ -301,6 +316,7 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
                 selectFile select = new selectFile();
                 state = select.selectFile("添加项目", null);
                 filesList = select.getFile();
+                //fileListArray = new ArrayList();
                 if (state == 0) {
                     //如果点击确定
                     for (int i = 0; i < filesList.length; i++) {
@@ -309,7 +325,7 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
                         jl.setOpaque(true);
                         jl.setBackground(new Color(84, 189, 241));
                         fileListArea.add(jl);
-
+                        fileListArray.add(filesList[i]);
                         oneLineWidth += jl.getFontMetrics(jl.getFont()).stringWidth(jl.getText()) + 5;  //合计每行的 JLabel 的宽度和间隔
                         if (oneLineWidth >= 580) {
                             totalLineHeight += jl.getFontMetrics(jl.getFont()).getHeight() + 5;  //当 JLabel 的宽度大于JPanel的宽度时，总高度加一个 JLabel 的高度和间隔
@@ -326,20 +342,96 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
         }
     }
 
+    String customFromatText = "";
     @Override
     public void run() {
-        int time = 0;
+        //int time = 0;
         while (true){
             try {
                 Thread.sleep(1000);
             }catch (Exception e){
                 e.printStackTrace();
             }
-            time++;
-            if (filesList != null){
-                egConJL.setText(filesList[0].getName());
-            }else if (filesList == null){
-                egConJL.setText("example.java");
+            //time++;
+            if (fileListArray != null){
+                if (renameStyle.getSelectedIndex() == 0){   //替换0---------------
+                    if (findJTF.getText().equals("")){
+                        egConJL.setText(fileListArray.get(0).getName());
+                    }else {
+                        egConJL.setText(fileListArray.get(0).getName().replace(findJTF.getText(), replaceJTF.getText()));
+                    }
+                }else if (renameStyle.getSelectedIndex() == 1){ //添加1---------------
+                    if (location_add.getSelectedIndex() == 0){  //后面
+                        if (addJTF.getText().equals("")){
+                            egConJL.setText(fileListArray.get(0).getName());
+                        }else {
+                            String newName = fileListArray.get(0).getName().substring(0, fileListArray.get(0).getName().lastIndexOf("."))+addJTF.getText()+fileListArray.get(0).getName().substring(fileListArray.get(0).getName().lastIndexOf("."));
+                            egConJL.setText(newName);
+                        }
+                    }else if (location_add.getSelectedIndex() == 1){    //前面
+                        if (addJTF.getText().equals("")){
+                            egConJL.setText(fileListArray.get(0).getName());
+                        }else {
+                            egConJL.setText(addJTF.getText()+fileListArray.get(0).getName());
+                        }
+                    }
+                }else if (renameStyle.getSelectedIndex() == 2){ //格式2---------------
+                    if (nameFormat.getSelectedIndex() == 0){    //索引0-------
+                        if (location_fromat.getSelectedIndex() == 0 && !startFromNumJTF.getText().equals("")){   //后面
+                            if (customFromatJTF.getText().equals("")){
+                                egConJL.setText(fileListArray.get(0).getName());
+                            }else {
+                                String s = customFromatJTF.getText() + startFromNumJTF.getText() + fileListArray.get(0).getName().substring(fileListArray.get(0).getName().lastIndexOf("."));
+                                egConJL.setText(s);
+                            }
+                        }else if (location_fromat.getSelectedIndex() == 1 && !startFromNumJTF.getText().equals("")){ //前面
+                            if (customFromatJTF.getText().equals("")){
+                                egConJL.setText(fileListArray.get(0).getName());
+                            }else {
+                                String s = startFromNumJTF.getText() + customFromatJTF.getText() + fileListArray.get(0).getName().substring(fileListArray.get(0).getName().lastIndexOf("."));
+                                egConJL.setText(s);
+                            }
+                        }
+                    }else if (nameFormat.getSelectedIndex() == 1){  //计数1-------
+                        if (location_fromat.getSelectedIndex() == 0 && !startFromNumJTF.getText().equals("")){   //后面
+                            if (customFromatJTF.getText().equals("")){
+                                egConJL.setText(fileListArray.get(0).getName());
+                            }else {
+                                String s = customFromatJTF.getText() + Rename.s2index("",Long.parseLong(startFromNumJTF.getText())) + fileListArray.get(0).getName().substring(fileListArray.get(0).getName().lastIndexOf("."));
+                                egConJL.setText(s);
+                            }
+                        }else if (location_fromat.getSelectedIndex() == 1 && !startFromNumJTF.getText().equals("")){ //前面
+                            if (customFromatJTF.getText().equals("")){
+                                egConJL.setText(fileListArray.get(0).getName());
+                            }else {
+                                String s = Rename.s2index("",Long.parseLong(startFromNumJTF.getText())) + customFromatJTF.getText() + fileListArray.get(0).getName().substring(fileListArray.get(0).getName().lastIndexOf("."));
+                                egConJL.setText(s);
+                            }
+                        }
+                    }else if (nameFormat.getSelectedIndex() == 2){  //日期2-------
+                        Date nowdDate = new Date();
+                        DateFormat nowdDateDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        if (location_fromat.getSelectedIndex() == 0){   //后面
+                            if (customFromatJTF.getText().equals("")){
+                                egConJL.setText(fileListArray.get(0).getName());
+                            }else if (!customFromatJTF.getText().equals(customFromatText)){
+                                customFromatText = customFromatJTF.getText();
+                                String s = customFromatJTF.getText() + nowdDateDF.format(nowdDate) + fileListArray.get(0).getName().substring(fileListArray.get(0).getName().lastIndexOf("."));
+                                egConJL.setText(s);
+                            }
+                        }else if (location_fromat.getSelectedIndex() == 1){ //前面
+                            if (customFromatJTF.getText().equals("")){
+                                egConJL.setText(fileListArray.get(0).getName());
+                            }else if (!customFromatJTF.getText().equals(customFromatText)){
+                                customFromatText = customFromatJTF.getText();
+                                String s = nowdDateDF.format(nowdDate) + customFromatJTF.getText() + fileListArray.get(0).getName().substring(fileListArray.get(0).getName().lastIndexOf("."));
+                                egConJL.setText(s);
+                            }
+                        }
+                    }
+                }
+            }else if (fileListArray == null){
+                egConJL.setText("example.txt");
             }
         }
     }
