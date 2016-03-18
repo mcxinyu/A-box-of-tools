@@ -227,7 +227,7 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
 
         //设置窗体
         this.setTitle("一箱工具 - 批量文件重命名");
-        this.setIconImage (Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/icons/boxtool_64.png")));
+        this.setIconImage (Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/icons/rename_64.png")));
         this.setSize(600,430);
         this.setResizable(false);//固定窗体大小
         this.setLocationRelativeTo(null);//打开时相对window居中
@@ -282,7 +282,7 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
             if (filesList == null) {
                 int state;
                 selectFile select = new selectFile();
-                state = select.selectFile("选取项目", null);
+                state = select.selectFile("选取项目", null,this);
                 filesList = select.getFile();
                 fileListArray = new ArrayList();
                 if (state == 0) {
@@ -316,7 +316,7 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
             if (filesList != null) {
                 int state;
                 selectFile select = new selectFile();
-                state = select.selectFile("添加项目", null);
+                state = select.selectFile("添加项目", null,this);
                 filesList = select.getFile();
                 //fileListArray = new ArrayList();
                 if (state == 0) {

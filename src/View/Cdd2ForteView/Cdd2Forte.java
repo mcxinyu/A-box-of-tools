@@ -147,7 +147,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
 
         //设置窗体
         this.setTitle("一箱工具 - cdd2forte");
-        this.setIconImage (Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/icons/boxtool_64.png")));
+        this.setIconImage (Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/icons/cdd2forte_64.png")));
 
         this.setSize(626,500);
         this.setResizable(false);//固定窗体大小
@@ -182,7 +182,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
                 jcb1.setEnabled(false);
                 jcb1.setSelected(false);
                 selectFile select = new selectFile();
-                state = select.selectFile("读取坐标文件", "text");
+                state = select.selectFile("读取坐标文件", "text",this);
                 File[] fileList = new ReadFile().readMultiText(select.getFile());
                 if (state == 0) {
                     //如果点击确定
@@ -223,7 +223,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
                 progressBar2.setText("正在处理 cdd-log 文件...");
 
                 selectFile select = new selectFile();
-                state = select.selectFile("读取 cdd-log", "text");
+                state = select.selectFile("读取 cdd-log", "text",this);
                 File[] fileList = new ReadFile().readMultiText(select.getFile());
                 if (state == 0) {
                     //如果点击确定
@@ -260,7 +260,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
             }
         }else if (e.getActionCommand() == "export2ForteBtn"){
             saveFile save = new saveFile();
-            int state = save.saveFile("导出 forte 环境",1);
+            int state = save.saveFile("导出 forte 环境",1,this);
             if (state == 0){
                 pl.createForteFile(forteArray,save.getFile().getPath());
             }else if (state == 1){

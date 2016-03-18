@@ -1,6 +1,7 @@
 package Control.CommonControl;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 
 /**
@@ -8,7 +9,7 @@ import java.io.File;
  */
 public class saveFile {
     File file = null;
-    public int saveFile (String windowTitle,int fileMode){
+    public int saveFile (String windowTitle,int fileMode,Component parent){
         //用于新建一个保存文件的窗口
         JFileChooser jfc = new JFileChooser();
         jfc.setDialogTitle(windowTitle);
@@ -19,7 +20,7 @@ public class saveFile {
             jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         }
 
-        int state = jfc.showSaveDialog(null);
+        int state = jfc.showSaveDialog(parent);
         file = jfc.getSelectedFile();
 
         return state;

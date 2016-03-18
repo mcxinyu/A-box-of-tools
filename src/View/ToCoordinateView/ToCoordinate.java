@@ -111,7 +111,7 @@ public class ToCoordinate extends JFrame implements ActionListener {
 
         //设置窗体
         this.setTitle("一箱工具 - 地图转坐标");
-        this.setIconImage (Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/icons/boxtool_64.png")));
+        this.setIconImage (Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/icons/coordinate_64.png")));
 
         this.setSize(626,300);
         this.setResizable(false);//固定窗体大小
@@ -132,7 +132,7 @@ public class ToCoordinate extends JFrame implements ActionListener {
             int state;
             taps.setText("正在读取 Cellinfo...");
             selectFile select = new selectFile();
-            state = select.selectFile("读取 Cellinfo 文件", "text");
+            state = select.selectFile("读取 Cellinfo 文件", "text",this);
             File[] fileList = new ReadFile().readMultiText(select.getFile());
             if (state == 0) {
                 //如果点击确定
@@ -155,7 +155,7 @@ public class ToCoordinate extends JFrame implements ActionListener {
             }
         }else if (e.getActionCommand().equals("toCoordinateBtn")){
             saveFile save = new saveFile();
-            int state = save.saveFile("导出 Coordinates 文件",1);
+            int state = save.saveFile("导出 Coordinates 文件",1,this);
             if (state == 0){
                 if (cellinfo!=null) {
                     String[][] coordinate = c2c.toCoordinates(cellinfo);
