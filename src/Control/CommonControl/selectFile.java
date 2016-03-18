@@ -4,6 +4,7 @@ import Common.MyTools;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
 import java.io.File;
 
 /**
@@ -11,7 +12,7 @@ import java.io.File;
  */
 public class selectFile {
     File files[] = null;
-    public int selectFile (String windowTitle,String fileType){
+    public int selectFile (String windowTitle,String fileType,Component parent){
         MyTools.windowsFeel();
 
         //用于新建一个打开文件的窗口
@@ -25,10 +26,11 @@ public class selectFile {
             jfc.setFileFilter(new FileNameExtensionFilter("Excel文件", "xls", "xlsx"));
         }else if (fileType =="text"){
             jfc.setFileFilter(new FileNameExtensionFilter("文本文件", "txt", "log"));
+        }else if (fileType == null){
         }
 
         //返回值为 state 即 APPROVE_OPTION 0，CANCEL_OPTION 1
-        int state = jfc.showOpenDialog(null);
+        int state = jfc.showOpenDialog(parent);
 
         files = jfc.getSelectedFiles();
 

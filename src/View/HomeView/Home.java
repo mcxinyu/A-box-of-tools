@@ -76,7 +76,7 @@ public class Home extends JFrame implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals("cdd2forteBtn")){
-            j1.setVisible(false);
+            //j1.setVisible(false);
             j2 = new Cdd2Forte();
             new DistributOutputStream("cdd2forte.log");
             j2.addWindowListener(new WindowAdapter(){
@@ -85,7 +85,7 @@ public class Home extends JFrame implements ActionListener{
                 }
             });
         }else if (e.getActionCommand().equals("renameFilesBtn")){
-            j1.setVisible(false);
+            //j1.setVisible(false);
             j2 = new RenameFiles();
             j2.addWindowListener(new WindowAdapter(){
                 public void windowClosing(WindowEvent e){
@@ -101,7 +101,7 @@ public class Home extends JFrame implements ActionListener{
                 }
             });
         }else if (e.getActionCommand().equals("toCOordinateBtn")){
-            j1.setVisible(false);
+            //j1.setVisible(false);
             j2 = new ToCoordinate();
             new DistributOutputStream("toCoordiantes.log");
             j2.addWindowListener(new WindowAdapter(){
