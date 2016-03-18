@@ -1,11 +1,8 @@
 <component name="ArtifactManager">
   <artifact name="A-box-of-tools:jar">
-    <output-path>$PROJECT_DIR$/resources/A_box_of_tools_jar</output-path>
+    <output-path>$PROJECT_DIR$/resources</output-path>
     <root id="root">
       <element id="archive" name="A-box-of-tools.jar">
-        <element id="directory" name="META-INF">
-          <element id="file-copy" path="$PROJECT_DIR$/resources/META-INF/MANIFEST.MF" />
-        </element>
         <element id="module-output" name="A-box-of-tools" />
       </element>
       <element id="directory" name="config">

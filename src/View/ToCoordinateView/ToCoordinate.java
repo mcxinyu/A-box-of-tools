@@ -116,7 +116,7 @@ public class ToCoordinate extends JFrame implements ActionListener {
         this.setSize(626,300);
         this.setResizable(false);//固定窗体大小
         this.setLocationRelativeTo(null);//打开时相对window居中
-        //this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setVisible(true);
     }
 

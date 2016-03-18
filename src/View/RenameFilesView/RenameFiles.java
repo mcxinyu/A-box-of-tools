@@ -37,13 +37,15 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
     String customFromatText = "";
     Rename rn = new Rename();
 
-    public static void main(String[] args) {
-        RenameFiles rn = new RenameFiles();
-        Thread thread = new Thread(rn);
-        thread.start();
-    }
+    //public static void main(String[] args) {
+    //    RenameFiles rn = new RenameFiles();
+    //    Thread thread = new Thread(rn);
+    //    thread.start();
+    //}
 
     public RenameFiles(){
+        Thread thread = new Thread(this);
+        thread.start();
         MyTools.windowsFeel();
 
         //欢迎栏
@@ -229,7 +231,7 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
         this.setSize(600,430);
         this.setResizable(false);//固定窗体大小
         this.setLocationRelativeTo(null);//打开时相对window居中
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setVisible(true);
     }
 

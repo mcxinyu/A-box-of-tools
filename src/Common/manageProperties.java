@@ -1,6 +1,9 @@
 package Common;
 
-import java.io.*;
+import javax.swing.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.Iterator;
 import java.util.Properties;
 
@@ -41,12 +44,17 @@ public class manageProperties {
      * @param value 要写入的 key 对应的 value
      */
     public void writeProperties(String fileName,String key,String value){
+        File filePath = new File("config/");
         File file = new File("config/" + fileName);
+        if (!filePath.exists()) {
+            filePath.mkdirs();
+        }
         try(FileOutputStream out = new FileOutputStream(file, false)){   //true表示追加打开,false表示覆盖原文件
             pro.setProperty(key, value);
             pro.store(out, null);
         }catch (Exception e){
             e.printStackTrace();
+            JOptionPane.showMessageDialog(null,"导出失败，请确认程序根目录下有“config”文件夹！");
         }
     }
 
