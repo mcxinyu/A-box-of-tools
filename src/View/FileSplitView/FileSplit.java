@@ -18,7 +18,7 @@ public class FileSplit extends JFrame {
     JPanel controlBtnArea;
     JButton backBtn,nextBtn,okBtn,cancelBtn,selectBtn,exportBtn;
     JPanel contentsArea,setArea,noticeArea;
-    JLabel temp1,temp2,text,importJlb,setJbl,noticeOld,noticeNew;
+    JLabel temp1,lineNum,text,importJlb,setJbl,noticeOld,noticeNew;
     JTextField filePath,setNum;
     JComboBox setJcb;
     JCheckBox setTitleJcb,noticeJcb;
@@ -31,19 +31,21 @@ public class FileSplit extends JFrame {
         //欢迎栏
         welcomeArea =new WelcomeArea(new ImageIcon(this.getClass().getResource("/icons/split_64.png")),"  一箱工具 - 文本文件分割");
 
-        temp1 = new JLabel("      ");
-        temp2 = new JLabel("  包含： ");
+        lineNum = new JLabel("行数：");
         // 选择文件饿设置部分
         text = new JLabel("可将文本文件分割为小文件，解决 excel 无法打开大文件的困难。");
         text.setFont(MyTools.fontPlain13);
         text.setOpaque(true);
 
         importJlb = new JLabel("① 选择文件");
+        importJlb.setFont(MyTools.fontBold13);
         filePath = new JTextField("D:\\Program Files\\abcacabcabcabc.txt");
-        filePath.setPreferredSize(new Dimension(350,20));
+        filePath.setEditable(false);
+        //filePath.setPreferredSize(new Dimension(350,20));
         selectBtn = new JButton(" 选  择 ");
 
         setJbl = new JLabel("② 分割颗粒");
+        setJbl.setFont(MyTools.fontBold13);
         setJcb = new JComboBox();
         setJcb.addItem("适合 Excel 97-2003");   // 65536+256
         setJcb.addItem("适合 Excel 2007 及之后");  // 1048576+16384
@@ -58,49 +60,40 @@ public class FileSplit extends JFrame {
 
         //加入
         setArea = new JPanel(new GridBagLayout());
-        setArea.add(text,new GBC(0,0,6,1).setFill(GBC.BOTH).setAnchor(GBC.CENTER).setIpad(5,5).setWeight(100,0));
-        setArea.add(temp1,new GBC(0,1,6,1));
-        setArea.add(importJlb,new GBC(1,2,1,1).setFill(GBC.BOTH).setAnchor(GBC.CENTER).setIpad(5,5).setWeight(100,0));
-        setArea.add(filePath,new GBC(1,3,3,1).setFill(GBC.BOTH).setAnchor(GBC.CENTER).setIpad(5,5).setWeight(100,0));
-        setArea.add(selectBtn,new GBC(5,3,1,1).setFill(GBC.BOTH).setAnchor(GBC.CENTER).setIpad(5,5).setWeight(100,0));
-        setArea.add(temp1,new GBC(0,4,6,1));
-        setArea.add(setJbl,new GBC(1,5,1,1).setFill(GBC.BOTH).setAnchor(GBC.CENTER).setIpad(5,5).setWeight(100,0));
-        setArea.add(setJcb,new GBC(1,6,1,1).setFill(GBC.BOTH).setAnchor(GBC.CENTER).setIpad(5,5).setWeight(100,0));
-        setArea.add(temp2,new GBC(2,6,1,1));
-        setArea.add(setNum,new GBC(3,6,1,1).setFill(GBC.BOTH).setAnchor(GBC.CENTER).setIpad(5,5).setWeight(100,0));
-        setArea.add(setTitleJcb,new GBC(1,7,1,1).setFill(GBC.BOTH).setAnchor(GBC.CENTER).setIpad(5,5).setWeight(100,0));
+        setArea.add(text,new GBC(0,0,6,1).setFill(GBC.BOTH).setAnchor(GBC.CENTER).setIpad(0,0).setInsets(5,0).setWeight(100,0));
+        setArea.add(importJlb,new GBC(1,1,1,1).setFill(GBC.BOTH).setAnchor(GBC.CENTER).setIpad(0,0).setInsets(10,0,0,0).setWeight(100,0));
+        setArea.add(filePath,new GBC(1,2,3,1).setFill(GBC.BOTH).setAnchor(GBC.CENTER).setIpad(0,0).setInsets(5,0,5,0).setWeight(100,0));
+        setArea.add(selectBtn,new GBC(5,2,1,1).setFill(GBC.BOTH).setAnchor(GBC.CENTER).setIpad(0,0).setInsets(5,5,5,0).setWeight(100,0));
+        setArea.add(setJbl,new GBC(1,3,1,1).setFill(GBC.BOTH).setAnchor(GBC.CENTER).setIpad(0,0).setInsets(10,0,0,0).setWeight(100,0));
+        setArea.add(setJcb,new GBC(1,4,1,1).setFill(GBC.BOTH).setAnchor(GBC.CENTER).setIpad(0,0).setInsets(5,0,5,5).setWeight(100,0));
+        setArea.add(lineNum,new GBC(2,4,1,1).setInsets(5,5,5,0));
+        setArea.add(setNum,new GBC(3,4,1,1).setFill(GBC.BOTH).setAnchor(GBC.CENTER).setIpad(0,0).setInsets(5,0).setWeight(100,0));
+        setArea.add(setTitleJcb,new GBC(1,5,1,1).setFill(GBC.BOTH).setAnchor(GBC.CENTER).setIpad(0,0).setInsets(0,0).setWeight(100,0));
 
         // 提醒部分
         noticeOld = new JLabel("选中的文件中有 xxxx 行数据");
         noticeNew = new JLabel("文件将被分割为 x 个文件，每个文件最多包含 xxx 行");
         noticeJcb = new JCheckBox("完成后删除源文件");
-        noticeJcb.setBackground(new Color(238,238,238));
-        exportBtn = new JButton("③ 开 始 分 割");
+        noticeJcb.setBackground(new Color(230,230,230));
 
         noticeArea = new JPanel(new GridBagLayout());
-        noticeArea.setBackground(new Color(238,238,238));
-        noticeArea.add(temp1,new GBC(0,0,1,1));
-        noticeArea.add(noticeOld,new GBC(1,0,1,1).setFill(GBC.BOTH).setAnchor(GBC.WEST).setIpad(5,5).setWeight(100,0));
-        noticeArea.add(temp1,new GBC(0,1,1,1));
-        noticeArea.add(temp1,new GBC(0,2,1,1));
-        noticeArea.add(noticeNew,new GBC(1,2,1,1).setFill(GBC.BOTH).setAnchor(GBC.WEST).setIpad(5,5).setWeight(100,0));
-        noticeArea.add(temp1,new GBC(0,3,1,1));
-        noticeArea.add(noticeJcb,new GBC(1,3,1,1).setFill(GBC.BOTH).setAnchor(GBC.WEST).setIpad(5,5).setWeight(100,0));
-        noticeArea.add(exportBtn,new GBC(5,3,2,1).setFill(GBC.BOTH).setAnchor(GBC.WEST).setIpad(5,5).setWeight(100,0));
+        noticeArea.setBackground(new Color(230,230,230));
+        noticeArea.add(noticeOld,new GBC(0,0,1,1).setFill(GBC.BOTH).setAnchor(GBC.WEST).setIpad(5,5).setInsets(0,105,0,0).setWeight(100,0));
+        noticeArea.add(noticeNew,new GBC(0,1,1,1).setFill(GBC.BOTH).setAnchor(GBC.WEST).setIpad(5,5).setInsets(0,105,0,0).setWeight(100,0));
+        noticeArea.add(noticeJcb,new GBC(0,2,1,1).setFill(GBC.BOTH).setAnchor(GBC.WEST).setIpad(5,5).setInsets(0,105,0,0).setWeight(100,0));
 
         //添加到中间的JPanel
         contentsArea = new JPanel(new GridBagLayout());
         contentsArea.add(setArea,new GBC(0,0,1,8).setFill(GBC.VERTICAL).setAnchor(GBC.CENTER).setIpad(30,30).setWeight(100,100));
-        contentsArea.add(noticeArea,new GBC(0,9,1,4).setFill(GBC.BOTH).setAnchor(GBC.WEST).setIpad(30,30).setWeight(100,100));
+        contentsArea.add(noticeArea,new GBC(0,9,1,4).setFill(GBC.HORIZONTAL).setAnchor(GBC.WEST).setIpad(30,30).setWeight(100,100));
 
         //控制栏
         backBtn = new JButton("< 上一步");
         nextBtn = new JButton("下一步 >");
-        okBtn = new JButton(" 完  成 ");
+        okBtn = new JButton("开始分割");
         cancelBtn = new JButton(" 取  消 ");
         backBtn.setEnabled(false);
         nextBtn.setEnabled(false);
-        okBtn.setEnabled(false);
 
         controlBtnArea = new ControlBtnArea(backBtn,nextBtn,okBtn,cancelBtn);
 
@@ -113,7 +106,7 @@ public class FileSplit extends JFrame {
         //设置窗体
         this.setTitle("一箱工具 - 分本文件分割");
         this.setIconImage (Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/icons/split_64.png")));
-        this.setSize(626,500);
+        this.setSize(626,400);
         this.setResizable(false);//固定窗体大小
         this.setLocationRelativeTo(null);//打开时相对window居中
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
