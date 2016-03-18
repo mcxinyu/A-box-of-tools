@@ -17,6 +17,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,6 +34,8 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
     JComboBox renameStyle,nameFormat,location_add,location_fromat;
     JScrollPane fileListAreaScroll;
     int height = 66;
+    String customFromatText = "";
+    Rename rn = new Rename();
 
     public static void main(String[] args) {
         RenameFiles rn = new RenameFiles();
@@ -116,18 +119,15 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
         startFromNum = new JLabel("开始数字为：");
         startFromNumJTF = new JTextField(15);
         startFromNumJTF.setText("0");
-        startFromNumJTF.addKeyListener(new KeyAdapter(){    //监听，限制只输入数字,最大2147483648
+        startFromNumJTF.addKeyListener(new KeyAdapter(){    //监听，限制只输入数字,最大 9223372036854775807
             public void keyTyped(KeyEvent e) {
                 int keyChar = e.getKeyChar();
-                if(keyChar >= KeyEvent.VK_0 && keyChar <= KeyEvent.VK_9){
-                    if (!startFromNumJTF.getText().equals("") && Long.parseLong(startFromNumJTF.getText())>2147483647){
-                        JOptionPane.showMessageDialog(null,"超过最大值2147483647");
-                        startFromNumJTF.setText("214748300");
+                if(keyChar >= KeyEvent.VK_0 && keyChar <= KeyEvent.VK_9 ){
+                    if (!startFromNumJTF.getText().equals("") && (startFromNumJTF.getText().length() >= 19 || (new BigInteger(startFromNumJTF.getText()).compareTo(new BigInteger("9223372036854775800")) == 1 ))){
+                        //JOptionPane.showMessageDialog(null,"超过最大值9223372036854775807");
+                        startFromNumJTF.setText("922337203685477480");  // 9223372036854775807 千位减一，去掉个位
                     }
                 }else{
-                    //if (startFromNumJTF.getText().length()==0){
-                    //    startFromNumJTF.setText("0");
-                    //}
                     e.consume(); //关键，屏蔽掉非法输入
                 }
             }
@@ -339,10 +339,35 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
                     fileListArea.revalidate();
                 }
             }
+        }else if (e.getActionCommand().equals("renameBtn")){
+            File[] filesListReal = null;
+            if (filesList != null){
+                filesListReal = fileListArray.toArray(new File[0]);
+            }else {
+                JOptionPane.showMessageDialog(null,"请先选取要重命名的项目！");
+            }
+            if (renameStyle.getSelectedIndex() == 0){   //替换0---------------
+                if (!findJTF.getText().equals("")){
+                    rn.replaceText(filesListReal,findJTF.getText(), replaceJTF.getText());
+                }else {
+                    JOptionPane.showMessageDialog(null,"请先填写条件！");
+                }
+            }else if (renameStyle.getSelectedIndex() == 1){
+                if (!addJTF.getText().equals("")){
+                    rn.addText(filesListReal,addJTF.getText(), location_add.getSelectedIndex());
+                }else {
+                    JOptionPane.showMessageDialog(null,"请先填写条件！");
+                }
+            }else if (renameStyle.getSelectedIndex() == 2){
+                if (!customFromatJTF.getText().equals("")){
+                    rn.format(filesListReal,nameFormat.getSelectedIndex(), location_fromat.getSelectedIndex(),customFromatJTF.getText(),Long.parseLong(startFromNumJTF.getText()));
+                }else {
+                    JOptionPane.showMessageDialog(null,"请先填写条件！");
+                }
+            }
         }
     }
 
-    String customFromatText = "";
     @Override
     public void run() {
         //int time = 0;
@@ -377,6 +402,7 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
                     }
                 }else if (renameStyle.getSelectedIndex() == 2){ //格式2---------------
                     if (nameFormat.getSelectedIndex() == 0){    //索引0-------
+                        customFromatText = "";
                         if (location_fromat.getSelectedIndex() == 0 && !startFromNumJTF.getText().equals("")){   //后面
                             if (customFromatJTF.getText().equals("")){
                                 egConJL.setText(fileListArray.get(0).getName());
@@ -393,24 +419,25 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
                             }
                         }
                     }else if (nameFormat.getSelectedIndex() == 1){  //计数1-------
+                        customFromatText = "";
                         if (location_fromat.getSelectedIndex() == 0 && !startFromNumJTF.getText().equals("")){   //后面
                             if (customFromatJTF.getText().equals("")){
                                 egConJL.setText(fileListArray.get(0).getName());
                             }else {
-                                String s = customFromatJTF.getText() + Rename.s2index("",Long.parseLong(startFromNumJTF.getText())) + fileListArray.get(0).getName().substring(fileListArray.get(0).getName().lastIndexOf("."));
+                                String s = customFromatJTF.getText() + rn.s2index("",Long.parseLong(startFromNumJTF.getText())) + fileListArray.get(0).getName().substring(fileListArray.get(0).getName().lastIndexOf("."));
                                 egConJL.setText(s);
                             }
                         }else if (location_fromat.getSelectedIndex() == 1 && !startFromNumJTF.getText().equals("")){ //前面
                             if (customFromatJTF.getText().equals("")){
                                 egConJL.setText(fileListArray.get(0).getName());
                             }else {
-                                String s = Rename.s2index("",Long.parseLong(startFromNumJTF.getText())) + customFromatJTF.getText() + fileListArray.get(0).getName().substring(fileListArray.get(0).getName().lastIndexOf("."));
+                                String s = rn.s2index("",Long.parseLong(startFromNumJTF.getText())) + customFromatJTF.getText() + fileListArray.get(0).getName().substring(fileListArray.get(0).getName().lastIndexOf("."));
                                 egConJL.setText(s);
                             }
                         }
                     }else if (nameFormat.getSelectedIndex() == 2){  //日期2-------
                         Date nowdDate = new Date();
-                        DateFormat nowdDateDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        DateFormat nowdDateDF = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss");
                         if (location_fromat.getSelectedIndex() == 0){   //后面
                             if (customFromatJTF.getText().equals("")){
                                 egConJL.setText(fileListArray.get(0).getName());
