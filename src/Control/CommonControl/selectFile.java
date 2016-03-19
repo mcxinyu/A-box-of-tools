@@ -33,12 +33,12 @@ public class selectFile {
         //返回值为 state 即 APPROVE_OPTION 0，CANCEL_OPTION 1
         int state = jfc.showOpenDialog(parent);
 
-        files = jfc.getSelectedFiles();
-
-//        if(files[0].isDirectory()){
-//            files[] = files[0].listFiles();
-//        }else if(file.isFile()){
-//        }
+        if(multiSelectionEnabled == true){
+            files = jfc.getSelectedFiles();
+        }else if(multiSelectionEnabled == false){
+            files = new File[1];
+            files[0] = jfc.getSelectedFile();
+        }
 
         return state;
     }
