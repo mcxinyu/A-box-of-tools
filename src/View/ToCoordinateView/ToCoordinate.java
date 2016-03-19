@@ -132,7 +132,7 @@ public class ToCoordinate extends JFrame implements ActionListener {
             int state;
             taps.setText("正在读取 Cellinfo...");
             selectFile select = new selectFile();
-            state = select.selectFile("读取 Cellinfo 文件", "text",this);
+            state = select.selectFile("读取 Cellinfo 文件", "text",JFileChooser.FILES_ONLY,this);
             File[] fileList = new ReadFile().readMultiText(select.getFile());
             if (state == 0) {
                 //如果点击确定

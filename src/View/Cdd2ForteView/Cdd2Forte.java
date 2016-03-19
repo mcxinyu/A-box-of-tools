@@ -182,7 +182,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
                 jcb1.setEnabled(false);
                 jcb1.setSelected(false);
                 selectFile select = new selectFile();
-                state = select.selectFile("读取坐标文件", "text",this);
+                state = select.selectFile("读取坐标文件", "text",JFileChooser.FILES_ONLY,this);
                 File[] fileList = new ReadFile().readMultiText(select.getFile());
                 if (state == 0) {
                     //如果点击确定
@@ -223,7 +223,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
                 progressBar2.setText("正在处理 cdd-log 文件...");
 
                 selectFile select = new selectFile();
-                state = select.selectFile("读取 cdd-log", "text",this);
+                state = select.selectFile("读取 cdd-log", "text",JFileChooser.FILES_AND_DIRECTORIES,this);
                 File[] fileList = new ReadFile().readMultiText(select.getFile());
                 if (state == 0) {
                     //如果点击确定

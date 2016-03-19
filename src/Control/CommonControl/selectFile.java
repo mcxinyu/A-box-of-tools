@@ -12,19 +12,20 @@ import java.io.File;
  */
 public class selectFile {
     File files[] = null;
-    public int selectFile (String windowTitle,String fileType,Component parent){
+    public int selectFile (String windowTitle,String fileType,int mode,Component parent){
         MyTools.windowsFeel();
 
         //用于新建一个打开文件的窗口
         // 数据名称、按钮名称
         JFileChooser jfc = new JFileChooser();
-        jfc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        //jfc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        jfc.setFileSelectionMode(mode);
         jfc.setMultiSelectionEnabled(true);
         jfc.setDialogTitle(windowTitle);
 
-        if (fileType =="excel") {
+        if (fileType.equals("excel")){
             jfc.setFileFilter(new FileNameExtensionFilter("Excel文件", "xls", "xlsx"));
-        }else if (fileType =="text"){
+        }else if (fileType.equals("text")){
             jfc.setFileFilter(new FileNameExtensionFilter("文本文件", "txt", "log"));
         }else if (fileType == null){
         }

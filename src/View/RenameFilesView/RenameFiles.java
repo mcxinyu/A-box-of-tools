@@ -282,7 +282,7 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
             if (filesList == null) {
                 int state;
                 selectFile select = new selectFile();
-                state = select.selectFile("选取项目", null,this);
+                state = select.selectFile("选取项目", null,JFileChooser.FILES_AND_DIRECTORIES,this);
                 filesList = select.getFile();
                 fileListArray = new ArrayList();
                 if (state == 0) {
@@ -316,7 +316,7 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
             if (filesList != null) {
                 int state;
                 selectFile select = new selectFile();
-                state = select.selectFile("添加项目", null,this);
+                state = select.selectFile("添加项目", null,JFileChooser.FILES_AND_DIRECTORIES,this);
                 filesList = select.getFile();
                 //fileListArray = new ArrayList();
                 if (state == 0) {
