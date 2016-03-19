@@ -12,15 +12,15 @@ import java.io.File;
  */
 public class selectFile {
     File files[] = null;
-    public int selectFile (String windowTitle,String fileType,int mode,Component parent){
+    public int selectFile (String windowTitle,String fileType,int selectionMode,boolean multiSelectionEnabled,Component parent){
         MyTools.windowsFeel();
 
         //用于新建一个打开文件的窗口
         // 数据名称、按钮名称
         JFileChooser jfc = new JFileChooser();
         //jfc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-        jfc.setFileSelectionMode(mode);
-        jfc.setMultiSelectionEnabled(true);
+        jfc.setFileSelectionMode(selectionMode);
+        jfc.setMultiSelectionEnabled(multiSelectionEnabled);
         jfc.setDialogTitle(windowTitle);
 
         if (fileType.equals("excel")){
