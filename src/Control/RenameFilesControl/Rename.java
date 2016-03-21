@@ -47,7 +47,7 @@ public class Rename {
         }
     }
 
-    public void format(File[] fileList,int formatFun,int place,String content,long index){    //参数太多，建个通用的类来存放指定参数的值
+    public void format(File[] fileList,int formatFun,int place,String content,long index){
         if (formatFun == 0){    //索引0
             if (place == 1){    //前
                 for (int i = 0; i < fileList.length; i++) {

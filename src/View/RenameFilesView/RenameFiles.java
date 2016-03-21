@@ -34,20 +34,21 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
     JComboBox renameStyle,nameFormat,location_add,location_fromat;
     JScrollPane fileListAreaScroll;
     int height = 66;
+    volatile boolean windowRuning = true;
     String customFromatText = "";
     Rename rn = new Rename();
 
-    //public static void main(String[] args) {
-    //    RenameFiles rn = new RenameFiles();
-    //    Thread thread = new Thread(rn);
-    //    thread.start();
-    //}
+    public static void main(String[] args) {
+        RenameFiles rn = new RenameFiles();
+        //Thread thread = new Thread(rn);
+        //thread.start();
+    }
 
     public RenameFiles(){
-        Thread thread = new Thread(this);
-        thread.start();
         MyTools.windowsFeel();
 
+        Thread thread = new Thread(this);
+        thread.start();
         //欢迎栏
         welcomeArea =new WelcomeArea(new ImageIcon(Cdd2Forte.class.getResource("/icons/rename_64.png")),"  一箱工具 - 批量文件重命名");
 
@@ -233,9 +234,18 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
         this.setLocationRelativeTo(null);//打开时相对window居中
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setVisible(true);
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                windowRuning = false;
+            }
+            @Override
+            public void windowClosed(WindowEvent e) {
+                windowRuning = false;
+            }
+        });
     }
 
-    int count = 0;
     int oneLineWidth = 10;
     int totalLineHeight = 10;
     List<File> fileListArray = null;
@@ -282,7 +292,7 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
             if (filesList == null) {
                 int state;
                 selectFile select = new selectFile();
-                state = select.selectFile("选取项目", null,JFileChooser.FILES_AND_DIRECTORIES,true,this);
+                state = select.selectFile("选取项目", "all",JFileChooser.FILES_AND_DIRECTORIES,true,this);
                 filesList = select.getFile();
                 fileListArray = new ArrayList();
                 if (state == 0) {
@@ -316,7 +326,7 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
             if (filesList != null) {
                 int state;
                 selectFile select = new selectFile();
-                state = select.selectFile("添加项目", null,JFileChooser.FILES_AND_DIRECTORIES,true,this);
+                state = select.selectFile("添加项目", "all",JFileChooser.FILES_AND_DIRECTORIES,true,this);
                 filesList = select.getFile();
                 //fileListArray = new ArrayList();
                 if (state == 0) {
@@ -373,7 +383,7 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
     @Override
     public void run() {
         //int time = 0;
-        while (true){
+        while (windowRuning){
             try {
                 Thread.sleep(1000);
             }catch (Exception e){
@@ -464,4 +474,5 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
             }
         }
     }
+
 }
