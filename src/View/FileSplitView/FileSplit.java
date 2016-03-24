@@ -198,7 +198,8 @@ public class FileSplit extends JFrame implements ActionListener,Runnable {
             System.out.println("OKOK");
         }else if (e.getActionCommand().equals("cancelBtn")){
             if(JOptionPane.showConfirmDialog(this,"退出","提示",JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                System.exit(0);
+                //System.exit(0);
+                this.dispose();
             }
         }else if (e.getActionCommand().equals("backBtn")){
             title = "分割";
@@ -378,7 +379,7 @@ public class FileSplit extends JFrame implements ActionListener,Runnable {
                     noticeNew.setText(" ");
                 }else {
                     noticeOld.setText("选择了 " + fileListArray.size() + " 个文件");
-                    noticeNew.setText(" ");
+                    noticeNew.setText("将合并为一个有 "+ 3333 +" 行的文件 ");
                 }
             }
         }
