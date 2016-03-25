@@ -3,7 +3,10 @@ package View.FileSplitView;
 import Common.ControlBtnArea;
 import Common.MyTools;
 import Common.WelcomeArea;
+import Control.CommonControl.ReadFile;
+import Control.CommonControl.saveFile;
 import Control.CommonControl.selectFile;
+import Control.FileSplitControl.TxtSplit;
 import View.CheckPlanView.GBC;
 
 import javax.swing.*;
@@ -20,14 +23,14 @@ public class FileSplit extends JFrame implements ActionListener,Runnable {
     //JFrame frame;
     JPanel welcomeArea;
     JPanel controlBtnArea;
-    JButton backBtn,nextBtn,okBtn,cancelBtn,selectBtn1,selectBtn2,addBtn;
+    JButton aboutBtn,backBtn,nextBtn,okBtn,homeBtn,selectBtn1,selectBtn2,addBtn;
     JPanel contentsArea,setArea,noticeArea;
     JLabel lineNum,text,importJlb,setJlb,noticeOld,noticeNew;
     JTextField filePath,setNum;
     JPanel fileListArea;
     JScrollPane fileListAreaScroll;
     JComboBox setJcb;
-    JCheckBox setTitleJcb,noTitleJcb,noticeJcb;
+    JCheckBox setTitleJcb,onlySaveFirstTitle,noticeJcb;
     String title = "分割";
     int height = 66;
     volatile boolean windowRuning = true;
@@ -95,9 +98,9 @@ public class FileSplit extends JFrame implements ActionListener,Runnable {
         setTitleJcb = new JCheckBox("每个文件都包含表头");
         setTitleJcb.setSelected(true);
         setTitleJcb.setVisible(true);
-        noTitleJcb = new JCheckBox("仅保留第一个文件的表头");
-        noTitleJcb.setSelected(true);
-        noTitleJcb.setVisible(false);
+        onlySaveFirstTitle = new JCheckBox("仅保留第一个文件的表头");
+        onlySaveFirstTitle.setSelected(true);
+        onlySaveFirstTitle.setVisible(false);
 
         //加入
         setArea = new JPanel(new GridBagLayout());
@@ -113,7 +116,7 @@ public class FileSplit extends JFrame implements ActionListener,Runnable {
         setArea.add(lineNum,new GBC(2,4,1,1).setFill(GBC.BOTH).setAnchor(GBC.CENTER).setIpad(0,0).setInsets(5,5).setWeight(0,0));
         setArea.add(setNum,new GBC(3,4,1,1).setFill(GBC.BOTH).setAnchor(GBC.CENTER).setIpad(0,0).setInsets(5,0,5,100).setWeight(100,0));
         setArea.add(setTitleJcb,new GBC(0,5,1,1).setFill(GBC.BOTH).setAnchor(GBC.CENTER).setIpad(0,0).setInsets(0,0).setWeight(100,0));
-        setArea.add(noTitleJcb,new GBC(0,5,1,1).setFill(GBC.BOTH).setAnchor(GBC.CENTER).setIpad(0,0).setInsets(0,0).setWeight(100,0));
+        setArea.add(onlySaveFirstTitle,new GBC(0,5,1,1).setFill(GBC.BOTH).setAnchor(GBC.CENTER).setIpad(0,0).setInsets(0,0).setWeight(100,0));
 
         //提醒部分
         noticeOld = new JLabel("现在，开始选择文本吧...");
@@ -134,22 +137,25 @@ public class FileSplit extends JFrame implements ActionListener,Runnable {
         contentsArea.add(noticeArea,new GBC(0,9,1,4).setFill(GBC.HORIZONTAL).setAnchor(GBC.WEST).setIpad(30,30).setWeight(100,100));
 
         //控制栏
+        aboutBtn = new JButton(new ImageIcon(FileSplit.class.getResource("/icons/about.png")));
         backBtn = new JButton("文本分割功能");
         nextBtn = new JButton("文本合并功能");
         okBtn = new JButton(" 运  行 ");
-        cancelBtn = new JButton(" 取  消 ");
+        homeBtn = new JButton(" 主功能 ");
         backBtn.setEnabled(false);
-        controlBtnArea = new ControlBtnArea(backBtn,nextBtn,okBtn,cancelBtn);
+        controlBtnArea = new ControlBtnArea(aboutBtn,backBtn,nextBtn,okBtn,homeBtn);
 
         //设置监听addBtn
+        aboutBtn.setActionCommand("aboutBtn");
+        aboutBtn.addActionListener(this);
         backBtn.setActionCommand("backBtn");
         backBtn.addActionListener(this);
         nextBtn.setActionCommand("nextBtn");
         nextBtn.addActionListener(this);
         okBtn.setActionCommand("okBtn");
         okBtn.addActionListener(this);
-        cancelBtn.setActionCommand("cancelBtn");
-        cancelBtn.addActionListener(this);
+        homeBtn.setActionCommand("homeBtn");
+        homeBtn.addActionListener(this);
         selectBtn1.setActionCommand("selectBtn1");
         selectBtn1.addActionListener(this);
         selectBtn2.setActionCommand("selectBtn2");
@@ -194,21 +200,47 @@ public class FileSplit extends JFrame implements ActionListener,Runnable {
     File[] filesList_merge = null;
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals("okBtn")){
-            System.out.println("OKOK");
-        }else if (e.getActionCommand().equals("cancelBtn")){
-            if(JOptionPane.showConfirmDialog(this,"退出","提示",JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                //System.exit(0);
-                this.dispose();
+        if (e.getActionCommand().equals("aboutBtn")){
+            new FSNotice();
+        }else if (e.getActionCommand().equals("okBtn")){
+            if (!backBtn.isEnabled()){
+                if (filesList_split != null) {
+                    saveFile save = new saveFile();
+                    int state = save.saveFile("保存分割后的文件...", 1, this);
+                    if (state == 0) {
+                        if (setJcb.getSelectedIndex() == 0 || setJcb.getSelectedIndex() == 1 || setJcb.getSelectedIndex() == 3) {
+                            TxtSplit.split(filesList_split[0], save.getFile().getPath(), Integer.parseInt(setNum.getText()), setTitleJcb.isSelected(), noticeJcb.isSelected());
+                        } else if (setJcb.getSelectedIndex() == 2) {
+                            String[] txt = ReadFile.readSingleText(filesList_split[0]).split("\\r\\n");
+                            TxtSplit.split(filesList_split[0], save.getFile().getPath(), (int) Math.ceil((float) txt.length / Integer.parseInt(setNum.getText())), setTitleJcb.isSelected(), noticeJcb.isSelected());
+                        }
+                    } else if (state == 1) {
+                    }
+                }else {
+                    JOptionPane.showMessageDialog(null,"应该先选择文件！");
+                }
+            }else if (!nextBtn.isEnabled()){
+                if (filesList_merge != null) {
+                    saveFile save = new saveFile();
+                    int state = save.saveFile("保存合并后的文件...", 1, this);
+                    if (state == 0) {
+                        TxtSplit.merge(filesList_merge, save.getFile().getPath(), onlySaveFirstTitle.isSelected(), noticeJcb.isSelected());
+                    } else if (state == 1) {
+                    }
+                }else {
+                    JOptionPane.showMessageDialog(null,"应该先选择文件！");
+                }
             }
-        }else if (e.getActionCommand().equals("backBtn")){
+        }else if (e.getActionCommand().equals("homeBtn")){
+            this.dispose();
+        }else if (e.getActionCommand().equals("backBtn")){  //选择分割文件
             title = "分割";
             welcomeArea =new WelcomeArea(new ImageIcon(this.getClass().getResource("/icons/split_64.png")),"  一箱工具 - 文本"+title);
             this.add(welcomeArea, BorderLayout.NORTH);
             welcomeArea.revalidate();
 
             backBtn.setEnabled(false);
-            noTitleJcb.setVisible(false);
+            onlySaveFirstTitle.setVisible(false);
             fileListAreaScroll.setVisible(false);
             addBtn.setVisible(false);
             selectBtn2.setVisible(false);
@@ -221,7 +253,7 @@ public class FileSplit extends JFrame implements ActionListener,Runnable {
             setJcb.setVisible(true);
             lineNum.setVisible(true);
             setNum.setVisible(true);
-        }else if (e.getActionCommand().equals("nextBtn")){
+        }else if (e.getActionCommand().equals("nextBtn")){  //选择合并文件
             title = "合并";
             welcomeArea =new WelcomeArea(new ImageIcon(this.getClass().getResource("/icons/split_64.png")),"  一箱工具 - 文本"+title);
             this.add(welcomeArea, BorderLayout.NORTH);
@@ -233,7 +265,7 @@ public class FileSplit extends JFrame implements ActionListener,Runnable {
                 addBtn.setVisible(false);
             }
             backBtn.setEnabled(true);
-            noTitleJcb.setVisible(true);
+            onlySaveFirstTitle.setVisible(true);
             fileListAreaScroll.setVisible(true);
             selectBtn2.setVisible(true);
 
@@ -245,18 +277,18 @@ public class FileSplit extends JFrame implements ActionListener,Runnable {
             setJcb.setVisible(false);
             lineNum.setVisible(false);
             setNum.setVisible(false);
-        }else if (e.getActionCommand().equals("selectBtn1")){
+        }else if (e.getActionCommand().equals("selectBtn1")){   //分割文件的读取文件按钮
             int state;
             selectFile select = new selectFile();
             state = select.selectFile("选取项目", "text", JFileChooser.FILES_ONLY, false, this);
             if (state == 0) {
                 filesList_split = select.getFile();
-                filePath.setText(select.getFile()[0].getPath());
+                filePath.setText(filesList_split[0].getPath());
             } else if (state == 1) {
                 //filesList_split = null;
                 //noticeOld = new JLabel("现在，开始选择文本吧...");
             }
-        }else if (e.getActionCommand().equals("selectBtn2")){
+        }else if (e.getActionCommand().equals("selectBtn2")){   //合并文件的读取文件按钮
             if (filesList_merge != null){
                 Object[] options = {"确定","我手贱"};
                 int response=JOptionPane.showOptionDialog(this, "清空已选取的项目？", "thinkPad",JOptionPane.YES_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
@@ -333,15 +365,19 @@ public class FileSplit extends JFrame implements ActionListener,Runnable {
             }
         }else if (e.getActionCommand().equals("setJcb")){
             if (setJcb.getSelectedIndex() == 0){
+                lineNum.setText("行数：");
                 setNum.setText("65536");
                 setNum.setEditable(false);
             }else if (setJcb.getSelectedIndex() == 1){
+                lineNum.setText("行数：");
                 setNum.setText("1048576");
                 setNum.setEditable(false);
             }else if (setJcb.getSelectedIndex() == 2){
+                lineNum.setText("份数：");
                 setNum.setText("");
                 setNum.setEditable(true);
             }else if (setJcb.getSelectedIndex() == 3){
+                lineNum.setText("行数：");
                 setNum.setText("");
                 setNum.setEditable(true);
             }
@@ -357,8 +393,11 @@ public class FileSplit extends JFrame implements ActionListener,Runnable {
         }
     }
 
+    //int allExists = 0;
+
     @Override
     public void run() {
+        //动态修改提示信息。
         while (windowRuning) {
             try {
                 Thread.sleep(1000);
@@ -370,16 +409,78 @@ public class FileSplit extends JFrame implements ActionListener,Runnable {
                     noticeOld.setText("现在，开始选择文本吧...");
                     noticeNew.setText(" ");
                 }else {
-                    noticeOld.setText("选择的文件有 " + filesList_split[0].length() + " 行数据");
-                    noticeNew.setText("文件将被分割为 " + filesList_split[0].length() / 200 + " 个文件，每个文件最多包含 " + filesList_split[0].length() / (filesList_split[0].length() / 100) + " 行");
+                    if (filesList_split[0].exists()) {
+                        String[] txt = ReadFile.readSingleText(filesList_split[0]).split("\\r\\n");
+                        if (setJcb.getSelectedIndex() == 0 || setJcb.getSelectedIndex() == 1) {  //按行分割
+                            noticeOld.setText("选择的文件有 " + txt.length + " 行数据");
+                            if (setTitleJcb.isSelected()){
+                                //增加表头导致增多的行,每个文件最多包含的行数=（总行数+（总行数/每个文件的行数）-1）/每个文件的行数
+                                //真正的总行数=（总行数+（总行数/每个文件的行数）-1）
+                                noticeNew.setText("文件将被分割为 " + (txt.length + (txt.length / Integer.parseInt(setNum.getText()))-1) / Integer.parseInt(setNum.getText()) + " 个文件，每个文件最多包含 " + setNum.getText() + " 行");
+                            }else {
+                                noticeNew.setText("文件将被分割为 " + txt.length / Integer.parseInt(setNum.getText()) + " 个文件，每个文件最多包含 " + setNum.getText() + " 行");
+                            }
+                        } else if (setJcb.getSelectedIndex() == 2) {    //按数量分割
+                            if (!setNum.getText().equals("") && !setNum.getText().equals("0")) {
+                                noticeOld.setText("选择的文件有 " + txt.length + " 行数据");
+                                if (setTitleJcb.isSelected()){
+                                    //增加表头导致增多的行,每个文件最多包含的行数=（总行数+（分割文件数）-1）/每个文件的行数
+                                    noticeNew.setText("文件将被分割为 " + setNum.getText() + " 个文件，每个文件最多包含 " + (int) Math.ceil((float) (txt.length +Integer.parseInt(setNum.getText()) -1) / Integer.parseInt(setNum.getText())) + " 行");
+                                }else {
+                                    noticeNew.setText("文件将被分割为 " + setNum.getText() + " 个文件，每个文件最多包含 " + (int) Math.ceil((float) txt.length / Integer.parseInt(setNum.getText())) + " 行");
+                                }
+                            } else {
+                                noticeOld.setText("选择的文件有 " + txt.length + " 行数据");
+                                noticeNew.setText("文件将被分割为 - - 个文件，每个文件最多包含 - - 行");
+                            }
+                        } else if (setJcb.getSelectedIndex() == 3) {  //按行分割
+                            if (!setNum.getText().equals("") && !setNum.getText().equals("0")) {
+                                noticeOld.setText("选择的文件有 " + txt.length + " 行数据");
+                                if (setTitleJcb.isSelected()){
+                                    //增加表头导致增多的行,每个文件最多包含的行数=（总行数+（总行数/每个文件的行数）-1）/每个文件的行数
+                                    noticeNew.setText("文件将被分割为 " + (int) Math.ceil((float) (txt.length + (txt.length / Integer.parseInt(setNum.getText()))-1) / Integer.parseInt(setNum.getText())) + " 个文件，每个文件最多包含 " + setNum.getText() + " 行");
+                                }else {
+                                    noticeNew.setText("文件将被分割为 " + (int) Math.ceil((float) txt.length / Integer.parseInt(setNum.getText())) + " 个文件，每个文件最多包含 " + setNum.getText() + " 行");
+                                }
+                            } else {
+                                noticeOld.setText("选择的文件有 " + txt.length + " 行数据");
+                                noticeNew.setText("文件将被分割为 - - 个文件，每个文件最多包含 - - 行");
+                            }
+                        }
+                    }else {
+                        noticeOld.setText("文件或已被删除，请重新选择文件");
+                        noticeNew.setText(" ");
+                    }
                 }
             }else if (!nextBtn.isEnabled()){
                 if (filesList_merge == null){
                     noticeOld.setText("现在，开始选择文本吧...");
                     noticeNew.setText(" ");
                 }else {
-                    noticeOld.setText("选择了 " + fileListArray.size() + " 个文件");
-                    noticeNew.setText("将合并为一个有 "+ 3333 +" 行的文件 ");
+                    int line = 0;
+                    int allExists = 0;
+                    for (int i = 0; i < fileListArray.size(); i++) {
+                        if (fileListArray.get(i).exists()) {
+                            allExists++;
+                            String[] txt = ReadFile.readSingleText(fileListArray.get(i)).split("\\r\\n");
+                            line += txt.length;
+                        }
+                    }
+                    if (allExists == fileListArray.size()){
+                        noticeOld.setText("选择了 " + fileListArray.size() + " 个文件");
+                        if (onlySaveFirstTitle.isSelected()){
+                            noticeNew.setText("将合并为一个有 "+ (line - allExists +1) +" 行数据的文件 ");
+                        }else {
+                            noticeNew.setText("将合并为一个有 "+ line +" 行数据的文件 ");
+                        }
+                    }else if (allExists < fileListArray.size()){
+                        noticeOld.setText("选择了 " + fileListArray.size() + " 个文件,但 "+ (fileListArray.size() - allExists)+" 个文件或已被删除");
+                        if (onlySaveFirstTitle.isSelected()){
+                            noticeNew.setText("将合并为一个有 "+ (line - allExists +1) +" 行数据的文件 ");
+                        }else {
+                            noticeNew.setText("将合并为一个有 "+ line +" 行数据的文件 ");
+                        }
+                    }
                 }
             }
         }

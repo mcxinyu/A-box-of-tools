@@ -11,16 +11,21 @@ import java.io.*;
 public class TxtSplit {
     public static void main(String[] args) {
         //File oldFile = new File("D:\\SZ\\变频工作\\数据采集\\cellinfo\\TT\\coor0301.txt");
-        //File newPath = new File("D:\\SZ\\变频工作\\数据采集\\cellinfo\\TT\\");
+        //String newPath = "D:\\SZ\\变频工作\\数据采集\\cellinfo\\TT\\";
 
-        //File[] oldFiles = new File[3];
+        //File[] oldFiles = new File[8];
         //oldFiles[0] = new File("D:\\SZ\\变频工作\\数据采集\\cellinfo\\TT\\coor0301.part-0.txt");
         //oldFiles[1] = new File("D:\\SZ\\变频工作\\数据采集\\cellinfo\\TT\\coor0301.part-1.txt");
         //oldFiles[2] = new File("D:\\SZ\\变频工作\\数据采集\\cellinfo\\TT\\coor0301.part-2.txt");
-        //File newPath = new File("D:\\SZ\\变频工作\\数据采集\\cellinfo\\TT\\coor-merge.txt");
+        //oldFiles[3] = new File("D:\\SZ\\变频工作\\数据采集\\cellinfo\\TT\\coor0301.part-3.txt");
+        //oldFiles[4] = new File("D:\\SZ\\变频工作\\数据采集\\cellinfo\\TT\\coor0301.part-4.txt");
+        //oldFiles[5] = new File("D:\\SZ\\变频工作\\数据采集\\cellinfo\\TT\\coor0301.part-5.txt");
+        //oldFiles[6] = new File("D:\\SZ\\变频工作\\数据采集\\cellinfo\\TT\\coor0301.part-6.txt");
+        //oldFiles[7] = new File("D:\\SZ\\变频工作\\数据采集\\cellinfo\\TT\\coor0301.part-7.txt");
+        //File newPath = new File("D:\\SZ\\变频工作\\数据采集\\cellinfo\\TT\\");
 
         //TxtSplit ts = new TxtSplit();
-        //ts.merge(oldFiles,newPath,true,false);
+        //ts.split(oldFile,newPath,4096,true,false);
     }
 
     /**
@@ -32,15 +37,24 @@ public class TxtSplit {
      * @param deleteOldFile 是否删除源文件
      * @return 返回新文件列表
      */
-    public File[] split(File oldFile,File newPath,int setNum,boolean saveTitle,boolean deleteOldFile){
+    public static File[] split(File oldFile, String newPath, int setNum, boolean saveTitle, boolean deleteOldFile){
         String[] txt = ReadFile.readSingleText(oldFile).split("\\r\\n");
-        File[] files = new File[(int) Math.ceil(txt.length/setNum)+1];
+        File[] files = new File[(int) Math.ceil((float)txt.length/setNum)];
         //System.out.println(txt.length);
+        //System.out.println(setNum);
         //System.out.println(txt.length/setNum);
-        //System.out.println((int) Math.ceil(txt.length/setNum));
+        //System.out.println((int) Math.ceil((float)txt.length/setNum));
 
         for (int i = 0; i < files.length; i++) {
-            files[i] = new File(newPath + "/" + oldFile.getName().substring(0,oldFile.getName().indexOf(".")) + ".part-" + i + oldFile.getName().substring(oldFile.getName().lastIndexOf(".")));
+            String part = "";
+            if (i<=9){
+                part = "00"+i;
+            }else if (i>9 && i<=99){
+                part = "0"+i;
+            }else {
+                part = ""+i;
+            }
+            files[i] = new File(newPath + "/" + oldFile.getName().substring(0,oldFile.getName().indexOf(".")) + ".part-" + part + oldFile.getName().substring(oldFile.getName().lastIndexOf(".")));
             try (FileWriter outFileFW = new FileWriter(files[i])) {
                 if (saveTitle && i != 0){
                     outFileFW.write(txt[0] + "\r\n");
@@ -67,12 +81,18 @@ public class TxtSplit {
     /**
      * 合并文本文件
      * @param oldFiles 要合并的文件列表，务必保证文件名的顺序，01、02...
-     * @param newFile 新文件
+     * @param newPath 新文件保存路径
      * @param onlySaveFirstTitle 只保留第1个文件的表头，否则全部保留
      * @param deleteOldFile 是否删除源文件
      * @return 返回新文件
      */
-    public File merge(File[] oldFiles,File newFile,boolean onlySaveFirstTitle,boolean deleteOldFile){
+    public static File merge(File[] oldFiles, String newPath, boolean onlySaveFirstTitle, boolean deleteOldFile){
+        File newFile = new File(newPath + "/" + oldFiles[0].getName().substring(0,oldFiles[0].getName().lastIndexOf(".")) + "-merge"+oldFiles[0].getName().substring(oldFiles[0].getName().lastIndexOf(".")));
+                //new File(newPath.getParent()
+                //+ "/" +
+                //oldFiles[0].getName().substring(0,oldFiles[0].getName().indexOf(".")))
+                //+ "-merge" +
+                //oldFiles[0].getName().substring(oldFiles[0].getName().lastIndexOf(".")));
         try (FileWriter outFileFW = new FileWriter(newFile)) {
             for (int i = 0; i < oldFiles.length; i++) {
                 String[] txt = ReadFile.readSingleText(oldFiles[i]).split("\\r\\n");
