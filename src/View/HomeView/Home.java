@@ -87,6 +87,7 @@ public class Home extends JFrame implements ActionListener{
         }else if (e.getActionCommand().equals("renameFilesBtn")){
             //j1.setVisible(false);
             j2 = new RenameFiles();
+            new DistributOutputStream("renameFiles.log");
             j2.addWindowListener(new WindowAdapter(){
                 public void windowClosing(WindowEvent e){
                     j1.setVisible(true);
@@ -95,6 +96,7 @@ public class Home extends JFrame implements ActionListener{
         }else if (e.getActionCommand().equals("fileSplitBtn")){
             //j1.setVisible(false);
             j2 = new FileSplit();
+            new DistributOutputStream("fileSplit.log");
             j2.addWindowListener(new WindowAdapter(){
                 public void windowClosing(WindowEvent e){
                     j1.setVisible(true);
