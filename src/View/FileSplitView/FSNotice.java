@@ -18,27 +18,20 @@ public class FSNotice extends JDialog {
         JLabel title = new JLabel("  请 注 意：");
         title.setFont(MyTools.fontBold18);
 
-        JTextArea note1 = new JTextArea("（1）坐标文件可以使用 forte 支持的格式；");
+        JTextArea note1 = new JTextArea("合并文件的时候，注意文件在文件框中的顺序，程序会根据呈现出来的顺序合并文件。");
         note1.setBackground(new Color(230,230,230));
         note1.setEditable(false);
         note1.setFont(MyTools.fontBold13);
 
-        JLabel forteType = new JLabel(new ImageIcon(this.getClass().getResource("/icons/forteType.png")));
-        JTextArea note2 = new JTextArea("  也可以只包含主要内容，表头需要按顺序为：小区号、经度、纬度、方位角。");
+        JTextArea note2 = new JTextArea("由于系统原因，01、02、...、10 和 1、2、...、10的排序是不同的。");
         note2.setBackground(new Color(230,230,230));
         note2.setEditable(false);
         note2.setFont(MyTools.fontBold13);
 
-        JLabel coustomType = new JLabel(new ImageIcon(this.getClass().getResource("/icons/coustomType.png")));
-        JTextArea note3 = new JTextArea("（2）根据坐标文件的小区列表生成 forte 文件，遂务必保持坐标文件中的小区勿重复出现。");
+        JTextArea note3 = new JTextArea("建议使用“批量文件重命名”的“名称和计数”重命名，请勿造成错行。");
         note3.setBackground(new Color(230,230,230));
         note3.setEditable(false);
         note3.setFont(MyTools.fontBold13);
-
-        JTextArea note5 = new JTextArea("（3）选择 CDD 文件的时候，可以单个文件处理，也可以选择整个文件夹。");
-        note5.setBackground(new Color(230,230,230));
-        note5.setEditable(false);
-        note5.setFont(MyTools.fontBold13);
 
         JTextArea note4 = new JTextArea("联 系 我： mcxinyu@foxmail.com");
         note4.setBackground(new Color(230,230,230));
@@ -51,11 +44,8 @@ public class FSNotice extends JDialog {
         JPanel center = new JPanel(new FlowLayout(FlowLayout.LEFT));
         center.setBackground(new Color(230,230,230));
         center.add(note1);
-        center.add(forteType);
         center.add(note2);
-        center.add(coustomType);
         center.add(note3);
-        center.add(note5);
 
         JPanel south = new JPanel();
         south.setBackground(new Color(230,230,230));
@@ -69,7 +59,7 @@ public class FSNotice extends JDialog {
 
         frame.setModal(true);
         frame.setBackground(new Color(230,230,230));
-        frame.setSize(550,500);
+        frame.setSize(550,300);
         frame.setTitle("一箱工具 - cdd2forte - 使用帮助");
         frame.setIconImage (Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/icons/about.png")));
         frame.setResizable(false);//固定窗体大小
