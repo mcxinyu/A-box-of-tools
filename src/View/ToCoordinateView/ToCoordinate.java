@@ -163,6 +163,13 @@ public class ToCoordinate extends JFrame implements ActionListener {
                 }
             }else if (state == 1){
             }
+        }else if (e.getActionCommand().equals("cancelBtn")){
+            if(JOptionPane.showConfirmDialog(this,"退出","提示",JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                //System.exit(0);
+                this.dispose();
+            }
+        }else if (e.getActionCommand().equals("homeBtn")){
+            this.dispose();
         }
     }
 }

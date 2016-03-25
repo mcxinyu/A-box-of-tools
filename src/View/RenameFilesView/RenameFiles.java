@@ -377,6 +377,8 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
                     JOptionPane.showMessageDialog(null,"请先填写条件！");
                 }
             }
+        }else if (e.getActionCommand().equals("homeBtn")){
+            this.dispose();
         }
     }
 

@@ -130,7 +130,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
         backBtn.addActionListener(this);
         nextBtn.setActionCommand("nextBtn");
         nextBtn.addActionListener(this);
-        okBtn.setActionCommand("cancelBtn");
+        okBtn.setActionCommand("okBtn");
         okBtn.addActionListener(this);
         homeBtn.setActionCommand("homeBtn");
         homeBtn.addActionListener(this);
@@ -270,9 +270,13 @@ public class Cdd2Forte extends JFrame implements ActionListener{
         }else if (e.getActionCommand().equals("backBtn")){
         }else if (e.getActionCommand().equals("nextBtn")){
         }else if (e.getActionCommand().equals("okBtn")){
-            System.exit(0);
+            if(JOptionPane.showConfirmDialog(this,"退出","提示",JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                //System.exit(0);
+                this.dispose();
+            }
         }else if (e.getActionCommand().equals("homeBtn")){
-            JOptionPane.showMessageDialog(null,"其他功能还在测试，暂时不可用。","主功能",JOptionPane. WARNING_MESSAGE);
+            //JOptionPane.showMessageDialog(null,"其他功能还在测试，暂时不可用。","主功能",JOptionPane. WARNING_MESSAGE);
+            this.dispose();
         }else if (e.getActionCommand().equals("otherBtn")){
             mp.writeProperties("c2f.properties","coordinatePath",coorPath);
             path = mp.readProperties("c2f.properties","coordinatePath");
