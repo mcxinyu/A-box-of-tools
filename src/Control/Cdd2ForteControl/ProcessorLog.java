@@ -8,7 +8,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 
 
@@ -23,35 +22,40 @@ public class ProcessorLog{
      * @param args the input arguments
      */
 //    public static void main(String[] args) {
-//        long startTime=System.currentTimeMillis();
+//        //long startTime=System.currentTimeMillis();
 //
-//        //读取坐标
-////        File f1 = new File("/Users/huangyuefeng/Downloads/coordination.txt");
-//        File f1 = new File("D:\\SZ\\变频工作\\数据采集\\cellinfo\\coor0301.txt");
-//        ProcessorCoordinate pc = new ProcessorCoordinate();
-//        String[][] coorS = pc.readCoordinates(f1);
+////        //读取坐标
+//////        File f1 = new File("/Users/huangyuefeng/Downloads/coordination.txt");
+////        File f1 = new File("D:\\SZ\\变频工作\\数据采集\\cellinfo\\coor0301.txt");
+////        ProcessorCoordinate pc = new ProcessorCoordinate();
+////        String[][] coorS = pc.readCoordinates(f1);
+//
+////        //读取CDD
+//////        File f2 = new File("/Users/huangyuefeng/Downloads/cdd20160122/SZ01A.log");
+////        File f2 = new File("D:\\SZ\\变频工作\\数据采集\\CDD\\20160302\\SZ59A.Log");
+////        ProcessorLog pl = new ProcessorLog();
+////        HashMap hm = pl.readCoordinates(f2);
+////        pl.createForteList(s,hm);
+//
+//        ////读取CDD文件夹
+//        //String filePath = "D:\\SZ\\变频工作\\数据采集\\GZ\\0301CDD\\";
+//        //String filePath = "/Users/huangyuefeng/Downloads/cdd20160122/";
+//        //File f = new File(filePath);
+//        //File[] ff = f2.listFiles();
+//        //File[] ff = new File[1];
+//        //ff[0]=f2;
+//        //ArrayList[][] forteArray = pl.processorMultiLog(ff,coorS);
+//
+//        //String exportPath = "D:\\Common.logRecorder\\";
+//        //pl.createForteFile(forteArray,exportPath);
+//
+//        //long endTime=System.currentTimeMillis();
+//        //System.out.println("程序运行时间： "+(endTime-startTime)/1000+"s");
 //
 //        //读取CDD
-////        File f2 = new File("/Users/huangyuefeng/Downloads/cdd20160122/SZ01A.log");
-//        File f2 = new File("D:\\SZ\\变频工作\\数据采集\\CDD\\20160302\\SZ59A.Log");
+//        File f2 = new File("D:\\SZ\\日常工作\\20160411\\20160411\\SZ35A.Log");
 //        ProcessorLog pl = new ProcessorLog();
-//        HashMap hm = pl.readCoordinates(f2);
-//        pl.createForteList(s,hm);
-//
-//        //读取CDD文件夹
-//        String filePath = "D:\\SZ\\变频工作\\数据采集\\GZ\\0301CDD\\";
-//        String filePath = "/Users/huangyuefeng/Downloads/cdd20160122/";
-//        File f = new File(filePath);
-//        File[] ff = f2.listFiles();
-//        File[] ff = new File[1];
-//        ff[0]=f2;
-//        ArrayList[][] forteArray = pl.processorMultiLog(ff,coorS);
-//
-//        String exportPath = "D:\\Common.logRecorder\\";
-//        pl.createForteFile(forteArray,exportPath);
-//
-//        long endTime=System.currentTimeMillis();
-//        System.out.println("程序运行时间： "+(endTime-startTime)/1000+"s");
+//        pl.processorSingleLog(f2);
 //    }
 
     /**
@@ -201,39 +205,31 @@ public class ProcessorLog{
                 if (lineContent.contains("RXTCP")){
 //                        System.out.println(logContent[i]);
                     // 通过 RXOTG 分裂后得到每个小区的 RXTCP 块
-                    String[] RXTCP_CELL = logContent[i].split("RXOTG");
+                    String[] RXTCP_TG = logContent[i].split("RXOTG");
 
 //                        System.out.println(RXTCP_CELL[2]);
-                    // 遍历所以 RXTCP 块
-                    for (int k=2;k<RXTCP_CELL.length;k++){
-                        HashSet<String> hs = new HashSet<String>();
-                        String[][] rxtcp = new String[1][2];
+                    // 遍历所有按 TG 号分裂的 RXTCP 块
+                    for (int k=2;k<RXTCP_TG.length;k++){
+                        // 定义一个存储最终数据的数组
+                        String[][] rxtcp = new String[1][3];
 
                         // 补充分裂后消失的“RXOTG”字符
-                        String temp = "RXOTG"+RXTCP_CELL[k];
-                        // 按行分裂每个 RXTCP 块
+                        String temp = "RXOTG"+RXTCP_TG[k];
+                        // 再按行分裂每个 TG 的 RXTCP 块
                         String[] cell_line = temp.split("\\r|\\n");
 
-//                            String[][] rxtcp = new String[1][cell_line.length+1];
+                        //String[][] rxtcp = new String[1][cell_line.length+1];
 
-                        // 遍历每个 RXTCP 块里面的所以行,得到该TG号的所有小区
+                        // 遍历每个 RXTCP 块里面的所有行
                         for (int l=0;l<cell_line.length;l++){
                             if (cell_line[l].length()==0){break;}
-                            hs.add(cell_line[l].substring(16,26).trim());
-                        }
-                        // 将 hs 转换为数组处理
-                        String[] hsString = hs.toArray(new String[0]);
-                        for (int l=0;l<hsString.length;l++){
-                            rxtcp[0][0] = hsString[l];   //小区名
+                            rxtcp[0][0] = cell_line[l].substring(16,26).trim();   //小区名
                             rxtcp[0][1] = cell_line[0].substring(0,15).trim();  //获取TG号，格式“RXOTG-XXX”,一个小区可能有两个TG号
-                            contentHM.put("rxtcp"+rxtcp[0][0],rxtcp);
-                        }
+                            rxtcp[0][2] = cell_line[l].substring(27).trim();    //获取对应的 CHGR
+                            contentHM.put("rxtcp"+rxtcp[0][0]+rxtcp[0][2],rxtcp);
 
-//                            for (int l=0;l<rxtcp.length;l++){
-//                                for (int m=0;m<rxtcp[l].length;m++){
-//                                    System.out.println(rxtcp[l][m]);
-//                                }
-//                            }
+                            //System.out.println(rxtcp[0][0]+rxtcp[0][2]+":"+rxtcp[0][0]+" "+rxtcp[0][1]+" "+rxtcp[0][2]);
+                        }
                     }
                 }
 
@@ -765,11 +761,11 @@ public class ProcessorLog{
                     // 遍历数组，打印 Sectors 文件
 
                     // 小区基础信息：sector、cgi、bsic、bcch、band
-                    String[][] sectors = contentHM.get("rldep" + validCoordinate[i][0]);
-                    String[][] rxtcp = contentHM.get("rxtcp" + validCoordinate[i][0]);
-                    String rxotg = bscName + "_" + "RXOTG";
+                    String[][] sectors = contentHM.get("rldep" + validCoordinate[i][0]);    // 获取小区号
+                    String[][] rxtcp = contentHM.get("rxtcp" + validCoordinate[i][0]+"0");  // 值获取信道组为 0 的 TG 号
+                    String rxotg = bscName + "_" + "RXOTG"; // 默认值
                     if (rxtcp != null) {
-                        rxotg = bscName + "_" + rxtcp[0][1];
+                        rxotg = bscName + "_" + rxtcp[0][1];    // 取得 TG 号后的值
                     }
 //                    System.out.print(rxtcp[0][0]+"====");
 //                    System.out.println(validCoordinate[i][0]);
