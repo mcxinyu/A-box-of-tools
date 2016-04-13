@@ -10,18 +10,18 @@ import java.io.IOException;
 /**
  * Created by 跃峰 on 2016/4/13.
  */
-public class Update {
+public class replaceText {
     public static void main(String[] args) {
-        Update uc = new Update();
-        File obj = new  File("D:\\SZ\\变频工作\\数据采集\\model\\RxLevels.txt");
+        replaceText uc = new replaceText();
+        File objFile = new  File("D:\\SZ\\变频工作\\数据采集\\model\\Traffic.txt");
         String newData[][] = uc.readNewDate(new File("D:\\SZ\\变频工作\\数据采集\\model\\newdata.txt"));
-        String exportPath = "D:\\SZ\\变频工作\\数据采集\\model\\";
-        uc.replace(obj,newData,exportPath);
+        uc.replace(objFile,newData);
     }
-    public String readC2I(File c2i){
+
+    public String readText(File txt){
         String content = null;
-        if (c2i != null && c2i.isFile()) {
-            content = ReadFile.readSingleText(c2i);
+        if (txt != null && txt.isFile()) {
+            content = ReadFile.readSingleText(txt);
         }
         return content;
     }
@@ -41,14 +41,12 @@ public class Update {
         return newData;
     }
 
-    public void replace(File c2i,String[][] newData,String exportPath){
+    public void replace(File objFile,String[][] newData){
 
-        String content = null;
-        if (c2i != null && c2i.isFile()) {
-            content = ReadFile.readSingleText(c2i);
-        }
+        String content = readText(objFile);
 
-        File exportFile = new File(exportPath + "\\c-new.txt");
+        String newName = objFile.getName().substring(0, objFile.getName().lastIndexOf(".")) + " - new" + objFile.getName().substring(objFile.getName().lastIndexOf("."));
+        File exportFile = new File(objFile.getParent() + File.separator + newName);
 
         try (FileWriter exportFileFW = new FileWriter(exportFile)) {
             for (int i = 0; i < newData.length; i++) {
