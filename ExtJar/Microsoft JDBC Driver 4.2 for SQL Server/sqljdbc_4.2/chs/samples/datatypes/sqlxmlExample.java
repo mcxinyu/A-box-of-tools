@@ -127,7 +127,7 @@ public class sqlxmlExample {
          myHandler.endElement(null, "contact", "contact");
          myHandler.endDocument();
 
-         // Update the data in the result set.
+         // replaceText the data in the result set.
          rs.moveToInsertRow();
          rs.updateString("Col2", "C");
          rs.updateSQLXML("Col3", sqlxml);

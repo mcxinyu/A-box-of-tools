@@ -69,7 +69,7 @@ public class basicDT {
          rs.next();
          displayRow("ORIGINAL DATA", rs);
          
-         // Update the data in the result set.
+         // replaceText the data in the result set.
          rs.updateString(2, "B");
          rs.updateString(3, "Some updated text.");
          rs.updateBoolean(4, true);

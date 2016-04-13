@@ -54,7 +54,7 @@ public class updateRS {
          rs = stmt.executeQuery(SQL);
          displayRow("ADDED ROW", rs);
          
-         // Update the row of data.
+         // replaceText the row of data.
          rs.first();
          rs.updateString("GroupName", "Finance");
          rs.updateRow();

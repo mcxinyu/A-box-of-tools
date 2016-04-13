@@ -66,7 +66,7 @@ public class updateLargeData {
           // Select all of the document summaries.
           rs = stmt.executeQuery("SELECT Title, DocumentSummary FROM Production.Document");
 
-          // Update each document summary.
+          // replaceText each document summary.
           while (rs.next()) {
 
                // Retrieve the original document summary.
@@ -74,7 +74,7 @@ public class updateLargeData {
 
                if (reader == null)
                {
-                   // Update the document summary.
+                   // replaceText the document summary.
                    System.out.println("Updating " + rs.getString("Title"));
                    rs.updateString("DocumentSummary", "Work in progress");
                    rs.updateRow();
