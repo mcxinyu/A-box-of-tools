@@ -11,6 +11,7 @@ import View.Cdd2ForteView.Cdd2Forte;
 import View.FileSplitView.FileSplit;
 import View.RenameFilesView.RenameFiles;
 import View.ToCoordinateView.ToCoordinate;
+import View.UpdateC2IView.UpdateC2I;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,7 +19,7 @@ import java.awt.event.*;
 
 public class Home extends JFrame implements ActionListener{
     WelcomeArea welcome;
-    HomeFunctionBtn renameFilesBtn,cdd2forteBtn,fileSplitBtn,toCOordinateBtn,placeholderBtn4,placeholderBtn5;
+    HomeFunctionBtn renameFilesBtn,cdd2forteBtn,fileSplitBtn,toCOordinateBtn,updateC2I,placeholderBtn5;
     JPanel functionalArea;
     JFrame j1,j2;
 
@@ -33,9 +34,8 @@ public class Home extends JFrame implements ActionListener{
         renameFilesBtn = new HomeFunctionBtn(new ImageIcon(this.getClass().getResource("/icons/rename_128.png")),"批量文件重命名","      批量重命名文件或文件夹",300,0);
         fileSplitBtn = new HomeFunctionBtn(new ImageIcon(this.getClass().getResource("/icons/split_128.png")),"文本分割合并","可将文本文件分割为小文件，解决    excel 无法打开大文件的困难",500,0);
         toCOordinateBtn = new HomeFunctionBtn(new ImageIcon(this.getClass().getResource("/icons/coordinate_128.png")),"地图转坐标","       cellinfo to coordinates",100,200);
-        placeholderBtn4 = new HomeFunctionBtn(new ImageIcon(this.getClass().getResource("/icons/ad_128.png")),"广告位出租","                    上广告",300,200);
+        updateC2I = new HomeFunctionBtn(new ImageIcon(this.getClass().getResource("/icons/updateC2I_128.png")),"更新c2i","          小区割接后更新c2i",300,200);
         placeholderBtn5 = new HomeFunctionBtn(new ImageIcon(this.getClass().getResource("/icons/ad_128.png")),"广告位出租","                    上广告",500,200);
-        placeholderBtn4.button.setEnabled(false);
         placeholderBtn5.button.setEnabled(false);
 
         functionalArea = new JPanel(null);
@@ -44,7 +44,7 @@ public class Home extends JFrame implements ActionListener{
         functionalArea.add(renameFilesBtn);
         functionalArea.add(fileSplitBtn);
         functionalArea.add(toCOordinateBtn);
-        functionalArea.add(placeholderBtn4);
+        functionalArea.add(updateC2I);
         functionalArea.add(placeholderBtn5);
 
         //注册监听
@@ -54,8 +54,10 @@ public class Home extends JFrame implements ActionListener{
         renameFilesBtn.button.addActionListener(this);
         fileSplitBtn.button.setActionCommand("fileSplitBtn");
         fileSplitBtn.button.addActionListener(this);
-        toCOordinateBtn.button.setActionCommand("toCOordinateBtn");
+        toCOordinateBtn.button.setActionCommand("toCoordinateBtn");
         toCOordinateBtn.button.addActionListener(this);
+        updateC2I.button.setActionCommand("updateC2I");
+        updateC2I.button.addActionListener(this);
 
         //添加入Frame
         j1 = new JFrame();
@@ -102,10 +104,20 @@ public class Home extends JFrame implements ActionListener{
                     j1.setVisible(true);
                 }
             });
-        }else if (e.getActionCommand().equals("toCOordinateBtn")){
+        }else if (e.getActionCommand().equals("toCoordinateBtn")){
             //j1.setVisible(false);
             j2 = new ToCoordinate();
             new DistributOutputStream("toCoordiantes.log");
+            j2.addWindowListener(new WindowAdapter(){
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    j1.setVisible(true);
+                }
+            });
+        }else if (e.getActionCommand().equals("updateC2I")){
+            //j1.setVisible(false);
+            j2 = new UpdateC2I();
+            new DistributOutputStream("updateC2I.log");
             j2.addWindowListener(new WindowAdapter(){
                 @Override
                 public void windowClosing(WindowEvent e) {
