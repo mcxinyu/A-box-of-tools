@@ -57,10 +57,12 @@ public class ReadFile {
             } else {
                 //System.out.println("文件数量： " + files.length);
                 filesList = files;
-                System.out.println("处理了该文件夹中的文件： "+filesList[0].getPath());
+                for (int i = 0; i < filesList.length; i++) {
+                    System.out.println("处理了该文件夹中的文件： "+filesList[i].getPath());
+                }
             }
         }else {
-            System.out.println("readMultiText 收到文件为空");
+            System.out.println("readMultiText 文件为空");
         }
         return filesList;
     }

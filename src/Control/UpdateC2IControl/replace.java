@@ -10,10 +10,10 @@ import java.io.IOException;
 /**
  * Created by 跃峰 on 2016/4/13.
  */
-public class replaceText {
+public class replace {
     public static void main(String[] args) {
-        replaceText uc = new replaceText();
-        File objFile = new  File("D:\\SZ\\变频工作\\数据采集\\model\\Traffic.txt");
+        replace uc = new replace();
+        File objFile = new  File("D:\\SZ\\变频工作\\数据采集\\model\\c2i.txt");
         String newData[][] = uc.readNewDate(new File("D:\\SZ\\变频工作\\数据采集\\model\\newdata.txt"));
         uc.replace(objFile,newData);
     }
@@ -56,6 +56,12 @@ public class replaceText {
         }catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null,"执行失败，找不到文件或文件正在被使用。");
+        }
+    }
+
+    public void replaceMult(File[] fileList,String[][] newData){
+        for (int i = 0; i < fileList.length; i++) {
+            replace(fileList[i],newData);
         }
     }
 }
