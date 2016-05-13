@@ -884,13 +884,15 @@ public class ProcessorLog{
                             // 判断是否为BCCH频点所在信道,并计算信道的频点数
                             String ContainsBCCH = "FALSE";
                             int frequencyCount = 0;
+                            int locationOfBCCH = 4;
                             for (int j = 4; j < ch_group[x].length; j++) {
                                 // 如果遇到 N/A 说明后面没有参数了,可以退出
                                 if (ch_group[x][j].equals("N/A")) break;
                                 // 有参数就比较参数是不是主频,是的话标记这一信道组为 bcch 信道
                                 if (ch_group[x][j].equals(sectors[0][3])) {
                                     ContainsBCCH = "TRUE";
-//                                break;
+                                    locationOfBCCH = j;
+                                    //break;
                                 }
                                 frequencyCount++;
                             }
@@ -913,52 +915,39 @@ public class ProcessorLog{
 
                             //System.out.println(sectors[0][0]);
 
+                            String TCH = "";
+                            String tab = "\t";
+                            String MAIO = "\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A";
+                            for (int j = 4; j < ch_group[x].length; j++) {
+                                if (j == locationOfBCCH && ContainsBCCH == "TRUE"){
+                                    //TCH += tab + "N/A";
+                                }else {
+                                    TCH += tab + ch_group[x][j];
+                                }
+                            }
+
+                            if (ContainsBCCH == "TRUE"){
+                                TCH += "\tN/A";
+                            }
+
                             if (!sectors[0][1].equals("")) {
-                                String channelGroupLine = sectors[0][0] + "\t" +
-                                        ch_group[x][0] + "\tUL\t" +
-                                        sectors[0][4].substring(3) + "\t" +
-                                        extended + "\t" +
-                                        hoppingMethod + "\t" +
-                                        ContainsBCCH + "\t" +
-                                        ch_group[x][1] + "\tDownlink and Uplink\tDownlink and Uplink\tN/A\t" +
-                                        rlcpp[0][1] + "\t" +
-                                        frequencyCount + "\t" +
-                                        ch_group[x][3] + "\t1\tNormal\t" +
-                                        ch_group[x][4] + "\t" +
-                                        ch_group[x][5] + "\t" +
-                                        ch_group[x][6] + "\t" +
-                                        ch_group[x][7] + "\t" +
-                                        ch_group[x][8] + "\t" +
-                                        ch_group[x][9] + "\t" +
-                                        ch_group[x][10] + "\t" +
-                                        ch_group[x][11] + "\t" +
-                                        ch_group[x][12] + "\t" +
-                                        ch_group[x][13] + "\t" +
-                                        ch_group[x][14] + "\t" +
-                                        ch_group[x][15] + "\t" +
-                                        ch_group[x][16] + "\t" +
-                                        ch_group[x][17] + "\t" +
-                                        ch_group[x][18] + "\t" +
-                                        ch_group[x][19] + "\t" +
-                                        ch_group[x][20] + "\t" +
-                                        ch_group[x][21] + "\t" +
-                                        ch_group[x][22] + "\t" +
-                                        ch_group[x][23] + "\t" +
-                                        ch_group[x][24] + "\t" +
-                                        ch_group[x][25] + "\t" +
-                                        ch_group[x][26] + "\t" +
-                                        ch_group[x][27] + "\t" +
-                                        ch_group[x][28] + "\t" +
-                                        ch_group[x][29] + "\t" +
-                                        ch_group[x][30] + "\t" +
-                                        ch_group[x][31] + "\t" +
-                                        ch_group[x][32] + "\t" +
-                                        ch_group[x][33] + "\t" +
-                                        ch_group[x][34] + "\t" +
-                                        ch_group[x][35] + "\t" +
-                                        ch_group[x][36] + "\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\t" +
-                                        "N/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\t" +
-                                        "N/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A";
+                                String channelGroupLine = sectors[0][0] + tab +
+                                        ch_group[x][0] + tab +
+                                        "UL" + tab +
+                                        sectors[0][4].substring(3) + tab +
+                                        extended + tab +
+                                        hoppingMethod + tab +
+                                        ContainsBCCH + tab +
+                                        ch_group[x][1] + tab +
+                                        "Downlink and Uplink" + tab +
+                                        "Downlink and Uplink" + tab +
+                                        "N/A" + tab +
+                                        rlcpp[0][1] + tab +
+                                        frequencyCount + tab +
+                                        ch_group[x][3] + tab +
+                                        "1" + tab +
+                                        "Normal" +
+                                        TCH + MAIO;
                                 channelGroupslist.add(channelGroupLine);
                             }
                         }
