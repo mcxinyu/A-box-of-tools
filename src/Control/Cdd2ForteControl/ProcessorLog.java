@@ -317,321 +317,30 @@ public class ProcessorLog{
                                 for (int m = l + 1; m < RLCFP_CELL_LINE.length; m++) {
                                     //String RLCFPsector = RLCFP_CELL_LINE[l-2].trim();
                                     if (RLCFP_CELL_LINE[m] != null && RLCFP_CELL_LINE[m].substring(0, 3).trim() != "END" && RLCFP_CELL_LINE[m].length()>=64) {
-                                        if (CHGR_COUNT == 1) {
-                                            //取出第一个信道组数据
-                                            if (RLCFP_CELL_LINE[CHGR_IN_LINE[0]].length()>=64) {
-                                                ch_group[0][0] = RLCFP_CELL_LINE[CHGR_IN_LINE[0]].substring(0, 3).trim();    //CHGR
-                                                ch_group[0][1] = RLCFP_CELL_LINE[CHGR_IN_LINE[0]].substring(49, 53).trim();    //hsn
-                                                ch_group[0][2] = RLCFP_CELL_LINE[CHGR_IN_LINE[0]].substring(55, 58).trim();    //hopping
-                                                ch_group[0][3] = RLCFP_CELL_LINE[CHGR_IN_LINE[0]].substring(17, 23).trim();    //sdcch
-//
-                                                for (int n = 0; n < RLCFP_CELL_LINE.length - CHGR_IN_LINE[0]; n++) {
-                                                    if (RLCFP_CELL_LINE[CHGR_IN_LINE[0] + n].length()>=64) {
-                                                        ch_group[0][4 + n] = RLCFP_CELL_LINE[CHGR_IN_LINE[0] + n].substring(60).trim();    //dchno1-dchno64
+                                        //ch_group = readChannelParamaters(ch_group,RLCFP_CELL_LINE,CHGR_IN_LINE,CHGR_COUNT);
+
+                                        for (int n = 0; n < CHGR_COUNT; n++) {
+                                            if (RLCFP_CELL_LINE[CHGR_IN_LINE[n]].length() >= 64) {
+                                                ch_group[n][0] = RLCFP_CELL_LINE[CHGR_IN_LINE[n]].substring(0, 3).trim();    //CHGR
+                                                ch_group[n][1] = RLCFP_CELL_LINE[CHGR_IN_LINE[n]].substring(49, 53).trim();    //hsn
+                                                ch_group[n][2] = RLCFP_CELL_LINE[CHGR_IN_LINE[n]].substring(55, 58).trim();    //hopping
+                                                ch_group[n][3] = RLCFP_CELL_LINE[CHGR_IN_LINE[n]].substring(17, 23).trim(); //sdcch
+
+                                                int tchLength;
+                                                if (CHGR_COUNT - 1 == n) {
+                                                    tchLength = RLCFP_CELL_LINE.length - CHGR_IN_LINE[n];
+                                                } else {
+                                                    tchLength = CHGR_IN_LINE[n + 1] - CHGR_IN_LINE[n];
+                                                }
+
+                                                for (int o = 0; o < tchLength; o++) {
+                                                    if (RLCFP_CELL_LINE[CHGR_IN_LINE[n] + o].length() >= 64) {
+                                                        ch_group[n][4 + o] = RLCFP_CELL_LINE[CHGR_IN_LINE[n] + o].substring(60).trim();    //dchno1-dchno64
                                                     }
                                                 }
                                             }
-                                            contentHM.put("rlcfp" + RLCFPsector, ch_group);
-//                                            System.out.println("信道组数"+CHGR_COUNT);
-//                                            String line = RLCFPsector+"\t0\tUL\t1800\tN/A\tNon hopping\tTRUE\t3\tDownlink and Uplink\tDownlink and Uplink\tN/A\t47\t4\t1\t1\tNormal\t567\t575\t627\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A";
-//                                            System.out.println(line);
-//                                                System.out.println("有一个信道组");
-
-                                        } else if (CHGR_COUNT == 2) {
-                                            //取出第一个信道组数据
-                                            if (RLCFP_CELL_LINE[CHGR_IN_LINE[0]].length()>=64) {
-                                                ch_group[0][0] = RLCFP_CELL_LINE[CHGR_IN_LINE[0]].substring(0, 3).trim();    //CHGR
-                                                ch_group[0][1] = RLCFP_CELL_LINE[CHGR_IN_LINE[0]].substring(49, 53).trim();    //hsn
-                                                ch_group[0][2] = RLCFP_CELL_LINE[CHGR_IN_LINE[0]].substring(55, 58).trim();    //hopping
-                                                ch_group[0][3] = RLCFP_CELL_LINE[CHGR_IN_LINE[0]].substring(17, 23).trim();    //sdcch
-
-                                                for (int n = 0; n < CHGR_IN_LINE[1] - CHGR_IN_LINE[0]; n++) {
-                                                    if (RLCFP_CELL_LINE[CHGR_IN_LINE[0] + n].length()>=64) {
-                                                        ch_group[0][4 + n] = RLCFP_CELL_LINE[CHGR_IN_LINE[0] + n].substring(60).trim();    //dchno1-dchno64
-                                                    }
-                                                }
-                                            }
-
-                                            //取出第二个信道组数据
-                                            if (RLCFP_CELL_LINE[CHGR_IN_LINE[1]].length()>=64) {
-                                                ch_group[1][0] = RLCFP_CELL_LINE[CHGR_IN_LINE[1]].substring(0, 3).trim();    //CHGR
-                                                ch_group[1][1] = RLCFP_CELL_LINE[CHGR_IN_LINE[1]].substring(49, 53).trim();    //hsn
-                                                ch_group[1][2] = RLCFP_CELL_LINE[CHGR_IN_LINE[1]].substring(55, 58).trim();    //hopping
-                                                ch_group[1][3] = RLCFP_CELL_LINE[CHGR_IN_LINE[1]].substring(17, 23).trim();    //sdcch
-
-                                                for (int n = 0; n < RLCFP_CELL_LINE.length - CHGR_IN_LINE[1]; n++) {
-                                                    if (RLCFP_CELL_LINE[CHGR_IN_LINE[1] + n].length()>=64) {
-                                                        ch_group[1][4 + n] = RLCFP_CELL_LINE[CHGR_IN_LINE[1] + n].substring(60).trim();    //dchno1-dchno64
-                                                    }
-                                                }
-                                            }
-                                            contentHM.put("rlcfp"+RLCFPsector,ch_group);
-
-//                                                System.out.println("有二个信道组");
-                                        } else if (CHGR_COUNT == 3) {
-                                            //取出第一个信道组数据
-                                            if (RLCFP_CELL_LINE[CHGR_IN_LINE[0]].length()>=64) {
-                                                ch_group[0][0] = RLCFP_CELL_LINE[CHGR_IN_LINE[0]].substring(0, 3).trim();    //CHGR
-                                                ch_group[0][1] = RLCFP_CELL_LINE[CHGR_IN_LINE[0]].substring(49, 53).trim();    //hsn
-                                                ch_group[0][2] = RLCFP_CELL_LINE[CHGR_IN_LINE[0]].substring(55, 58).trim();    //hopping
-                                                ch_group[0][3] = RLCFP_CELL_LINE[CHGR_IN_LINE[0]].substring(17, 23).trim();    //sdcch
-
-                                                for (int n = 0; n < CHGR_IN_LINE[1] - CHGR_IN_LINE[0]; n++) {
-                                                    if (RLCFP_CELL_LINE[CHGR_IN_LINE[0] + n].length()>=64) {
-                                                        ch_group[0][4 + n] = RLCFP_CELL_LINE[CHGR_IN_LINE[0] + n].substring(60).trim();    //dchno1-dchno64
-                                                    }
-                                                }
-                                            }
-
-
-                                            //取出第二个信道组数据
-                                            if (RLCFP_CELL_LINE[CHGR_IN_LINE[1]].length()>=64) {
-                                                ch_group[1][0] = RLCFP_CELL_LINE[CHGR_IN_LINE[1]].substring(0, 3).trim();    //CHGR
-                                                ch_group[1][1] = RLCFP_CELL_LINE[CHGR_IN_LINE[1]].substring(49, 53).trim();    //hsn
-                                                ch_group[1][2] = RLCFP_CELL_LINE[CHGR_IN_LINE[1]].substring(55, 58).trim();    //hopping
-                                                ch_group[1][3] = RLCFP_CELL_LINE[CHGR_IN_LINE[1]].substring(17, 23).trim();    //sdcch
-
-                                                for (int n = 0; n < CHGR_IN_LINE[2] - CHGR_IN_LINE[1]; n++) {
-                                                    if (RLCFP_CELL_LINE[CHGR_IN_LINE[1] + n].length()>=64) {
-                                                        ch_group[1][4 + n] = RLCFP_CELL_LINE[CHGR_IN_LINE[1] + n].substring(60).trim();    //dchno1-dchno64
-                                                    }
-                                                }
-                                            }
-
-
-                                            //取出第三个信道组数据
-                                            if (RLCFP_CELL_LINE[CHGR_IN_LINE[2]].length()>=64) {
-                                                ch_group[2][0] = RLCFP_CELL_LINE[CHGR_IN_LINE[2]].substring(0, 3).trim();    //CHGR
-                                                ch_group[2][1] = RLCFP_CELL_LINE[CHGR_IN_LINE[2]].substring(49, 53).trim();    //hsn
-                                                ch_group[2][2] = RLCFP_CELL_LINE[CHGR_IN_LINE[2]].substring(55, 58).trim();    //hopping
-                                                ch_group[2][3] = RLCFP_CELL_LINE[CHGR_IN_LINE[2]].substring(17, 23).trim();    //sdcch
-
-                                                for (int n = 0; n < RLCFP_CELL_LINE.length - CHGR_IN_LINE[2]; n++) {
-                                                    if (RLCFP_CELL_LINE[CHGR_IN_LINE[2] + n].length()>=64) {
-                                                        ch_group[2][4 + n] = RLCFP_CELL_LINE[CHGR_IN_LINE[2] + n].substring(60).trim();    //dchno1-dchno64
-                                                    }
-                                                }
-                                            }
-                                            contentHM.put("rlcfp"+RLCFPsector,ch_group);
-
-//                                                System.out.println("有三个信道组");
-                                        } else if (CHGR_COUNT == 4) {
-                                            //取出第一个信道组数据
-                                            if (RLCFP_CELL_LINE[CHGR_IN_LINE[0]].length()>=64) {
-                                                ch_group[0][0] = RLCFP_CELL_LINE[CHGR_IN_LINE[0]].substring(0, 3).trim();    //CHGR
-                                                ch_group[0][1] = RLCFP_CELL_LINE[CHGR_IN_LINE[0]].substring(49, 53).trim();    //hsn
-                                                ch_group[0][2] = RLCFP_CELL_LINE[CHGR_IN_LINE[0]].substring(55, 58).trim();    //hopping
-                                                ch_group[0][3] = RLCFP_CELL_LINE[CHGR_IN_LINE[0]].substring(17, 23).trim();    //sdcch
-
-                                                for (int n = 0; n < CHGR_IN_LINE[1] - CHGR_IN_LINE[0]; n++) {
-                                                    if (RLCFP_CELL_LINE[CHGR_IN_LINE[0] + n].length()>=64) {
-                                                        ch_group[0][4 + n] = RLCFP_CELL_LINE[CHGR_IN_LINE[0] + n].substring(60).trim();    //dchno1-dchno64
-                                                    }
-                                                }
-                                            }
-
-                                            //取出第二个信道组数据
-                                            if (RLCFP_CELL_LINE[CHGR_IN_LINE[1]].length()>=64) {
-                                                ch_group[1][0] = RLCFP_CELL_LINE[CHGR_IN_LINE[1]].substring(0, 3).trim();    //CHGR
-                                                ch_group[1][1] = RLCFP_CELL_LINE[CHGR_IN_LINE[1]].substring(49, 53).trim();    //hsn
-                                                ch_group[1][2] = RLCFP_CELL_LINE[CHGR_IN_LINE[1]].substring(55, 58).trim();    //hopping
-                                                ch_group[1][3] = RLCFP_CELL_LINE[CHGR_IN_LINE[1]].substring(17, 23).trim();    //sdcch
-
-                                                for (int n = 0; n < CHGR_IN_LINE[2] - CHGR_IN_LINE[1]; n++) {
-                                                    if (RLCFP_CELL_LINE[CHGR_IN_LINE[1] + n].length()>=64) {
-                                                        ch_group[1][4 + n] = RLCFP_CELL_LINE[CHGR_IN_LINE[1] + n].substring(60).trim();    //dchno1-dchno64
-                                                    }
-                                                }
-                                            }
-
-                                            //取出第三个信道组数据
-                                            if (RLCFP_CELL_LINE[CHGR_IN_LINE[2]].length()>=64) {
-                                                ch_group[2][0] = RLCFP_CELL_LINE[CHGR_IN_LINE[2]].substring(0, 3).trim();    //CHGR
-                                                ch_group[2][1] = RLCFP_CELL_LINE[CHGR_IN_LINE[2]].substring(49, 53).trim();    //hsn
-                                                ch_group[2][2] = RLCFP_CELL_LINE[CHGR_IN_LINE[2]].substring(55, 58).trim();    //hopping
-                                                ch_group[2][3] = RLCFP_CELL_LINE[CHGR_IN_LINE[2]].substring(17, 23).trim();    //sdcch
-
-                                                for (int n = 0; n < CHGR_IN_LINE[3] - CHGR_IN_LINE[2]; n++) {
-                                                    if (RLCFP_CELL_LINE[CHGR_IN_LINE[2] + n].length()>=64) {
-                                                        ch_group[2][4 + n] = RLCFP_CELL_LINE[CHGR_IN_LINE[2] + n].substring(60).trim();    //dchno1-dchno64
-                                                    }
-                                                }
-                                            }
-
-                                            //取出第四个信道组数据
-                                            if (RLCFP_CELL_LINE[CHGR_IN_LINE[3]].length()>=64) {
-                                                ch_group[3][0] = RLCFP_CELL_LINE[CHGR_IN_LINE[3]].substring(0, 3).trim();    //CHGR
-                                                ch_group[3][1] = RLCFP_CELL_LINE[CHGR_IN_LINE[3]].substring(49, 53).trim();    //hsn
-                                                ch_group[3][2] = RLCFP_CELL_LINE[CHGR_IN_LINE[3]].substring(55, 58).trim();    //hopping
-                                                ch_group[3][3] = RLCFP_CELL_LINE[CHGR_IN_LINE[3]].substring(17, 23).trim();    //sdcch
-
-                                                for (int n = 0; n < RLCFP_CELL_LINE.length - CHGR_IN_LINE[3]; n++) {
-                                                    if (RLCFP_CELL_LINE[CHGR_IN_LINE[3] + n].length()>=64) {
-                                                        ch_group[3][4 + n] = RLCFP_CELL_LINE[CHGR_IN_LINE[3] + n].substring(60).trim();    //dchno1-dchno64
-                                                    }
-                                                }
-                                            }
-                                            contentHM.put("rlcfp"+RLCFPsector,ch_group);
-//                                                System.out.println("有四个信道组");
-                                        } else if (CHGR_COUNT == 5) {
-                                            //取出第一个信道组数据
-                                            if (RLCFP_CELL_LINE[CHGR_IN_LINE[0]].length()>=64) {
-                                                ch_group[0][0] = RLCFP_CELL_LINE[CHGR_IN_LINE[0]].substring(0, 3).trim();    //CHGR
-                                                ch_group[0][1] = RLCFP_CELL_LINE[CHGR_IN_LINE[0]].substring(49, 53).trim();    //hsn
-                                                ch_group[0][2] = RLCFP_CELL_LINE[CHGR_IN_LINE[0]].substring(55, 58).trim();    //hopping
-                                                ch_group[0][3] = RLCFP_CELL_LINE[CHGR_IN_LINE[0]].substring(17, 23).trim();    //sdcch
-
-                                                for (int n = 0; n < CHGR_IN_LINE[1] - CHGR_IN_LINE[0]; n++) {
-                                                    if (RLCFP_CELL_LINE[CHGR_IN_LINE[0] + n].length()>=64) {
-                                                        ch_group[0][4 + n] = RLCFP_CELL_LINE[CHGR_IN_LINE[0] + n].substring(60).trim();    //dchno1-dchno64
-                                                    }
-                                                }
-                                            }
-
-                                            //取出第二个信道组数据
-                                            if (RLCFP_CELL_LINE[CHGR_IN_LINE[1]].length()>=64) {
-                                                ch_group[1][0] = RLCFP_CELL_LINE[CHGR_IN_LINE[1]].substring(0, 3).trim();    //CHGR
-                                                ch_group[1][1] = RLCFP_CELL_LINE[CHGR_IN_LINE[1]].substring(49, 53).trim();    //hsn
-                                                ch_group[1][2] = RLCFP_CELL_LINE[CHGR_IN_LINE[1]].substring(55, 58).trim();    //hopping
-                                                ch_group[1][3] = RLCFP_CELL_LINE[CHGR_IN_LINE[1]].substring(17, 23).trim();    //sdcch
-
-                                                for (int n = 0; n < CHGR_IN_LINE[2] - CHGR_IN_LINE[1]; n++) {
-                                                    if (RLCFP_CELL_LINE[CHGR_IN_LINE[1] + n].length()>=64) {
-                                                        ch_group[1][4 + n] = RLCFP_CELL_LINE[CHGR_IN_LINE[1] + n].substring(60).trim();    //dchno1-dchno64
-                                                    }
-                                                }
-                                            }
-
-                                            //取出第三个信道组数据
-                                            if (RLCFP_CELL_LINE[CHGR_IN_LINE[2]].length()>=64) {
-                                                ch_group[2][0] = RLCFP_CELL_LINE[CHGR_IN_LINE[2]].substring(0, 3).trim();    //CHGR
-                                                ch_group[2][1] = RLCFP_CELL_LINE[CHGR_IN_LINE[2]].substring(49, 53).trim();    //hsn
-                                                ch_group[2][2] = RLCFP_CELL_LINE[CHGR_IN_LINE[2]].substring(55, 58).trim();    //hopping
-                                                ch_group[2][3] = RLCFP_CELL_LINE[CHGR_IN_LINE[2]].substring(17, 23).trim();    //sdcch
-
-                                                for (int n = 0; n < CHGR_IN_LINE[3] - CHGR_IN_LINE[2]; n++) {
-                                                    if (RLCFP_CELL_LINE[CHGR_IN_LINE[2] + n].length()>=64) {
-                                                        ch_group[2][4 + n] = RLCFP_CELL_LINE[CHGR_IN_LINE[2] + n].substring(60).trim();    //dchno1-dchno64
-                                                    }
-                                                }
-                                            }
-
-                                            //取出第四个信道组数据
-                                            if (RLCFP_CELL_LINE[CHGR_IN_LINE[3]].length()>=64) {
-                                                ch_group[3][0] = RLCFP_CELL_LINE[CHGR_IN_LINE[3]].substring(0, 3).trim();    //CHGR
-                                                ch_group[3][1] = RLCFP_CELL_LINE[CHGR_IN_LINE[3]].substring(49, 53).trim();    //hsn
-                                                ch_group[3][2] = RLCFP_CELL_LINE[CHGR_IN_LINE[3]].substring(55, 58).trim();    //hopping
-                                                ch_group[3][3] = RLCFP_CELL_LINE[CHGR_IN_LINE[3]].substring(17, 23).trim();    //sdcch
-
-                                                for (int n = 0; n < CHGR_IN_LINE[4] - CHGR_IN_LINE[3]; n++) {
-                                                    if (RLCFP_CELL_LINE[CHGR_IN_LINE[3] + n].length()>=64) {
-                                                        ch_group[3][4 + n] = RLCFP_CELL_LINE[CHGR_IN_LINE[3] + n].substring(60).trim();    //dchno1-dchno64
-                                                    }
-                                                }
-                                            }
-
-                                            //取出第五个信道组数据
-                                            if (RLCFP_CELL_LINE[CHGR_IN_LINE[4]].length()>=64) {
-                                                ch_group[4][0] = RLCFP_CELL_LINE[CHGR_IN_LINE[4]].substring(0, 3).trim();    //CHGR
-                                                ch_group[4][1] = RLCFP_CELL_LINE[CHGR_IN_LINE[4]].substring(49, 53).trim();    //hsn
-                                                ch_group[4][2] = RLCFP_CELL_LINE[CHGR_IN_LINE[4]].substring(55, 58).trim();    //hopping
-                                                ch_group[4][3] = RLCFP_CELL_LINE[CHGR_IN_LINE[4]].substring(17, 23).trim();    //sdcch
-
-                                                for (int n = 0; n < RLCFP_CELL_LINE.length - CHGR_IN_LINE[4]; n++) {
-                                                    if (RLCFP_CELL_LINE[CHGR_IN_LINE[4] + n].length()>=64) {
-                                                        ch_group[4][4 + n] = RLCFP_CELL_LINE[CHGR_IN_LINE[4] + n].substring(60).trim();    //dchno1-dchno64
-                                                    }
-                                                }
-                                            }
-                                            contentHM.put("rlcfp"+RLCFPsector,ch_group);
-//                                                System.out.println("有五个信道组");
-                                        } else if (CHGR_COUNT == 6) {
-                                            //取出第一个信道组数据
-                                            if (RLCFP_CELL_LINE[CHGR_IN_LINE[0]].length()>=64) {
-                                                ch_group[0][0] = RLCFP_CELL_LINE[CHGR_IN_LINE[0]].substring(0, 3).trim();    //CHGR
-                                                ch_group[0][1] = RLCFP_CELL_LINE[CHGR_IN_LINE[0]].substring(49, 53).trim();    //hsn
-                                                ch_group[0][2] = RLCFP_CELL_LINE[CHGR_IN_LINE[0]].substring(55, 58).trim();    //hopping
-                                                ch_group[0][3] = RLCFP_CELL_LINE[CHGR_IN_LINE[0]].substring(17, 23).trim();    //sdcch
-
-                                                for (int n = 0; n < CHGR_IN_LINE[1] - CHGR_IN_LINE[0]; n++) {
-                                                    if (RLCFP_CELL_LINE[CHGR_IN_LINE[0] + n].length()>=64) {
-                                                        ch_group[0][4 + n] = RLCFP_CELL_LINE[CHGR_IN_LINE[0] + n].substring(60).trim();    //dchno1-dchno64
-                                                    }
-                                                }
-                                            }
-
-                                            //取出第二个信道组数据
-                                            if (RLCFP_CELL_LINE[CHGR_IN_LINE[1]].length()>=64) {
-                                                ch_group[1][0] = RLCFP_CELL_LINE[CHGR_IN_LINE[1]].substring(0, 3).trim();    //CHGR
-                                                ch_group[1][1] = RLCFP_CELL_LINE[CHGR_IN_LINE[1]].substring(49, 53).trim();    //hsn
-                                                ch_group[1][2] = RLCFP_CELL_LINE[CHGR_IN_LINE[1]].substring(55, 58).trim();    //hopping
-                                                ch_group[1][3] = RLCFP_CELL_LINE[CHGR_IN_LINE[1]].substring(17, 23).trim();    //sdcch
-
-                                                for (int n = 0; n < CHGR_IN_LINE[2] - CHGR_IN_LINE[1]; n++) {
-                                                    if (RLCFP_CELL_LINE[CHGR_IN_LINE[1] + n].length()>=64) {
-                                                        ch_group[1][4 + n] = RLCFP_CELL_LINE[CHGR_IN_LINE[1] + n].substring(60).trim();    //dchno1-dchno64
-                                                    }
-                                                }
-                                            }
-
-                                            //取出第三个信道组数据
-                                            if (RLCFP_CELL_LINE[CHGR_IN_LINE[2]].length()>=64) {
-                                                ch_group[2][0] = RLCFP_CELL_LINE[CHGR_IN_LINE[2]].substring(0, 3).trim();    //CHGR
-                                                ch_group[2][1] = RLCFP_CELL_LINE[CHGR_IN_LINE[2]].substring(49, 53).trim();    //hsn
-                                                ch_group[2][2] = RLCFP_CELL_LINE[CHGR_IN_LINE[2]].substring(55, 58).trim();    //hopping
-                                                ch_group[2][3] = RLCFP_CELL_LINE[CHGR_IN_LINE[2]].substring(17, 23).trim();    //sdcch
-
-                                                for (int n = 0; n < CHGR_IN_LINE[3] - CHGR_IN_LINE[2]; n++) {
-                                                    if (RLCFP_CELL_LINE[CHGR_IN_LINE[2] + n].length()>=64) {
-                                                        ch_group[2][4 + n] = RLCFP_CELL_LINE[CHGR_IN_LINE[2] + n].substring(60).trim();    //dchno1-dchno64
-                                                    }
-                                                }
-                                            }
-
-                                            //取出第四个信道组数据
-                                            if (RLCFP_CELL_LINE[CHGR_IN_LINE[3]].length()>=64) {
-                                                ch_group[3][0] = RLCFP_CELL_LINE[CHGR_IN_LINE[3]].substring(0, 3).trim();    //CHGR
-                                                ch_group[3][1] = RLCFP_CELL_LINE[CHGR_IN_LINE[3]].substring(49, 53).trim();    //hsn
-                                                ch_group[3][2] = RLCFP_CELL_LINE[CHGR_IN_LINE[3]].substring(55, 58).trim();    //hopping
-                                                ch_group[3][3] = RLCFP_CELL_LINE[CHGR_IN_LINE[3]].substring(17, 23).trim();    //sdcch
-
-                                                for (int n = 0; n < CHGR_IN_LINE[4] - CHGR_IN_LINE[3]; n++) {
-                                                    if (RLCFP_CELL_LINE[CHGR_IN_LINE[3] + n].length()>=64) {
-                                                        ch_group[3][4 + n] = RLCFP_CELL_LINE[CHGR_IN_LINE[3] + n].substring(60).trim();    //dchno1-dchno64
-                                                    }
-                                                }
-                                            }
-
-                                            //取出第五个信道组数据
-                                            if (RLCFP_CELL_LINE[CHGR_IN_LINE[4]].length()>=64) {
-                                                ch_group[4][0] = RLCFP_CELL_LINE[CHGR_IN_LINE[4]].substring(0, 3).trim();    //CHGR
-                                                ch_group[4][1] = RLCFP_CELL_LINE[CHGR_IN_LINE[4]].substring(49, 53).trim();    //hsn
-                                                ch_group[4][2] = RLCFP_CELL_LINE[CHGR_IN_LINE[4]].substring(55, 58).trim();    //hopping
-                                                ch_group[4][3] = RLCFP_CELL_LINE[CHGR_IN_LINE[4]].substring(17, 23).trim();    //sdcch
-
-                                                for (int n = 0; n < CHGR_IN_LINE[5] - CHGR_IN_LINE[4]; n++) {
-                                                    if (RLCFP_CELL_LINE[CHGR_IN_LINE[4] + n].length()>=64) {
-                                                        ch_group[4][4 + n] = RLCFP_CELL_LINE[CHGR_IN_LINE[4] + n].substring(60).trim();    //dchno1-dchno64
-                                                    }
-                                                }
-                                            }
-
-                                            //取出第六个信道组数据
-                                            if (RLCFP_CELL_LINE[CHGR_IN_LINE[5]].length()>=64) {
-                                                ch_group[5][0] = RLCFP_CELL_LINE[CHGR_IN_LINE[5]].substring(0, 3).trim();    //CHGR
-                                                ch_group[5][1] = RLCFP_CELL_LINE[CHGR_IN_LINE[5]].substring(49, 53).trim();    //hsn
-                                                ch_group[5][2] = RLCFP_CELL_LINE[CHGR_IN_LINE[5]].substring(55, 58).trim();    //hopping
-                                                ch_group[5][3] = RLCFP_CELL_LINE[CHGR_IN_LINE[5]].substring(17, 23).trim();    //sdcch
-
-                                                for (int n = 0; n < RLCFP_CELL_LINE.length - CHGR_IN_LINE[5]; n++) {
-                                                    if (RLCFP_CELL_LINE[CHGR_IN_LINE[5] + n].length()>=64) {
-                                                        ch_group[5][4 + n] = RLCFP_CELL_LINE[CHGR_IN_LINE[5] + n].substring(60).trim();    //dchno1-dchno64
-                                                    }
-                                                }
-                                            }
-                                            contentHM.put("rlcfp"+RLCFPsector,ch_group);
-//                                                System.out.println("有六个信道组");
                                         }
+                                        contentHM.put("rlcfp" + RLCFPsector, ch_group);
                                     }
                                 }
                                 //for (int x=0;x<4;x++){
@@ -723,6 +432,7 @@ public class ProcessorLog{
 //        }
     return contentHM;
     }
+
 
     public String getNotice() {
         return notice;

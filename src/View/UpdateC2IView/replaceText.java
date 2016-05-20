@@ -34,7 +34,7 @@ public class replaceText extends JFrame implements ActionListener {
         MyTools.windowsFeel();
 
         //欢迎栏
-        welcomeArea =new WelcomeArea(new ImageIcon(Cdd2Forte.class.getResource("/icons/UpdateC2I_64.png")),"  一箱工具 - 批量文本替换");
+        welcomeArea =new WelcomeArea(new ImageIcon(Cdd2Forte.class.getResource("/icons/UpdateC2I_64.png")),"  一箱工具 - 批量文本替换",false);
 
         //contentsArea
         text = new JLabel("批量文本替换，可以更新割接后的模型等。");

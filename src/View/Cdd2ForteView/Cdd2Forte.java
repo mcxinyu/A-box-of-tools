@@ -44,7 +44,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
         MyTools.windowsFeel();
 
         //欢迎栏
-        welcomeArea =new WelcomeArea(new ImageIcon(Cdd2Forte.class.getResource("/icons/cdd2forte_64.png")),"  一箱工具 - cdd2forte");
+        welcomeArea =new WelcomeArea(new ImageIcon(Cdd2Forte.class.getResource("/icons/cdd2forte_64.png")),"  一箱工具 - cdd2forte",false);
 
         //contentsArea
         text = new JLabel("使用 cdd-log 生成 forte 环境，目前只支持爱立信设备。");

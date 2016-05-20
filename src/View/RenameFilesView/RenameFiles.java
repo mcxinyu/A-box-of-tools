@@ -50,7 +50,7 @@ public class RenameFiles extends JFrame implements ActionListener,Runnable {
         Thread thread = new Thread(this);
         thread.start();
         //欢迎栏
-        welcomeArea =new WelcomeArea(new ImageIcon(Cdd2Forte.class.getResource("/icons/rename_64.png")),"  一箱工具 - 批量文件重命名");
+        welcomeArea =new WelcomeArea(new ImageIcon(Cdd2Forte.class.getResource("/icons/rename_64.png")),"  一箱工具 - 批量文件重命名",false);
 
         // 选择的项目、文件
         selectJL = new JLabel("选取要重命名的项目");

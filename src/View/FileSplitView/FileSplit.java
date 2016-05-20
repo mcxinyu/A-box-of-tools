@@ -44,7 +44,7 @@ public class FileSplit extends JFrame implements ActionListener,Runnable {
         Thread thread = new Thread(this);
         thread.start();
         //欢迎栏
-        welcomeArea =new WelcomeArea(new ImageIcon(this.getClass().getResource("/icons/split_64.png")),"  一箱工具 - 文本"+title);
+        welcomeArea =new WelcomeArea(new ImageIcon(this.getClass().getResource("/icons/split_64.png")),"  一箱工具 - 文本"+title,false);
 
         // 选择文件饿设置部分
         text = new JLabel("可将文本文件分割为小文件，解决 excel 无法打开大文件的困难。");
@@ -235,7 +235,7 @@ public class FileSplit extends JFrame implements ActionListener,Runnable {
             this.dispose();
         }else if (e.getActionCommand().equals("backBtn")){  //选择分割文件
             title = "分割";
-            welcomeArea =new WelcomeArea(new ImageIcon(this.getClass().getResource("/icons/split_64.png")),"  一箱工具 - 文本"+title);
+            welcomeArea =new WelcomeArea(new ImageIcon(this.getClass().getResource("/icons/split_64.png")),"  一箱工具 - 文本"+title,false);
             this.add(welcomeArea, BorderLayout.NORTH);
             welcomeArea.revalidate();
 
@@ -255,7 +255,7 @@ public class FileSplit extends JFrame implements ActionListener,Runnable {
             setNum.setVisible(true);
         }else if (e.getActionCommand().equals("nextBtn")){  //选择合并文件
             title = "合并";
-            welcomeArea =new WelcomeArea(new ImageIcon(this.getClass().getResource("/icons/split_64.png")),"  一箱工具 - 文本"+title);
+            welcomeArea =new WelcomeArea(new ImageIcon(this.getClass().getResource("/icons/split_64.png")),"  一箱工具 - 文本"+title,false);
             this.add(welcomeArea, BorderLayout.NORTH);
             welcomeArea.revalidate();
 

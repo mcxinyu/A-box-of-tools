@@ -25,7 +25,7 @@ public class CheckPlan extends JFrame implements ActionListener{
         MyTools.windowsFeel();
 
         //欢迎栏
-        welcomeArea =new WelcomeArea(new ImageIcon(this.getClass().getResource("/icons/CheckPlan_64.png")),"  一箱工具 - 变频方案检查表");
+        welcomeArea =new WelcomeArea(new ImageIcon(this.getClass().getResource("/icons/CheckPlan_64.png")),"  一箱工具 - 变频方案检查表",false);
 
         //内容栏
         checkPlanStep1 = new CheckPlanStep1();

@@ -41,7 +41,7 @@ public class ToCoordinate extends JFrame implements ActionListener {
         MyTools.windowsFeel();
 
         //欢迎栏
-        welcomeArea =new WelcomeArea(new ImageIcon(Cdd2Forte.class.getResource("/icons/coordinate_64.png")),"  一箱工具 - 地图转坐标");
+        welcomeArea =new WelcomeArea(new ImageIcon(Cdd2Forte.class.getResource("/icons/coordinate_64.png")),"  一箱工具 - 地图转坐标",false);
 
         //contentsArea
         text = new JLabel("将 cellinfo 转换为 forte 格式的坐标文件。");

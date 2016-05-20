@@ -2,8 +2,7 @@ package View.HomeView;
 /**
  * Created by 跃峰 on 2015/11/19.
  * View.CheckPlanView 的主界面，承载了主要功能按钮
- * 版本号：0.1.0
- * a.b.c a++UI改动，b++功能增加，c++小修改
+ * 版本号：2016.5.20
  */
 import Common.DistributOutputStream;
 import Common.WelcomeArea;
@@ -15,12 +14,14 @@ import View.UpdateC2IView.replaceText;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class Home extends JFrame implements ActionListener{
-    WelcomeArea welcome;
     HomeFunctionBtn renameFilesBtn,cdd2forteBtn,fileSplitBtn,toCOordinateBtn, replaceText,placeholderBtn5;
-    JPanel functionalArea;
+    JPanel functionalArea,welcome;
     JFrame j1,j2;
 
     public static void main(String[] args) {
@@ -28,7 +29,9 @@ public class Home extends JFrame implements ActionListener{
     }
     public Home() {
 
-        welcome =new WelcomeArea(new ImageIcon(this.getClass().getResource("/icons/boxtool_64.png")),"  欢迎使用 一箱工具 应用");
+        String Version = "2016.5.20";
+
+        welcome =new WelcomeArea(new ImageIcon(this.getClass().getResource("/icons/boxtool_64.png")),"  欢迎使用 一箱工具 应用",true);
 
         cdd2forteBtn = new HomeFunctionBtn(new ImageIcon(this.getClass().getResource("/icons/cdd2forte_128.png")),"cdd2forte","   使用 cdd-log 生成 forte 环境          （目前只支持爱立信设备）",100,0);
         renameFilesBtn = new HomeFunctionBtn(new ImageIcon(this.getClass().getResource("/icons/rename_128.png")),"批量文件重命名","      批量重命名文件或文件夹",300,0);
