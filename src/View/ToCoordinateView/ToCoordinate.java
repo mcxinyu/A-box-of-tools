@@ -25,11 +25,12 @@ import java.io.File;
 public class ToCoordinate extends JFrame implements ActionListener {
     //JFrame frame;
     JPanel welcomeArea;
-    JPanel controlBtnArea;
+    JPanel controlBtnArea,advancedArea;
     JButton backBtn,nextBtn,homeBtn,okBtn,aboutBtn,readCellinfoBtn,toCoordinateBtn;
     JPanel contentsArea;
-    JLabel temp1,temp2,text,taps;
-    JCheckBox jcb1,jcb2;
+    JLabel temp1,temp2,text,taps,band,taps2;
+    JTextField bandPosition;
+    JCheckBox jcb1,jcb2,jcb3,jcb4;
 
     public static void main(String[] args) {
         new ToCoordinate();
@@ -61,22 +62,50 @@ public class ToCoordinate extends JFrame implements ActionListener {
         jcb2 = new JCheckBox("保留中文名");
         jcb2.setSelected(false);
 
+        band = new JLabel("小区号中用于识别频段的字符所在位置：");
+        bandPosition = new JTextField(4);
+        bandPosition.setText("3");
+        jcb3 = new JCheckBox("优化重叠小区的经纬度");
+        jcb3.setSelected(false);
+        jcb3.setEnabled(false);
+        //jcb3_jtf = new JTextField(3);
+        //jcb3_jtf.setText("5");
+        //jcb3_jlb = new JLabel("的经纬度");
+        jcb4 = new JCheckBox("优化重叠数小区的方向角");
+        jcb4.setSelected(false);
+        //jcb4_jtf = new JTextField(3);
+        //jcb4_jtf.setText("5");
+        //jcb4_jlb = new JLabel("的方向角");
+        taps2 = new JLabel("（如不确定识别频段的字符所在位置，请勿勾选。）");
+
+        advancedArea = new JPanel(new GridBagLayout());
+        advancedArea.setBorder(BorderFactory.createTitledBorder("高级优化"));
+        advancedArea.add(band,new GBC(0,0,3,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(10,10).setInsets(0,1));
+        advancedArea.add(bandPosition,new GBC(3,0,1,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.EAST).setIpad(0,0).setInsets(0,1));
+        advancedArea.add(jcb3,new GBC(0,1,2,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(0,0).setInsets(2,2));
+        //advancedArea.add(jcb3_jtf,new GBC(2,1,1,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(0,0).setInsets(2,2));
+        //advancedArea.add(jcb3_jlb,new GBC(3,1,1,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(0,0).setInsets(2,2));
+        advancedArea.add(jcb4,new GBC(0,2,1,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(0,0).setInsets(2,2));
+        //advancedArea.add(jcb4_jtf,new GBC(1,2,1,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(0,0).setInsets(2,2));
+        //advancedArea.add(jcb4_jlb,new GBC(2,2,1,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(0,0).setInsets(2,2));
+        advancedArea.add(taps2,new GBC(0,3,6,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.WEST).setIpad(0,0).setInsets(2,0));
+
         //注册监听
         readCellinfoBtn.setActionCommand("readCoordinateBtn");
         readCellinfoBtn.addActionListener(this);
         toCoordinateBtn.setActionCommand("toCoordinateBtn");
         toCoordinateBtn.addActionListener(this);
 
-        //添加组件到 contentsArea238,238,238
+        //添加组件到 contentsArea 238,238,238
         contentsArea = new JPanel(new GridBagLayout());
         contentsArea.setBackground(new Color(238,238,238));
         contentsArea.add(text,new GBC(0,0,4,1).setFill(GBC.VERTICAL).setAnchor(GBC.CENTER).setIpad(0,20).setInsets(0,1));
         contentsArea.add(readCellinfoBtn,new GBC(0,1,2,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(20,20).setInsets(0,1,0,0));
         contentsArea.add(toCoordinateBtn,new GBC(2,1,2,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(20,20).setInsets(0,0,0,1));
-        contentsArea.add(taps,new GBC(0,2,4,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(20,5).setInsets(0,1));
-        contentsArea.add(jcb1,new GBC(0,3,3,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(20,5).setInsets(0,1));
-        contentsArea.add(jcb2,new GBC(2,3,4,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(20,5).setInsets(0,1));
-
+        contentsArea.add(taps,new GBC(0,2,4,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(20,5).setInsets(3,10));
+        contentsArea.add(jcb1,new GBC(0,3,3,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(20,5).setInsets(2,8));
+        contentsArea.add(jcb2,new GBC(2,3,4,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(20,5).setInsets(2,0));
+        contentsArea.add(advancedArea,new GBC(0,4,4,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(0,0).setInsets(2,0));
 
         //控制栏
         aboutBtn = new JButton(new ImageIcon(Cdd2Forte.class.getResource("/icons/about.png")));
@@ -113,7 +142,7 @@ public class ToCoordinate extends JFrame implements ActionListener {
         this.setTitle("一箱工具 - 地图转坐标");
         this.setIconImage (Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/icons/coordinate_64.png")));
 
-        this.setSize(626,300);
+        this.setSize(626,420);
         this.setResizable(false);//固定窗体大小
         this.setLocationRelativeTo(null);//打开时相对window居中
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -158,8 +187,17 @@ public class ToCoordinate extends JFrame implements ActionListener {
             int state = save.saveFile("导出 Coordinates 文件",1,this);
             if (state == 0){
                 if (cellinfo!=null) {
+
+                    //int[] parameter = {
+                    //        Integer.parseInt(bandPosition.getText()),
+                    //        Integer.parseInt(jcb3_jtf.getText()),
+                    //        Integer.parseInt(jcb4_jtf.getText())
+                    //};
+
                     String[][] coordinate = c2c.toCoordinates(cellinfo);
-                    c2c.createCoordinatesFile(coordinate, save.getFile().getPath(),jcb1.isSelected(),jcb2.isSelected());
+
+                    c2c.createCoordinatesFile(coordinate, save.getFile().getPath(),jcb1.isSelected(),jcb2.isSelected(),jcb3.isSelected(),jcb4.isSelected(), Integer.parseInt(bandPosition.getText()));
+                    //c2c.optLocation(coordinate,Integer.parseInt(bandPosition.getText()));
                 }
             }else if (state == 1){
             }

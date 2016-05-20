@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 /**
@@ -162,11 +163,13 @@ public class cellinfo2Coordinates {
      * 生成坐标文件
      * @param coordinate
      * @param exportPath
-     * @param weed
-     * @param holdSiteCHName
+     * @param filterData    剔除无效数据
+     * @param holdSiteCHName    保留中文名
+     * @param optLocation   优化重叠小区经纬度
+     * @param optAzimuth    优化重叠小区方向角
      * @return
      */
-    public File createCoordinatesFile(String[][] coordinate, String exportPath,boolean weed,boolean holdSiteCHName){
+    public File createCoordinatesFile(String[][] coordinate, String exportPath, boolean filterData, boolean holdSiteCHName, boolean optLocation, boolean optAzimuth, int parameter){
         File coordinatesFile = null;
         int count = 0;
         if (coordinate != null) {
@@ -174,84 +177,177 @@ public class cellinfo2Coordinates {
 
             String coordinatesHead = "Sector\tLongitude\tLAC\tCI\tAzimuth\tDowntilt\tSiteCHName\tHeight\tCoverType\tCDUTYPE\tLatitude";
 
-            try (FileWriter coordinateFW = new FileWriter(coordinatesFile);) {
-                coordinateFW.write(coordinatesHead + "\r\n");
+            try (FileWriter coordinatesFW = new FileWriter(coordinatesFile);) {
+                coordinatesFW.write(coordinatesHead + "\r\n");
 
-                if (weed == false && holdSiteCHName == false) {
-                    for (int i = 0; i < coordinate.length; i++) {
-                        String line = coordinate[i][0] + "\t" +
-                                coordinate[i][1] + "\t" +
-                                coordinate[i][2] + "\t" +
-                                coordinate[i][3] + "\t" +
-                                coordinate[i][4] + "\t" +
-                                coordinate[i][5] + "\t" +
-                                "" + "\t" +
-                                coordinate[i][7] + "\t" +
-                                coordinate[i][8] + "\t" +
-                                coordinate[i][9] + "\t" +
-                                coordinate[i][10];
-                        coordinateFW.write(line + "\r\n");
-                        count++;
-                    }
-                }else if (weed == false && holdSiteCHName == true){
-                    for (int i = 0; i < coordinate.length; i++) {
-                        String line = coordinate[i][0] + "\t" +
-                                coordinate[i][1] + "\t" +
-                                coordinate[i][2] + "\t" +
-                                coordinate[i][3] + "\t" +
-                                coordinate[i][4] + "\t" +
-                                coordinate[i][5] + "\t" +
-                                coordinate[i][6] + "\t" +
-                                coordinate[i][7] + "\t" +
-                                coordinate[i][8] + "\t" +
-                                coordinate[i][9] + "\t" +
-                                coordinate[i][10];
-                        coordinateFW.write(line + "\r\n");
-                        count++;
-                    }
-                }else if (weed == true && holdSiteCHName == true){
-                    for (int i = 0; i < coordinate.length; i++) {
-                        if (!coordinate[i][0].equals("") && !coordinate[i][1].equals("") && !coordinate[i][2].equals("") && !coordinate[i][3].equals("") && !coordinate[i][4].equals("") && !coordinate[i][10].equals("")) {
-                            String line = coordinate[i][0] + "\t" +
-                                    coordinate[i][1] + "\t" +
-                                    coordinate[i][2] + "\t" +
-                                    coordinate[i][3] + "\t" +
-                                    coordinate[i][4] + "\t" +
-                                    coordinate[i][5] + "\t" +
-                                    coordinate[i][6] + "\t" +
-                                    coordinate[i][7] + "\t" +
-                                    coordinate[i][8] + "\t" +
-                                    coordinate[i][9] + "\t" +
-                                    coordinate[i][10];
-                            coordinateFW.write(line + "\r\n");
-                            count++;
+                String[][] coordinates = new String[coordinate.length][];
+
+                // 剔除无效数据
+                if (filterData == true){
+                    coordinates = filterData(coordinate);
+                }else {
+                    coordinates = coordinate;
+                }
+
+                // 保留中文名
+                if (holdSiteCHName == true){
+                    //不用修改上一步的内容；
+                }else {
+                    coordinates = notHoldSiteCHName(coordinates);
+                }
+
+                // 优化重叠小区经纬度
+                if (optLocation == true){
+                    coordinates = optLocation(coordinates,parameter);
+                }
+
+                // 优化重叠数小区的方向角
+                if (optAzimuth ==true){
+                    coordinates = optAzimuth(coordinates,parameter);
+                }
+
+                for (int i = 0; i < coordinates.length; i++) {
+                    if (coordinates[i][0] != "null" &&coordinates[i][0] != "" && coordinates[i][0] != null){
+                        String line = "";
+                        for (int j = 0; j < coordinates[i].length; j++) {
+                            line += coordinates[i][j] + "\t";
                         }
-                    }
-                }else if (weed == true && holdSiteCHName == false){
-                    for (int i = 0; i < coordinate.length; i++) {
-                        if (!coordinate[i][0].equals("") && !coordinate[i][1].equals("") && !coordinate[i][2].equals("") && !coordinate[i][3].equals("") && !coordinate[i][4].equals("") && !coordinate[i][10].equals("")) {
-                            String line = coordinate[i][0] + "\t" +
-                                    coordinate[i][1] + "\t" +
-                                    coordinate[i][2] + "\t" +
-                                    coordinate[i][3] + "\t" +
-                                    coordinate[i][4] + "\t" +
-                                    coordinate[i][5] + "\t" +
-                                    "" + "\t" +
-                                    coordinate[i][7] + "\t" +
-                                    coordinate[i][8] + "\t" +
-                                    coordinate[i][9] + "\t" +
-                                    coordinate[i][10];
-                            coordinateFW.write(line + "\r\n");
-                            count++;
-                        }
+                        coordinatesFW.write(line + "\r\n");
+                        count++;
                     }
                 }
-                JOptionPane.showMessageDialog(null, "Coordinates 导出成功，小区数量： "+ count);
+
+                JOptionPane.showMessageDialog(null, "Coordinates 导出成功，小区数量： " + count);
             }catch (Exception e){
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(null, "导出失败，另一个程序正在使用此文件！");
             }
         }
         return coordinatesFile;
+    }
+
+    /**
+     * 剔除无效数据的方法
+     * @param coordinate
+     * @return
+     */
+    public String[][] filterData(String[][] coordinate){
+        //String[][] coordinates = new String[coordinate.length][11];
+
+        for (int i = 0; i < coordinate.length; i++) {
+            if (!coordinate[i][0].equals("") && !coordinate[i][1].equals("") && !coordinate[i][2].equals("") && !coordinate[i][3].equals("") && !coordinate[i][4].equals("") && !coordinate[i][10].equals("")) {
+                //for (int j = 0; j < coordinate[i].length; j++) {
+                //    coordinate[i][j] = coordinate[i][j];
+                //}
+            }else {
+                for (int j = 0; j < coordinate[i].length; j++) {
+                    coordinate[i][j] = null;   //如果一条数据出现了任意一个空值，整条数据就置为 null
+                }
+            }
+        }
+        return coordinate;
+    }
+
+    /**
+     * 不保留中文名的方法
+     * @param coordinate
+     */
+    public String[][] notHoldSiteCHName(String[][] coordinate){
+        //String[][] coordinates = new String[coordinate.length][11];
+
+        for (int i = 0; i < coordinate.length; i++) {
+            for (int j = 0; j < coordinate[i].length; j++) {
+                if (j == 6){
+                    coordinate[i][6] = "";  //不保留中文名，则置空
+                }else {
+                    //coordinates[i][j] = coordinate[i][j];
+                }
+            }
+        }
+        return coordinate;
+    }
+
+    /**
+     * 优化重叠小区经纬度的方法，未完成
+     * @param coordinate
+     * @param parameter
+     * @return
+     */
+    public String[][] optLocation(String[][] coordinate, int parameter){
+        //String[][] coordinates = new String[coordinate.length][11];
+
+        //统计出现次数
+        Hashtable<String, Integer> map=new Hashtable<String,Integer>(coordinate.length);
+
+        for (int i = 0; i < coordinate.length; i++) {
+            if (coordinate[i][0] != "" && coordinate[i][0] != null) {
+                map.put(coordinate[i][1] + coordinate[i][10] + coordinate[i][0].substring(parameter-1,parameter), map.containsKey(coordinate[i][1] + coordinate[i][10] + coordinate[i][0].substring(parameter-1,parameter)) ? map.get(coordinate[i][1] + coordinate[i][10] + coordinate[i][0].substring(parameter-1,parameter)) + 1 : 1);
+            }
+        }
+
+        //for(Map.Entry<String, Integer> e:map.entrySet()){
+        //    System.out.println(e.getKey()+" 出现次数是:"+e.getValue());
+        //}
+
+        // 记录小区出现次数大于6的出现次数，以便确定是否是第一个小区
+        Hashtable<String, Integer> map2 = new Hashtable<String,Integer>();
+
+        for (int i = 0; i < coordinate.length; i++) {
+            if (coordinate[i][0] != null && map.get(coordinate[i][1] + coordinate[i][10] + coordinate[i][0].substring(parameter-1,parameter))>parameter){
+                //统计大于3的出现次数，出现第二次就处理
+                map2.put(coordinate[i][1] + coordinate[i][10] + coordinate[i][0].substring(parameter-1,parameter),map2.containsKey(coordinate[i][1] + coordinate[i][10] + coordinate[i][0].substring(parameter-1,parameter))?map2.get(coordinate[i][1] + coordinate[i][10] + coordinate[i][0].substring(parameter-1,parameter))+1:1);
+
+                if (map2.get(coordinate[i][1] + coordinate[i][10] + coordinate[i][0].substring(parameter-1,parameter))>1){
+                    coordinate[i][1] = String.valueOf(Float.parseFloat(coordinate[i][1]) - 0.003);
+                }
+            }
+        }
+        return coordinate;
+    }
+
+    /**
+     * 优化重叠数小区的方向角的方法
+     * @param coordinate
+     * @return
+     */
+    public String[][] optAzimuth(String[][] coordinate, int parameter){
+        //String[][] coordinates = new String[coordinate.length][11];
+
+        //统计重复的小区数
+        Hashtable<String, Integer> map = new Hashtable<String,Integer>();
+
+        for (int i = 0; i < coordinate.length; i++) {
+            if (coordinate[i][0] != "null" && coordinate[i][0] != "" && coordinate[i][0] != null){
+
+                map.put(coordinate[i][1] + coordinate[i][10] + coordinate[i][0].substring(parameter-1,parameter) + coordinate[i][4],map.containsKey(coordinate[i][1] + coordinate[i][10] + coordinate[i][0].substring(parameter-1,parameter) + coordinate[i][4])?map.get(coordinate[i][1] + coordinate[i][10] + coordinate[i][0].substring(parameter-1,parameter) + coordinate[i][4])+1:1);
+            }
+        }
+
+        //for(Map.Entry<String, Integer> e:map.entrySet()){
+        //    System.out.println(e.getKey()+" 出现次数是:"+e.getValue());
+        //}
+
+        // 记录小区出现次数大于3的出现次数，以便确定是否是第一个小区
+        Hashtable<String, Integer> map2 = new Hashtable<String,Integer>();
+
+        for (int i = 0; i < coordinate.length; i++) {
+            if (coordinate[i][0] != "null" && coordinate[i][0] != "" && coordinate[i][0] != null && map.get(coordinate[i][1] + coordinate[i][10] + coordinate[i][0].substring(parameter-1,parameter) + coordinate[i][4])>1){
+                //统计大于3的出现次数，出现第二次就处理
+                map2.put(coordinate[i][1] + coordinate[i][10] + coordinate[i][0].substring(parameter-1,parameter) + coordinate[i][4],map2.containsKey(coordinate[i][1] + coordinate[i][10] + coordinate[i][0].substring(parameter-1,parameter) + coordinate[i][4])?map2.get(coordinate[i][1] + coordinate[i][10] + coordinate[i][0].substring(parameter-1,parameter) + coordinate[i][4])+1:1);
+
+                int angle = (Integer) 360/
+                        map.get(coordinate[i][1] + coordinate[i][10] + coordinate[i][0].substring(parameter-1,parameter) + coordinate[i][4]) *
+                        map2.get(coordinate[i][1] + coordinate[i][10] + coordinate[i][0].substring(parameter-1,parameter) + coordinate[i][4]);
+
+                if (angle == 360){
+                    angle = 0;
+                }
+
+                coordinate[i][4] = String.valueOf(angle);
+
+                System.out.println(coordinate[i][0] +"-"+ coordinate[i][4]);
+            }
+        }
+        return coordinate;
     }
 }
