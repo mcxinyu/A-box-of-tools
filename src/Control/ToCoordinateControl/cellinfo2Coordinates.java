@@ -5,9 +5,7 @@ import Control.CommonControl.ReadFile;
 import javax.swing.*;
 import java.io.File;
 import java.io.FileWriter;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
+import java.util.*;
 
 /**
  * cellinfo2Coordinates
@@ -189,6 +187,16 @@ public class cellinfo2Coordinates {
                     coordinates = coordinate;
                 }
 
+                // 优化重叠小区经纬度
+                if (optLocation == true){
+                    coordinates = optLocation2(coordinates,parameter);
+                }
+
+                // 优化重叠数小区的方向角
+                if (optAzimuth ==true){
+                    coordinates = optAzimuth2(coordinates,parameter);
+                }
+
                 // 保留中文名
                 if (holdSiteCHName == true){
                     //不用修改上一步的内容；
@@ -196,18 +204,8 @@ public class cellinfo2Coordinates {
                     coordinates = notHoldSiteCHName(coordinates);
                 }
 
-                // 优化重叠小区经纬度
-                if (optLocation == true){
-                    coordinates = optLocation(coordinates,parameter);
-                }
-
-                // 优化重叠数小区的方向角
-                if (optAzimuth ==true){
-                    coordinates = optAzimuth(coordinates,parameter);
-                }
-
                 for (int i = 0; i < coordinates.length; i++) {
-                    if (coordinates[i][0] != "null" &&coordinates[i][0] != "" && coordinates[i][0] != null){
+                    if (coordinates[i][0] != "null" && coordinates[i][0] != "" && coordinates[i][0] != null){
                         String line = "";
                         for (int j = 0; j < coordinates[i].length; j++) {
                             line += coordinates[i][j] + "\t";
@@ -220,7 +218,7 @@ public class cellinfo2Coordinates {
                 JOptionPane.showMessageDialog(null, "Coordinates 导出成功，小区数量： " + count);
             }catch (Exception e){
                 e.printStackTrace();
-                JOptionPane.showMessageDialog(null, "导出失败，另一个程序正在使用此文件！");
+                JOptionPane.showMessageDialog(null, "导出失败，请检查！");
             }
         }
         return coordinatesFile;
@@ -306,8 +304,60 @@ public class cellinfo2Coordinates {
     }
 
     /**
-     * 优化重叠数小区的方向角的方法
+     * 优化重叠小区经纬度的方法，未完成
      * @param coordinate
+     * @return
+     */
+    public String[][] optLocation2(String[][] coordinate,int parameter){
+        //String[][] coordinates = new String[coordinate.length][11];
+
+        //统计所有小区的出现次数
+        Hashtable<String, ArrayList> map=new Hashtable<String,ArrayList>(coordinate.length);
+
+        for (int i = 0; i < coordinate.length; i++) {
+            if (coordinate[i][0] != "" && coordinate[i][0] != null) {
+                if (map.containsKey(coordinate[i][1]+coordinate[i][10]+coordinate[i][0].substring(parameter-1,parameter))){
+                    //for (int j = 0; j < map.get(coordinate[i][1] + coordinate[i][10]).size(); j++) {
+                    //
+                    //}
+                    if (!map.get(coordinate[i][1]+coordinate[i][10]+coordinate[i][0].substring(parameter-1,parameter)).contains(coordinate[i][6].substring(0,coordinate[i][6].length()-1))){
+                        map.get(coordinate[i][1]+coordinate[i][10]+coordinate[i][0].substring(parameter-1,parameter)).add(coordinate[i][6].substring(0,coordinate[i][6].length()-1));
+                    }
+                }else {
+                    ArrayList al = new ArrayList();
+                    al.add(coordinate[i][6].substring(0,coordinate[i][6].length()-1));
+                    map.put(coordinate[i][1]+coordinate[i][10]+coordinate[i][0].substring(parameter-1,parameter),al);
+                }
+            }
+        }
+
+        //修改重叠小区的经纬度
+        for (int i = 0; i < coordinate.length; i++) {
+            if (coordinate[i][0] != "" && coordinate[i][0] != null && map.containsKey(coordinate[i][1]+coordinate[i][10]+coordinate[i][0].substring(parameter-1,parameter)) && map.get(coordinate[i][1]+coordinate[i][10]+coordinate[i][0].substring(parameter-1,parameter)).size()>1){
+                //int repeatNumber = map.get(coordinate[i][1] + coordinate[i][10]).size();
+                Object [] array = map.get(coordinate[i][1]+coordinate[i][10]+coordinate[i][0].substring(parameter-1,parameter)).toArray();
+
+                for(int j = 1; j < array.length; j++){
+                    if (j % 4 == 0){
+                        coordinate[i][10] = String.valueOf(Float.parseFloat(coordinate[i][10]) + (0.0003 * (j/4)));  //向北
+                    }else if (j % 4 == 1){
+                        coordinate[i][1] = String.valueOf(Float.parseFloat(coordinate[i][1]) + (0.0003 * (1+j/4)));  //向东
+                    }else if (j % 4 == 2){
+                        coordinate[i][10] = String.valueOf(Float.parseFloat(coordinate[i][10]) - (0.0003 * (1+j/4)));  //向南
+                    }else if (j % 4 == 3){
+                        coordinate[i][1] = String.valueOf(Float.parseFloat(coordinate[i][1]) - (0.0003 * (1+j/4)));  //向西
+                    }
+                }
+            }
+        }
+        
+        return coordinate;
+    }
+
+    /**
+     * 优化重叠数小区的方向角的方法，使用经纬度+频段号来判断是否同站小区
+     * @param coordinate
+     * @param parameter 小区号中用于识别频段的字符所在位置
      * @return
      */
     public String[][] optAzimuth(String[][] coordinate, int parameter){
@@ -346,6 +396,46 @@ public class cellinfo2Coordinates {
                 coordinate[i][4] = String.valueOf(angle);
 
                 System.out.println(coordinate[i][0] +"-"+ coordinate[i][4]);
+            }
+        }
+        return coordinate;
+    }
+
+    /**
+     * 优化重叠数小区的方向角的方法2，使用小区中文名来判断是否同站小区
+     * @param coordinate
+     * @param parameter 小区号中用于识别频段的字符所在位置
+     * @return
+     */
+    public String[][] optAzimuth2(String[][] coordinate, int parameter){
+        //String[][] coordinates = new String[coordinate.length][11];
+
+        //统计重复的小区数
+        Hashtable<String, Integer> map = new Hashtable<String,Integer>();
+
+        for (int i = 0; i < coordinate.length; i++) {
+            if (coordinate[i][0] != "null" && coordinate[i][0] != "" && coordinate[i][0] != null){
+                map.put(coordinate[i][6].substring(0,coordinate[i][6].length()-1) + coordinate[i][4], map.containsKey(coordinate[i][6].substring(0,coordinate[i][6].length()-1) + coordinate[i][4]) ? map.get(coordinate[i][6].substring(0,coordinate[i][6].length()-1) + coordinate[i][4])+1 : 1);
+            }
+        }
+
+        // 记录小区出现次数大于3的出现次数，以便确定是否是第一个小区
+        Hashtable<String, Integer> map2 = new Hashtable<String,Integer>();
+
+        for (int i = 0; i < coordinate.length; i++) {
+            if (coordinate[i][0] != "null" && coordinate[i][0] != "" && coordinate[i][0] != null && map.get(coordinate[i][6].substring(0,coordinate[i][6].length()-1) + coordinate[i][4])>1){
+
+                //统计大于3的出现次数，出现第二次就处理
+                map2.put(coordinate[i][6].substring(0,coordinate[i][6].length()-1) + coordinate[i][4],map2.containsKey(coordinate[i][6].substring(0,coordinate[i][6].length()-1) + coordinate[i][4]) ? map2.get(coordinate[i][6].substring(0,coordinate[i][6].length()-1) + coordinate[i][4])+1 : 1);
+
+                int angle = (Integer) 360/
+                        map.get(coordinate[i][6].substring(0,coordinate[i][6].length()-1) + coordinate[i][4]) * map2.get(coordinate[i][6].substring(0,coordinate[i][6].length()-1) + coordinate[i][4]);
+
+                if (angle == 360){
+                    angle = 0;
+                }
+
+                coordinate[i][4] = String.valueOf(angle);
             }
         }
         return coordinate;

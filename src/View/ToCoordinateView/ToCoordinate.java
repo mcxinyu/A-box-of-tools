@@ -65,9 +65,9 @@ public class ToCoordinate extends JFrame implements ActionListener {
         band = new JLabel("小区号中用于识别频段的字符所在位置：");
         bandPosition = new JTextField(4);
         bandPosition.setText("3");
-        jcb3 = new JCheckBox("优化重叠小区的经纬度");
+        jcb3 = new JCheckBox("优化重叠小区的经纬度（仅深圳）");
         jcb3.setSelected(false);
-        jcb3.setEnabled(false);
+        //jcb3.setEnabled(false);
         //jcb3_jtf = new JTextField(3);
         //jcb3_jtf.setText("5");
         //jcb3_jlb = new JLabel("的经纬度");
