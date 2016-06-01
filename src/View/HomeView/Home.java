@@ -37,7 +37,7 @@ public class Home extends JFrame implements ActionListener{
         renameFilesBtn = new HomeFunctionBtn(new ImageIcon(this.getClass().getResource("/icons/rename_128.png")),"批量文件重命名","      批量重命名文件或文件夹",300,0);
         fileSplitBtn = new HomeFunctionBtn(new ImageIcon(this.getClass().getResource("/icons/split_128.png")),"文本分割合并","可将文本文件分割为小文件，解决    excel 无法打开大文件的困难",500,0);
         toCOordinateBtn = new HomeFunctionBtn(new ImageIcon(this.getClass().getResource("/icons/coordinate_128.png")),"地图转坐标","       cellinfo to coordinates",100,200);
-        replaceText = new HomeFunctionBtn(new ImageIcon(this.getClass().getResource("/icons/updateC2I_128.png")),"批量文本替换","      批量文本替换，可以更新割              接后的模型数据等。",300,200);
+        replaceText = new HomeFunctionBtn(new ImageIcon(this.getClass().getResource("/icons/UpdateC2I_128.png")),"批量文本替换","      批量文本替换，可以更新割              接后的模型数据等。",300,200);
         placeholderBtn5 = new HomeFunctionBtn(new ImageIcon(this.getClass().getResource("/icons/ad_128.png")),"广告位出租","                    上广告",500,200);
         placeholderBtn5.button.setEnabled(false);
 
