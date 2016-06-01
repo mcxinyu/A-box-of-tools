@@ -1,4 +1,4 @@
-package View.CheckPlanView;
+package Common;
 /**
  * Created by 跃峰 on 2015/12/8.
  * GridBagLayout 的一些组件定义、方法
