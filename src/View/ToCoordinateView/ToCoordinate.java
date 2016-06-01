@@ -14,7 +14,7 @@ import Control.CommonControl.saveFile;
 import Control.CommonControl.selectFile;
 import Control.ToCoordinateControl.cellinfo2Coordinates;
 import View.Cdd2ForteView.Cdd2Forte;
-import View.CheckPlanView.GBC;
+import Common.GBC;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,7 +28,7 @@ public class ToCoordinate extends JFrame implements ActionListener {
     JPanel controlBtnArea,advancedArea;
     JButton backBtn,nextBtn,homeBtn,okBtn,aboutBtn,readCellinfoBtn,toCoordinateBtn;
     JPanel contentsArea;
-    JLabel temp1,temp2,text,taps,band,taps2;
+    JLabel text,taps,band,taps2;
     JTextField bandPosition;
     JCheckBox jcb1,jcb2,jcb3,jcb4;
 
@@ -46,8 +46,8 @@ public class ToCoordinate extends JFrame implements ActionListener {
         //contentsArea
         text = new JLabel("将 cellinfo 转换为 forte 格式的坐标文件。");
         text.setFont(MyTools.fontPlain13);
-        temp1 = new JLabel("                    ");
-        temp2 = new JLabel("                    ");
+        //temp1 = new JLabel("                    ");
+        //temp2 = new JLabel("                    ");
 
         readCellinfoBtn = new JButton("读取 Cellinfo");
         readCellinfoBtn.setFont(MyTools.fontBold18);
@@ -134,8 +134,8 @@ public class ToCoordinate extends JFrame implements ActionListener {
         //frame = new JFrame();
         this.add(welcomeArea, BorderLayout.NORTH);
         this.add(contentsArea,BorderLayout.CENTER);
-        this.add(temp1,BorderLayout.EAST);
-        this.add(temp2,BorderLayout.WEST);
+        //this.add(temp1,BorderLayout.EAST);
+        //this.add(temp2,BorderLayout.WEST);
         this.add(controlBtnArea,BorderLayout.SOUTH);
 
         //设置窗体

@@ -7,7 +7,7 @@ import Control.CommonControl.ReadFile;
 import Control.CommonControl.saveFile;
 import Control.CommonControl.selectFile;
 import Control.FileSplitControl.TxtSplit;
-import View.CheckPlanView.GBC;
+import Common.GBC;
 
 import javax.swing.*;
 import java.awt.*;

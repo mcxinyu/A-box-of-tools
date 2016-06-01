@@ -7,7 +7,7 @@ import Control.CommonControl.ReadFile;
 import Control.CommonControl.selectFile;
 import Control.UpdateC2IControl.replace;
 import View.Cdd2ForteView.Cdd2Forte;
-import View.CheckPlanView.GBC;
+import Common.GBC;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +24,7 @@ public class replaceText extends JFrame implements ActionListener {
     JPanel controlBtnArea;
     JButton backBtn,nextBtn,homeBtn,okBtn,aboutBtn,readText,readNewData, toRun;
     JPanel contentsArea;
-    JLabel temp1,temp2,text,taps;
+    JLabel text,taps;
 
     public static void main(String[] args) {
         new replaceText();
@@ -39,8 +39,8 @@ public class replaceText extends JFrame implements ActionListener {
         //contentsArea
         text = new JLabel("批量文本替换，可以更新割接后的模型等。");
         text.setFont(MyTools.fontPlain13);
-        temp1 = new JLabel("               ");
-        temp2 = new JLabel("               ");
+        //temp1 = new JLabel("               ");
+        //temp2 = new JLabel("               ");
 
         readText = new JButton("目标文件");
         readText.setFont(MyTools.fontBold18);
@@ -98,8 +98,8 @@ public class replaceText extends JFrame implements ActionListener {
         //frame = new JFrame();
         this.add(welcomeArea, BorderLayout.NORTH);
         this.add(contentsArea,BorderLayout.CENTER);
-        this.add(temp1,BorderLayout.EAST);
-        this.add(temp2,BorderLayout.WEST);
+        //this.add(temp1,BorderLayout.EAST);
+        //this.add(temp2,BorderLayout.WEST);
         this.add(controlBtnArea,BorderLayout.SOUTH);
 
         //设置窗体

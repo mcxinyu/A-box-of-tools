@@ -11,7 +11,7 @@ import Common.WelcomeArea;
 import Control.CommonControl.selectFile;
 import Control.RenameFilesControl.Rename;
 import View.Cdd2ForteView.Cdd2Forte;
-import View.CheckPlanView.GBC;
+import Common.GBC;
 
 import javax.swing.*;
 import java.awt.*;
