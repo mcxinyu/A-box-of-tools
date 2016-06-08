@@ -5,6 +5,6 @@ package Common;
  */
 public class enumClass {
     public enum excelType{
-        cdd,channel;
+        cdd,channel,handover;
     }
 }

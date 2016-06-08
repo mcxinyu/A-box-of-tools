@@ -23,11 +23,11 @@ public class Cdd2Forte extends JFrame implements ActionListener{
     //JFrame frame;
     JPanel welcomeArea;
     JPanel controlBtnArea;
-    JButton backBtn,nextBtn,homeBtn,okBtn,aboutBtn,readCoordinateBtn ,readCddBtn,export2ForteBtn,otherBtn,readExcelCDD,readExcelChannel;
+    JButton backBtn,nextBtn,homeBtn,okBtn,aboutBtn,readCoordinateBtn ,readCddBtn,export2ForteBtn, saveCoordinateBtn,readExcelCDD,readExcelChannel,readExcelHandover;
     JPanel contentsArea,left,right;
     JLabel text,otherJlb,dataSource;
     JTextArea progressBar1,progressBar2;
-    JCheckBox jcb1,jcb2;
+    JCheckBox useOldCoordinates, useWyzjData;
     JComboBox selectDataSource;
     manageProperties mp = new manageProperties();
     ProcessorCddLog pl = null;
@@ -67,14 +67,14 @@ public class Cdd2Forte extends JFrame implements ActionListener{
         readCoordinateBtn.setActionCommand("readCoordinateBtn");
         readCoordinateBtn.addActionListener(this);
 
-        jcb1 = new JCheckBox("使用之前保存的坐标文件");
-        jcb2 = new JCheckBox("使用网优之家的数据");
-        jcb2.setEnabled(false);
+        useOldCoordinates = new JCheckBox("使用之前保存的坐标文件");
+        useWyzjData = new JCheckBox("使用网优之家的数据");
+        useWyzjData.setEnabled(false);
 
         dataSource = new JLabel("数据源：");
         dataSource.setVisible(false);
         selectDataSource = new JComboBox();
-        selectDataSource.addItem("使用导出后的Excel");
+        selectDataSource.addItem("使用导出后的 Excel 文件");
         selectDataSource.addItem("直接使用数据库");
         selectDataSource.setVisible(false);
 
@@ -82,16 +82,16 @@ public class Cdd2Forte extends JFrame implements ActionListener{
 
         path = mp.readProperties("c2f.properties","coordinatePath");
         if (path.equals("")){
-            jcb1.setEnabled(false);
+            useOldCoordinates.setEnabled(false);
         }else {
-            jcb1.setEnabled(true);
+            useOldCoordinates.setEnabled(true);
         }
 
         //注册监听
-        jcb1.setActionCommand("jcb1");
-        jcb1.addActionListener(this);
-        jcb2.setActionCommand("jcb2");
-        jcb2.addActionListener(this);
+        useOldCoordinates.setActionCommand("useOldCoordinates");
+        useOldCoordinates.addActionListener(this);
+        useWyzjData.setActionCommand("useWyzjData");
+        useWyzjData.addActionListener(this);
         selectDataSource.setActionCommand("selectDataSource");
         selectDataSource.addActionListener(this);
 
@@ -99,12 +99,15 @@ public class Cdd2Forte extends JFrame implements ActionListener{
         readCddBtn.setFont(MyTools.fontBold18);
         readCddBtn.setEnabled(false);
 
-        readExcelCDD = new JButton("cdd");
-        readExcelCDD.setFont(MyTools.fontPlain18);
+        readExcelCDD = new JButton("现网 Cdd");
+        readExcelCDD.setFont(MyTools.fontPlain13);
         readExcelCDD.setVisible(false);
-        readExcelChannel = new JButton("channel");
-        readExcelChannel.setFont(MyTools.fontPlain18);
+        readExcelChannel = new JButton("Channel");
+        readExcelChannel.setFont(MyTools.fontPlain13);
         readExcelChannel.setVisible(false);
+        readExcelHandover = new JButton("Handover");
+        readExcelHandover.setFont(MyTools.fontPlain13);
+        readExcelHandover.setVisible(false);
 
         //注册监听
         readCddBtn.setActionCommand("readCddBtn");
@@ -121,11 +124,11 @@ public class Cdd2Forte extends JFrame implements ActionListener{
         export2ForteBtn.setActionCommand("export2ForteBtn");
         export2ForteBtn.addActionListener(this);
 
-        otherBtn = new JButton("保存坐标文件");
-        otherBtn.setEnabled(false);
+        saveCoordinateBtn = new JButton("保存坐标文件");
+        saveCoordinateBtn.setEnabled(false);
         //注册监听
-        otherBtn.setActionCommand("otherBtn");
-        otherBtn.addActionListener(this);
+        saveCoordinateBtn.setActionCommand("saveCoordinateBtn");
+        saveCoordinateBtn.addActionListener(this);
 
         //添加组件到 contentsArea
         contentsArea = new JPanel(new GridBagLayout());
@@ -133,17 +136,17 @@ public class Cdd2Forte extends JFrame implements ActionListener{
         contentsArea.add(text,new GBC(0,0,4,1).setFill(GBC.VERTICAL).setAnchor(GBC.CENTER).setIpad(0,30).setInsets(0,1));
         contentsArea.add(readCoordinateBtn,new GBC(0,1,2,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(20,20).setInsets(0,1,0,0));
         contentsArea.add(readCddBtn,new GBC(2,1,2,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(20,20).setInsets(0,0,0,1));
-        contentsArea.add(readExcelCDD,new GBC(2,1,1,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(0,20).setInsets(0,0,0,0));
-        contentsArea.add(readExcelChannel,new GBC(3,1,1,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(0,20).setInsets(0,0,0,0));
-        contentsArea.add(jcb1,new GBC(0,2,2,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(0,5).setInsets(0,1));
-        contentsArea.add(jcb2,new GBC(1,3,1,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(0,5).setInsets(0,1));
-        //contentsArea.add(dataSource,new GBC(1,3,2,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.EAST).setIpad(0,5).setInsets(1,1));
+        contentsArea.add(useOldCoordinates,new GBC(0,2,2,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(0,5).setInsets(0,1));
+        contentsArea.add(useWyzjData,new GBC(0,3,2,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(0,5).setInsets(0,1));
         contentsArea.add(selectDataSource,new GBC(2,3,2,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(0,5).setInsets(0,1));
-        contentsArea.add(progressBar1,new GBC(0,4,4,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(0,5).setInsets(0,1));
-        contentsArea.add(progressBar2,new GBC(0,5,4,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(0,5).setInsets(0,1));
-        contentsArea.add(export2ForteBtn,new GBC(0,6,4,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(20,20).setInsets(0,0));
-        contentsArea.add(otherJlb,new GBC(0,7,3,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(5,5).setInsets(0,1));
-        contentsArea.add(otherBtn,new GBC(2,7,2,1).setAnchor(GBC.WEST).setIpad(0,5).setInsets(5,1));
+        contentsArea.add(readExcelCDD,new GBC(0,4,1,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(0,0).setInsets(0,0,0,0));
+        contentsArea.add(readExcelChannel,new GBC(1,4,2,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(0,0).setInsets(0,0,0,0));
+        contentsArea.add(readExcelHandover,new GBC(3,4,1,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(0,0).setInsets(0,0,0,0));
+        contentsArea.add(progressBar1,new GBC(0,5,4,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(0,5).setInsets(0,1));
+        contentsArea.add(progressBar2,new GBC(0,6,4,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(0,5).setInsets(0,1));
+        contentsArea.add(export2ForteBtn,new GBC(0,7,4,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(20,20).setInsets(0,0));
+        contentsArea.add(otherJlb,new GBC(0,8,3,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER).setIpad(5,5).setInsets(0,1));
+        contentsArea.add(saveCoordinateBtn,new GBC(2,8,2,1).setAnchor(GBC.WEST).setIpad(0,5).setInsets(5,1));
 
         //控制栏
         aboutBtn = new JButton(new ImageIcon(Cdd2Forte.class.getResource("/icons/about.png")));
@@ -201,7 +204,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
                     cddLogArray = null;
                     readCddBtn.setEnabled(false);
                     export2ForteBtn.setEnabled(false);
-                    otherBtn.setEnabled(false);
+                    saveCoordinateBtn.setEnabled(false);
                 }else if(response==1) {
                 }
             }
@@ -210,8 +213,8 @@ public class Cdd2Forte extends JFrame implements ActionListener{
                 //按下 cellCoordinate 后重置的控件
                 progressBar2.setVisible(false);
                 progressBar2.setText("");
-                jcb1.setEnabled(false);
-                jcb1.setSelected(false);
+                useOldCoordinates.setEnabled(false);
+                useOldCoordinates.setSelected(false);
                 selectFile select = new selectFile();
                 state = select.selectFile("读取坐标文件", "text",JFileChooser.FILES_ONLY,false,this);
                 File[] fileList = new ReadFile().readMultiText(select.getFile());
@@ -226,8 +229,9 @@ public class Cdd2Forte extends JFrame implements ActionListener{
                         //JOptionPane.showMessageDialog(null,"读取成功");
                         progressBar1.setText(pc.getNotice());
                         readCddBtn.setEnabled(true);
-                        otherBtn.setEnabled(true);
+                        saveCoordinateBtn.setEnabled(true);
                         coorPath = fileList[0].getPath();
+                        useWyzjData.setEnabled(true);
                     }else {
                         cellCoordinate = null;
                         progressBar1.setText("坐标文件错误!");
@@ -298,8 +302,6 @@ public class Cdd2Forte extends JFrame implements ActionListener{
             }
         }else if (e.getActionCommand() == "aboutBtn"){
             new C2FNotice();
-        }else if (e.getActionCommand().equals("backBtn")){
-        }else if (e.getActionCommand().equals("nextBtn")){
         }else if (e.getActionCommand().equals("okBtn")){
             if(JOptionPane.showConfirmDialog(this,"退出","提示",JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 //System.exit(0);
@@ -308,13 +310,13 @@ public class Cdd2Forte extends JFrame implements ActionListener{
         }else if (e.getActionCommand().equals("homeBtn")){
             //JOptionPane.showMessageDialog(null,"其他功能还在测试，暂时不可用。","主功能",JOptionPane. WARNING_MESSAGE);
             this.dispose();
-        }else if (e.getActionCommand().equals("otherBtn")){
+        }else if (e.getActionCommand().equals("saveCoordinateBtn")){
             mp.writeProperties("c2f.properties","coordinatePath",coorPath);
             path = mp.readProperties("c2f.properties","coordinatePath");
-            jcb1.setEnabled(true);
+            useOldCoordinates.setEnabled(true);
             JOptionPane.showMessageDialog(null,"成功");
-        }else if (e.getActionCommand().equals("jcb1")){
-            if (jcb1.isSelected()){
+        }else if (e.getActionCommand().equals("useOldCoordinates")){
+            if (useOldCoordinates.isSelected()){
                 if (cellCoordinate != null){
                     Object[] options = {"确定","我手贱"};
                     int response=JOptionPane.showOptionDialog(this, "再次读取该数据会清空上一次的数据！", "thinkPad",JOptionPane.YES_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
@@ -324,34 +326,34 @@ public class Cdd2Forte extends JFrame implements ActionListener{
                         cddLogArray = null;
                         progressBar2.setVisible(false);
                         progressBar2.setText("");
-                        otherBtn.setEnabled(false);
+                        saveCoordinateBtn.setEnabled(false);
                         readCddBtn.setEnabled(false);
                         //readCddBtn.setVisible(true);
-                        jcb2.setEnabled(false);
+                        useWyzjData.setEnabled(false);
                         selectDataSource.setEnabled(false);
                         readExcelCDD.setEnabled(false);
                         readExcelChannel.setEnabled(false);
+                        readExcelHandover.setEnabled(false);
                         export2ForteBtn.setEnabled(false);
                     }else if(response==1) {
-                        jcb1.setSelected(false);
+                        useOldCoordinates.setSelected(false);
                     }
                 }
                 if (cellCoordinate == null) {
                     readCoordinateBtn.setEnabled(false);
                     readCddBtn.setEnabled(true);
-                    //readCddBtn.setVisible(true);
-                    jcb2.setEnabled(true);
+                    useWyzjData.setEnabled(true);
                     ProcessorCoordinate pc = new ProcessorCoordinate();
                     cellCoordinate = pc.readCoordinates(new File(path));
                     progressBar1.setText("选定："+path);
                     if (pc.getNotice().contains("不存在")){
                         progressBar1.setText(pc.getNotice());
                         readCddBtn.setEnabled(false);
-                        //readCddBtn.setVisible(true);
-                        jcb2.setEnabled(false);
+                        useWyzjData.setEnabled(false);
                         selectDataSource.setEnabled(false);
                         readExcelCDD.setEnabled(false);
                         readExcelChannel.setEnabled(false);
+                        readExcelHandover.setEnabled(false);
                         readCoordinateBtn.setEnabled(true);
                     }
                 }
@@ -365,53 +367,73 @@ public class Cdd2Forte extends JFrame implements ActionListener{
                         progressBar2.setVisible(false);
                         progressBar2.setText("");
                     }else if(response==1) {
-                        jcb1.setSelected(true);
+                        useOldCoordinates.setSelected(true);
                     }
                 }
                 if (cddLogArray == null) {
                     readCoordinateBtn.setEnabled(true);
                     readCddBtn.setEnabled(false);
-                    //readCddBtn.setVisible(true);
-                    jcb2.setEnabled(false);
+                    useWyzjData.setEnabled(false);
+                    useWyzjData.setSelected(false);
+                    selectDataSource.setVisible(false);
+                    readExcelCDD.setVisible(false);
+                    readExcelChannel.setVisible(false);
+                    readExcelHandover.setVisible(false);
                     selectDataSource.setEnabled(false);
                     readExcelCDD.setEnabled(false);
                     readExcelChannel.setEnabled(false);
+                    readExcelHandover.setEnabled(false);
                     cellCoordinate = null;
                     cddLogArray = null;
                     progressBar1.setText("未选择坐标文件");
                 }
             }
-        }else if (e.getActionCommand().equals("jcb2")){
-            if (jcb2.isSelected()){
+        }else if (e.getActionCommand().equals("useWyzjData")){
+            if (useWyzjData.isSelected()){
                 dataSource.setVisible(true);
                 selectDataSource.setEnabled(true);
                 selectDataSource.setVisible(true);
-                readCddBtn.setVisible(false);
+                readCddBtn.setEnabled(false);
                 readExcelCDD.setVisible(true);
                 readExcelChannel.setVisible(true);
+                readExcelHandover.setVisible(true);
                 if (selectDataSource.getSelectedIndex()==0){
                     readExcelCDD.setEnabled(true);
                     readExcelChannel.setEnabled(true);
+                    readExcelHandover.setEnabled(true);
                 }else {
                     readExcelCDD.setEnabled(false);
                     readExcelChannel.setEnabled(false);
+                    readExcelHandover.setEnabled(false);
 
                 }
             }else {
                 dataSource.setVisible(false);
                 selectDataSource.setVisible(false);
-                readCddBtn.setVisible(true);
+                readCddBtn.setEnabled(true);
                 readExcelCDD.setVisible(false);
                 readExcelChannel.setVisible(false);
+                readExcelHandover.setVisible(false);
+                export2ForteBtn.setEnabled(false);
             }
         }else if (e.getActionCommand().equals("selectDataSource")){
             if (selectDataSource.isVisible() && selectDataSource.getSelectedIndex()==0){
+                readExcelCDD.setVisible(true);
+                readExcelChannel.setVisible(true);
+                readExcelHandover.setVisible(true);
                 readExcelCDD.setEnabled(true);
                 readExcelChannel.setEnabled(true);
+                readExcelHandover.setEnabled(true);
+                export2ForteBtn.setEnabled(false);
             }else if (selectDataSource.isVisible() && selectDataSource.getSelectedIndex()==1){
-                JOptionPane.showMessageDialog(null,"数据库连接成功");
+                readExcelCDD.setVisible(false);
+                readExcelChannel.setVisible(false);
+                readExcelHandover.setVisible(false);
                 readExcelCDD.setEnabled(false);
                 readExcelChannel.setEnabled(false);
+                readExcelHandover.setEnabled(false);
+                JOptionPane.showMessageDialog(null,"数据库连接成功");
+                export2ForteBtn.setEnabled(true);
             }
         }else if (e.getActionCommand().equals("readExcelCDD")){
             if (WYZJArray == null){

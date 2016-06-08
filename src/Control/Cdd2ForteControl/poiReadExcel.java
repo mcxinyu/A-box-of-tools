@@ -6,21 +6,19 @@ import org.apache.poi.ss.usermodel.*;
 import javax.swing.*;
 import java.io.File;
 import java.io.FileInputStream;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.HashMap;
 
-import static Common.enumClass.excelType.cdd;
-import static Common.enumClass.excelType.channel;
+import static Common.enumClass.excelType.*;
 
 /**
  * 读取 excel 工作簿，兼容 Excel 2003/2007/2010/2013/2016 格式为 .xls and .xlsx，其他未测试
  * Created by 跃峰 on 2016/6/1.
  */
-public class poiReadExcel {
+public class POIReadExcel {
     public static void main(String[] args) {
-        File excel = new File("D:\\thxhyf\\Documents\\现网cdd_Channel.xlsx");
-        poiReadExcel readExcel = new poiReadExcel();
-        readExcel.poiReadExcelContent(excel,channel);
+        File excel = new File("D:\\thxhyf\\Documents\\现网cdd_Nrel.xlsx");
+        POIReadExcel readExcel = new POIReadExcel();
+        readExcel.poiReadExcelContent(excel,handover);
     }
 
     /**
@@ -29,28 +27,33 @@ public class poiReadExcel {
      * @param excelType cdd or channel
      * @return
      */
-    public ArrayList poiReadExcelContent(File excel, enumClass.excelType excelType){
+    public HashMap poiReadExcelContent(File excel, enumClass.excelType excelType){
         //声明一个数组用于存放读取的行内容
-        ArrayList<String[]> excelContent = null;
+        HashMap<String,String[]> excelContent = null;
 
         //读取工作簿，这种方式 Excel 2003/2007/2010 都是可以处理
         try (Workbook workbook = WorkbookFactory.create(new FileInputStream(excel))) {
             //实例化workbook
             //hssfWorkbook = new HSSFWorkbook(poifsFileSystem);
+
+            String handoverSectorName = "";
+            int count = 0;
+
             //检查该文件的表头数据在文件中的位置
             int[] checkExcelTitle = checkExcelTitle(excel,excelType);
+
             //循环读取工作表
             for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
                 //创建一个sheet
                 Sheet sheet = workbook.getSheetAt(i);
                 //实例化excelContent，用于存放读取到的数据
-                excelContent = new ArrayList<String[]>();
+                excelContent = new HashMap<String, String[]>();
                 //循环读取表中的每一行（不包含第一行）
                 for (int j = 1; j <= sheet.getLastRowNum(); j++) {  //不读取表头
                     //创建每一行
                     Row row = sheet.getRow(j);
                     //创建用于存放行内的数组
-                    String[] rowContent = new String[10];
+                    String[] rowContent = new String[checkExcelTitle.length];
                     //按 cell 读取数据，后存入 rowContent
                     for (int k = 0; k < checkExcelTitle.length; k++) {
                         if (checkExcelTitle[k]!=22222){ //如果等于22222说明是不存在该参数
@@ -58,18 +61,37 @@ public class poiReadExcel {
                             Cell cell = row.getCell(checkExcelTitle[k]);
                             cell.setCellType(Cell.CELL_TYPE_STRING);
                             rowContent[k] = cell.getStringCellValue();
+                            System.out.println(rowContent[0]);
                         }
                     }
+
                     //将rowContent存入excelContent
-                    excelContent.add(rowContent);
+                    if (excelType.equals(cdd)){
+                        excelContent.put(rowContent[0],rowContent);
+                    }else if (excelType.equals(channel)){
+                        excelContent.put(rowContent[0] + rowContent[1],rowContent);
+                    }else if (excelType.equals(handover)){
+                        excelContent.put(rowContent[0] + rowContent[2],rowContent);
+                    }
+                    //else if (excelType.equals(handover) && count<2 && handoverSectorName.equals(rowContent[0])){
+                    //    excelContent.put(rowContent[0] + rowContent[2],rowContent);
+                    //    count++;
+                    //}
+                    //handoverSectorName = rowContent[0];
                 }
             }
-            for (int i = 0; i < excelContent.size(); i++) {
-                for (int j = 0; j < excelContent.get(i).length; j++) {
-                    System.out.print(excelContent.get(i)[j]+" ");
-                }
-                System.out.println();
-            }
+
+            //Iterator<Map.Entry<String, String[]>> iterator = excelContent.entrySet().iterator();
+            //while (iterator.hasNext()) {
+            //    Map.Entry<String, String[]> entry = iterator.next();
+            //    entry.getValue();
+            //    //System.out.println(entry.getKey());
+            //    for (String s : entry.getValue()) {
+            //        System.out.print(s+" ");
+            //    }
+            //    System.out.println();
+            //}
+
         }catch (Exception e) {
             e.printStackTrace();
             //JOptionPane.showMessageDialog(null,"导出失败，另一个程序正在使用此文件！");
@@ -83,7 +105,7 @@ public class poiReadExcel {
      * @return
      */
     public String[] poiReadExcelTitle(File excel){
-        SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
+        //SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
         String[] excelTitle = null;
         //读取工作簿
         try (Workbook workbook = WorkbookFactory.create(new FileInputStream(excel))) {
@@ -122,13 +144,15 @@ public class poiReadExcel {
     public int[] checkExcelTitle(File excel, enumClass.excelType excelType){
         String[] targetTitle = null;
         if (excelType.equals(cdd)){
-            targetTitle = new String[]{"MSC", "BSC", "SITE", "CELL", "lac", "ci", "bcchno", "bsic", "TCH", "tchnum"};
+            targetTitle = new String[]{"CELL", "BSC", "MSC", "SITE", "lac", "ci", "bcchno", "bsic", "TCH", "tchnum", "mcc", "mnc", "bspwrb"};
         }else if (excelType.equals(channel)){
-            targetTitle = new String[]{"bsc", "cell", "ch_group", "chgr_tg", "band", "bccd", "channel_tch", "hsn", "sdcch", "tchnum"};
+            targetTitle = new String[]{"cell", "ch_group", "bsc", "chgr_tg", "band", "bccd", "channel_tch", "hsn", "sdcch", "tchnum", "hop"};
+        }else if (excelType.equals(handover)){
+            targetTitle = new String[]{"CELL", "BSC", "n_cell", "n_bsc", "hihyst", "khyst", "koffset"};
         }
 
         //xls文件最多就256列,xls是16384列
-        int[] targetTitlePosition = new int[10];
+        int[] targetTitlePosition = new int[targetTitle.length];
         for (int i = 0; i < targetTitlePosition.length; i++) {
             targetTitlePosition[i] = 22222;
         }

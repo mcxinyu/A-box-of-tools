@@ -80,5 +80,27 @@
         <jarDirectory url="file://$MODULE_DIR$/../../../../Downloads/Java/JAR/poi-3.15-beta1/ooxml-lib" recursive="false" />
       </library>
     </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/../../../../Downloads/Java/JAR/fastexcel" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/../../../../Downloads/Java/JAR/fastexcel" />
+        </SOURCES>
+        <jarDirectory url="file://$MODULE_DIR$/../../../../Downloads/Java/JAR/fastexcel" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/../../../../Downloads/Java/JAR/fastexcel" recursive="false" type="SOURCES" />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../../../Downloads/Java/JAR/xercesImpl.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
