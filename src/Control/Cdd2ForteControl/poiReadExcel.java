@@ -61,7 +61,6 @@ public class POIReadExcel {
                             Cell cell = row.getCell(checkExcelTitle[k]);
                             cell.setCellType(Cell.CELL_TYPE_STRING);
                             rowContent[k] = cell.getStringCellValue();
-                            System.out.println(rowContent[0]);
                         }
                     }
 
@@ -78,6 +77,7 @@ public class POIReadExcel {
                     //    count++;
                     //}
                     //handoverSectorName = rowContent[0];
+                    //System.out.println(rowContent[0]);
                 }
             }
 
