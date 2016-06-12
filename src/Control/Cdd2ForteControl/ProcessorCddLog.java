@@ -790,7 +790,6 @@ public class ProcessorCddLog {
      * @param exportPath 文件保存的位置
      */
     public void createForteFile(ArrayList[][] forteArray,String exportPath){
-        System.out.println("createForteFile.class");
         if (forteArray != null) {
             File sectors = new File(exportPath + "\\Sectors.txt");
             File channelGroups = new File(exportPath + "\\ChannelGroups.txt");
@@ -811,7 +810,6 @@ public class ProcessorCddLog {
                 //if (!handovers.exists()) {handovers.createNewFile();}
 
                 // 打印表头
-                System.out.println("开始导出文件");
                 sectorsFW.write(sectorHead + "\r\n");
                 channelGroupsFW.write(channelGroupHead + "\r\n");
                 handoversFW.write(handoverHead + "\r\n");
