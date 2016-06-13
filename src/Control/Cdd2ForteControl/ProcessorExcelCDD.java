@@ -1,10 +1,9 @@
 package Control.Cdd2ForteControl;
 
+import Common.enumClass;
+
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 import static Common.enumClass.excelType.*;
 
@@ -12,60 +11,98 @@ import static Common.enumClass.excelType.*;
  * Created by 跃峰 on 2016/6/1.
  */
 public class ProcessorExcelCdd {
-    public static void main(String[] args) {
-        File cdd = new File("D:\\thxhyf\\Documents\\现网cdd.xls");
-        File channel = new File("D:\\thxhyf\\Documents\\现网cdd_Channel.xls");
-        File handover = new File("D:\\thxhyf\\Documents\\现网cdd_Nrel.xls");
-        File[] excel = {cdd,channel,handover};
 
-        File coordinatesFile = new File("D:\\SZ\\变频工作\\数据采集\\cellinfo\\coordinates0512.txt");
-        String[][] coordinates = new ProcessorCoordinate().readCoordinates(coordinatesFile);
+    /**
+     * 检查确认需要的参数在HashMap中的位置
+     * @param excelContent
+     * @param excelType
+     * @return
+     */
+    public int[] checkExcelTitle(HashMap<String,List<String>> excelContent, enumClass.excelType excelType){
+        String[] targetTitle = null;
+        if (excelType.equals(cdd)){
+            targetTitle = new String[]{"CELL", "BSC", "MSC", "SITE", "lac", "ci", "bcchno", "bsic", "TCH", "tchnum", "mcc", "mnc", "bspwrb"};
+        }else if (excelType.equals(channel)){
+            targetTitle = new String[]{"cell", "ch_group", "bsc", "chgr_tg", "band", "channel_tch", "hsn", "sdcch", "tchnum", "hop"};
+        }else if (excelType.equals(handover)){
+            targetTitle = new String[]{"CELL", "BSC", "n_cell", "n_bsc", "hihyst", "khyst", "koffset"};
+        }
 
-        ProcessorExcelCdd processorExcelCdd = new ProcessorExcelCdd();
-        processorExcelCdd.createHandovers(excel,coordinates);
-        //ArrayList[][] forteArray = processorExcelCdd.createForteArray(excel, coordinates);
+        //xls文件最多就256列,xls是16384列
+        int[] targetTitlePosition = new int[targetTitle.length];
+        //for (int i = 0; i < targetTitlePosition.length; i++) {
+        //    targetTitlePosition[i] = 22222;
+        //}
 
-        //System.out.println("1111111");
-        //new ProcessorCddLog().createForteFile(forteArray,"D:\\thxhyf\\Documents");
+        //获取表头
+        List<String> excelTitle = excelContent.get(0.0);
+
+        //判断参数在HashMap中所在的位置
+        for (int i = 0; i < excelTitle.size(); i++) {
+            String title = excelTitle.get(i);
+            for (int j = 0; j < targetTitle.length; j++) {
+                if (excelTitle.get(i) != null && excelTitle.get(i).equals(targetTitle[j])){
+                    targetTitlePosition[j] = i;
+                }
+            }
+        }
+        return targetTitlePosition;
     }
 
-    public ArrayList[][] createForteArray(File[] excel, String[][] coordiantes){
-        ArrayList[][] forteArray = null;
+    public HashMap<enumClass.excelType, HashMap> paramContent(HashMap<String,List<String>> excelContent, enumClass.excelType excelType){
+        HashMap<enumClass.excelType, HashMap> content = new HashMap<enumClass.excelType, HashMap>();
+        HashMap<String,String[]> ContentCdd = new HashMap<>();
 
-        if (coordiantes != null) {
-            // excel 分别顺序包含:sector/channelGroup/handover
-            forteArray = new ArrayList[3][excel.length];
-
-            if (excel[0].isFile() && excel[1].isFile() && excel[2].isFile()) {
-                System.out.println("11");
-                forteArray[0][0] = createSectors(excel, coordiantes);
-                System.out.println("22");
-                forteArray[1][0] = createChannels(excel, coordiantes);
-                System.out.println("33");
-                forteArray[2][0] = createHandovers(excel, coordiantes);
-                System.out.println("44");
+        Iterator<Map.Entry<String,List<String>>> iterator = excelContent.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String,List<String>> entry = iterator.next();
+            if (entry.getKey()!= "0.0"){
+                List<String> list = entry.getValue();
+                // TODO: 2016/6/12 遍历 list 的数据，取得需要的参数值,存入 ContentCdd
             }
-            System.out.println("cdd 文件处理完毕！");
-        }else {
-            System.out.println("读取文件出错");
         }
-        return forteArray;
+
+        content.put(excelType,ContentCdd);
+        return content;
     }
 
     /**
-     * 网优之家 现网cdd 生成 Sectors 文件
+     * 获取 ExcelContent，避免每次都读取。
      * @param excel
+     * @return
+     */
+    //public HashMap<enumClass.excelType,HashMap> getExcelContent(File[] excel) {
+    //    HashMap<enumClass.excelType, HashMap> excelContent = new HashMap<enumClass.excelType, HashMap>();
+    //
+    //    POIReadExcelWithUserModel readExcel = new POIReadExcelWithUserModel();
+    //
+    //    HashMap<String,String[]> excelContentCdd = readExcel.poiReadExcelContent(excel[0], cdd);
+    //    excelContent.put(cdd,excelContentCdd);
+    //
+    //    HashMap<String,String[]> excelContentChannel = readExcel.poiReadExcelContent(excel[1], channel);
+    //    excelContent.put(channel,excelContentChannel);
+    //
+    //    //HashMap<String,String[]> excelContentHandover = readerUtilWithEventModel.readerUtilWithUserModel(excel[2], handover);
+    //    HashMap<String,String[]> excelContentHandover = null;
+    //    excelContent.put(handover,excelContentHandover);
+    //
+    //    return excelContent;
+    //}
+
+
+    /**
+     * 网优之家 现网cdd 生成 Sectors 文件
      * @param coordiantes
      * @return
      */
-    public ArrayList createSectors(File[] excel, String[][] coordiantes){
+    public ArrayList createSectors(HashMap<enumClass.excelType, HashMap> excelContent, String[][] coordiantes){
+        System.out.println("createSectors");
         ArrayList sectorslist = new ArrayList();
 
         //String sectorHead = "MSC\tBSC\tVendor\tSite\tLatitude\tLongitude\tSector\tID\tMaster\tLAC\tCI\tKeywords\tAzimuth\tBCCH frequency\tBSIC\tIntracell HO\tSynchronization group\tAMR HR Allocation\tAMR HR Threshold\tHR Allocation\tHR Threshold\tTCH allocation priority\tGPRS allocation priority\tRemote\tMCC\tMNC";
 
-        POIReadExcel readExcel = new POIReadExcel();
-        HashMap<String,String[]> excelContentCdd = readExcel.poiReadExcelContent(excel[0], cdd);
-        HashMap<String,String[]> excelContentChannel = readExcel.poiReadExcelContent(excel[1], channel);
+        HashMap<String,String[]> excelContentCdd = excelContent.get(cdd);
+        HashMap<String,String[]> excelContentChannel = excelContent.get(channel);
 
         //String[] targetTitle = new String[]{"CELL", "BSC", "MSC", "SITE", "lac", "ci", "bcchno", "bsic", "TCH", "tchnum", "mcc", "mnc", "bspwrb"};
         //System.out.println(sectorHead);
@@ -102,18 +139,17 @@ public class ProcessorExcelCdd {
 
     /**
      * 网优之家 现网cdd_Channel 生成 ChannelGroups 文件
-     * @param excel
      * @param coordiantes
      * @return
      */
-    public ArrayList createChannels(File[] excel, String[][] coordiantes){
+    public ArrayList createChannels(HashMap<enumClass.excelType, HashMap> excelContent, String[][] coordiantes){
+        System.out.println("createChannels");
         ArrayList channelGroupslist = new ArrayList();
 
         //String channelGroupHead = "Sector\tChannel Group\tSubcell\tBand\tExtended\tHopping method\tContains BCCH\tHSN\tDTX\tPower control\tSubcell Signal Threshold\tSubcell Tx Power\t# TRXs\t# SDCCH TSs\t# Fixed GPRS TSs\tPriority\tTCH 1\tTCH 2\tTCH 3\tTCH 4\tTCH 5\tTCH 6\tTCH 7\tTCH 8\tTCH 9\tTCH 10\tTCH 11\tTCH 12\tTCH 13\tTCH 14\tTCH 15\tTCH 16\tTCH 17\tTCH 18\tTCH 19\tTCH 20\tTCH 21\tTCH 22\tTCH 23\tTCH 24\tTCH 25\tTCH 26\tTCH 27\tTCH 28\tTCH 29\tTCH 30\tTCH 31\tTCH 32\tTCH 33\tTCH 34\tTCH 35\tTCH 36\tTCH 37\tTCH 38\tTCH 39\tTCH 40\tTCH 41\tTCH 42\tTCH 43\tTCH 44\tTCH 45\tTCH 46\tTCH 47\tTCH 48\tTCH 49\tTCH 50\tTCH 51\tTCH 52\tTCH 53\tTCH 54\tTCH 55\tTCH 56\tTCH 57\tTCH 58\tTCH 59\tTCH 60\tTCH 61\tTCH 62\tTCH 63\tTCH 64\tMAIO 1\tMAIO 2\tMAIO 3\tMAIO 4\tMAIO 5\tMAIO 6\tMAIO 7\tMAIO 8\tMAIO 9\tMAIO 10\tMAIO 11\tMAIO 12\tMAIO 13\tMAIO 14\tMAIO 15\tMAIO 16";
 
-        POIReadExcel readExcel = new POIReadExcel();
-        HashMap<String,String[]> excelContentCdd = readExcel.poiReadExcelContent(excel[0], cdd);
-        HashMap<String,String[]> excelContentChannel = readExcel.poiReadExcelContent(excel[1], channel);
+        HashMap<String,String[]> excelContentCdd = excelContent.get(cdd);
+        HashMap<String,String[]> excelContentChannel = excelContent.get(channel);
 
         //String[] targetTitle = new String[]{"cell", "ch_group", "bsc", "chgr_tg", "band", "bccd", "channel_tch", "hsn", "sdcch", "tchnum", "hop"};
 
@@ -121,9 +157,11 @@ public class ProcessorExcelCdd {
         String MAIO = "\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A";
 
         Iterator<Map.Entry<String, String[]>> iterator = excelContentChannel.entrySet().iterator();
+
         while (iterator.hasNext()) {
             Map.Entry<String, String[]> entry = iterator.next();
             String[] strings = entry.getValue();
+
 
             // 判断信道存储的频率为什么类型：1~124 PGSM、975~1024 EGSM、N/A
             String extended = "N/A";
@@ -144,11 +182,6 @@ public class ProcessorExcelCdd {
                 hoppingMethod = "Base band";
             }
 
-            // 判断是否为BCCH频点所在信道,并计算信道的频点数
-            String ContainsBCCH = "FALSE";
-            if (strings[5].equals("YES")){
-                ContainsBCCH = "TRUE";
-            }
 
             // 如果功率值为null，设置默认功率
             String subcellTxPower = "45";
@@ -163,12 +196,19 @@ public class ProcessorExcelCdd {
                 TCH[i] = "N/A";
             }
 
+            // 判断是否为BCCH频点所在信道,并计算信道的频点数，网优直接的数据有问题，不能用这个字段来标记。
+            String ContainsBCCH = "FALSE";
+            //if (strings[5].equals("YES")){
+            //    ContainsBCCH = "TRUE";
+            //}
+
             //将 channel_tch 的数据剔除 BCCH 后赋值给 TCH[]
             int j = 0;
             for (int i = 0; i < channel_tch.length; i++) {
-                if (excelContentCdd.containsKey(strings[0]) && channel_tch[i].equals(excelContentCdd.get(strings[0])[6]) && ContainsBCCH == "TRUE"){
+                if (excelContentCdd.containsKey(strings[0]) && channel_tch[i].equals(excelContentCdd.get(strings[0])[6])){
+                    ContainsBCCH = "TRUE";
                     //TCH += tab + "N/A";
-                }else {
+                }else{
                     TCH[j] = channel_tch[i];
                     j++;
                 }
@@ -209,17 +249,16 @@ public class ProcessorExcelCdd {
 
     /**
      * 网优之家 现网cdd_Nrel 生成 Handovers 文件
-     * @param excel
      * @param coordiantes
      * @return
      */
-    public ArrayList createHandovers(File[] excel, String[][] coordiantes){
+    public ArrayList createHandovers(HashMap<enumClass.excelType, HashMap> excelContent, String[][] coordiantes){
+        System.out.println("createHandovers");
         ArrayList handoverslist = new ArrayList();
 
         //String handoverHead = "Serving Sector\tTarget Sector\tHysteresis\tSector Threshold";
 
-        POIReadExcel readExcel = new POIReadExcel();
-        HashMap<String,String[]> excelContentHandover = readExcel.poiReadExcelContent(excel[2], handover);
+        HashMap<String,String[]> excelContentHandover = excelContent.get(handover);
 
         //String[] targetTitle = new String[]{"CELL", "BSC", "n_cell", "n_bsc", "hihyst", "khyst", "koffset"};
         //System.out.println(handoverHead);
@@ -239,5 +278,32 @@ public class ProcessorExcelCdd {
             }
         }
         return handoverslist;
+    }
+
+    /**
+     * 通过 ExcelContent 生成 forte 文件
+     * @param excel
+     * @param excelContent
+     * @param coordiantes
+     * @return
+     */
+    public ArrayList[][] createForteArray(File[] excel, HashMap<enumClass.excelType, HashMap> excelContent, String[][] coordiantes){
+        System.out.println("createForteArray");
+        ArrayList[][] forteArray = null;
+
+        if (coordiantes != null) {
+            // excel 分别顺序包含:sector/channelGroup/handover
+            forteArray = new ArrayList[3][excel.length];
+
+            if (excel[0].isFile() && excel[1].isFile()) {
+                forteArray[0][0] = createSectors(excelContent, coordiantes);
+                forteArray[1][0] = createChannels(excelContent, coordiantes);
+                forteArray[2][0] = createHandovers(excelContent, coordiantes);
+            }
+            System.out.println("cdd 文件处理完毕！");
+        }else {
+            System.out.println("读取文件出错");
+        }
+        return forteArray;
     }
 }

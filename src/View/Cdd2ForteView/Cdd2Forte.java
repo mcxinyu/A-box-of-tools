@@ -1,7 +1,7 @@
 package View.Cdd2ForteView;
 
 import Common.*;
-import Control.Cdd2ForteControl.ProcessorCddLog;
+import Control.Cdd2ForteControl.ProcessorTxtCdd;
 import Control.Cdd2ForteControl.ProcessorCoordinate;
 import Control.CommonControl.ReadFile;
 import Control.CommonControl.saveFile;
@@ -30,7 +30,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
     JCheckBox useOldCoordinates, useWyzjData;
     JComboBox selectDataSource;
     manageProperties mp = new manageProperties();
-    ProcessorCddLog pl = null;
+    ProcessorTxtCdd pl = null;
     String path = null;
     String[][] cellCoordinate = null;
     ArrayList[][] cddLogArray = null;
@@ -193,7 +193,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        pl = new ProcessorCddLog();
+        pl = new ProcessorTxtCdd();
         if (e.getActionCommand() == "readCoordinateBtn"){
             if (cellCoordinate != null){
                 Object[] options = {"确定","我手贱"};

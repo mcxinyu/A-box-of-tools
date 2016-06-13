@@ -15,7 +15,7 @@ import java.util.Iterator;
  * 用于处理 cdd 文本文件，得到 cdd 参数
  * Created by 跃峰 on 2016/1/27.
  */
-public class ProcessorCddLog {
+public class ProcessorTxtCdd {
     /**
      * The entry point of application.
      *
@@ -33,7 +33,7 @@ public class ProcessorCddLog {
 ////        //读取CDD
 //////        File f2 = new File("/Users/huangyuefeng/Downloads/cdd20160122/SZ01A.log");
 ////        File f2 = new File("D:\\SZ\\变频工作\\数据采集\\CDD\\20160302\\SZ59A.Log");
-////        ProcessorCddLog pl = new ProcessorCddLog();
+////        ProcessorTxtCdd pl = new ProcessorTxtCdd();
 ////        HashMap hm = pl.readCoordinates(f2);
 ////        pl.createForteList(s,hm);
 //
@@ -54,7 +54,7 @@ public class ProcessorCddLog {
 //
 //        //读取CDD
 //        File f2 = new File("D:\\SZ\\日常工作\\20160411\\20160411\\SZ35A.Log");
-//        ProcessorCddLog pl = new ProcessorCddLog();
+//        ProcessorTxtCdd pl = new ProcessorTxtCdd();
 //        pl.processorSingleLog(f2);
 //    }
 

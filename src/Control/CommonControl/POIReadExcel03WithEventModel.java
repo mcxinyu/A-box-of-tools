@@ -1,4 +1,4 @@
-package Control.Cdd2ForteControl;
+package Control.CommonControl;
 
 /**
  * Created by 跃峰 on 2016/6/8.
@@ -15,6 +15,7 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -22,7 +23,7 @@ import java.util.List;
  * 中的内容，遇到特定事件才会触发，大大减少了内存的使用。
  *
  */
-public  class Excel2003Reader implements HSSFListener {
+public  class POIReadExcel03WithEventModel implements HSSFListener {
     private int minColumns = -1;
     private POIFSFileSystem fs;
     private int lastRowNumber;
@@ -36,7 +37,7 @@ public  class Excel2003Reader implements HSSFListener {
     //excel2003工作薄
     private HSSFWorkbook stubWorkbook;
 
-    // Records we pick up as we process
+    // Records we pick up as we processAllSheet
     private SSTRecord sstRecord;
     private FormatTrackingHSSFListener formatListener;
 
@@ -57,29 +58,28 @@ public  class Excel2003Reader implements HSSFListener {
     @SuppressWarnings( "unused")
     private String sheetName;
 
-    private IRowReader rowReader;
+    HashMap<String,List<String>> excelContent = new HashMap<String, List<String>>();
 
+    //private IRowReader rowReader;
 
-    public void setRowReader(IRowReader rowReader){
-        this.rowReader = rowReader;
-    }
+    //public void setRowReader(IRowReader rowReader){
+    //    this.rowReader = rowReader;
+    //}
 
     /**
      * 遍历excel下所有的sheet
      * @throws IOException
      */
-    public void process(String fileName) throws IOException {
+    public void processAllSheet(String fileName) throws IOException {
         this.fs = new POIFSFileSystem(new FileInputStream(fileName));
-        MissingRecordAwareHSSFListener listener = new MissingRecordAwareHSSFListener(
-                this);
+        MissingRecordAwareHSSFListener listener = new MissingRecordAwareHSSFListener(this);
         formatListener = new FormatTrackingHSSFListener(listener);
         HSSFEventFactory factory = new HSSFEventFactory();
         HSSFRequest request = new HSSFRequest();
         if (outputFormulaValues) {
             request.addListenerForAllRecords(formatListener);
         } else {
-            workbookBuildingListener = new EventWorkbookBuilder.SheetRecordCollectingListener(
-                    formatListener);
+            workbookBuildingListener = new EventWorkbookBuilder.SheetRecordCollectingListener(formatListener);
             request.addListenerForAllRecords(workbookBuildingListener);
         }
         factory.processWorkbookEvents(request, fs);
@@ -228,11 +228,21 @@ public  class Excel2003Reader implements HSSFListener {
             }
             lastColumnNumber = -1;
             // 每行结束时， 调用getRows() 方法
-            rowReader.getRows(sheetIndex,curRow, rowlist);
+            //rowReader.getRows(sheetIndex,curRow, rowlist);
+
+            // 每行结束时， 保存读取到的内容
+            excelContent.put(sheetIndex+"."+curRow, rowlist);
 
             // 清空容器
             rowlist.clear();
         }
     }
 
+    public HashMap<String, List<String>> getExcelContent() {
+        return excelContent;
+    }
+
+    public void setExcelContent(HashMap<String, List<String>> excelContent) {
+        this.excelContent = excelContent;
+    }
 }

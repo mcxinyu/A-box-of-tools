@@ -28,11 +28,11 @@ public class MyProgressBar extends JFrame implements Runnable{
         //设置进度条的最大值和最小值,
         //bar.setMinimum(0);
         //以总任务量作为进度条的最大值
-        //bar.setMaximum(ProcessorCddLog.getFileListAmount());
+        //bar.setMaximum(ProcessorTxtCdd.getFileListAmount());
         //Timer timer = new Timer(300 , new ActionListener() {
         //    public void actionPerformed(ActionEvent e) {
         //        //以任务的当前完成量设置进度条的value
-        //        bar.setValue(ProcessorCddLog.getFileListNum());
+        //        bar.setValue(ProcessorTxtCdd.getFileListNum());
         //    }
         //});
         //timer.start();
@@ -60,14 +60,14 @@ public class MyProgressBar extends JFrame implements Runnable{
         while (running){
             //try {
             //    Thread.sleep(100);
-            //    //bar.setValue(ProcessorCddLog.getFileListNum());
+            //    //bar.setValue(ProcessorTxtCdd.getFileListNum());
             //    //bar.setIndeterminate(true);
             //    frame.repaint();
             //    frame.setVisible(true);
             //} catch (InterruptedException e) {
             //    e.printStackTrace();
             //}
-            //if (ProcessorCddLog.getFileListNum() == ProcessorCddLog.getFileListAmount()-1){
+            //if (ProcessorTxtCdd.getFileListNum() == ProcessorTxtCdd.getFileListAmount()-1){
             //    running = false;
             //    frame.dispose();
             //    System.out.println("close");
