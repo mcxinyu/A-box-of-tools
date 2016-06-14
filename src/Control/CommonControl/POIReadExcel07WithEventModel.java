@@ -47,13 +47,17 @@ public class POIReadExcel07WithEventModel extends DefaultHandler {
 
     private boolean isTElement;
 
-    HashMap<String,List<String>> excelContent = new HashMap<String, List<String>>();
-
     //private IRowReader rowReader;
-
+    //
     //public void setRowReader(IRowReader rowReader){
     //    this.rowReader = rowReader;
     //}
+
+    public HashMap<String,List<String>> excelContent = new HashMap<String, List<String>>();
+
+    public void putRows(int sheetIndex, int curRow, List<String> rowlist) {
+        excelContent.put(sheetIndex+"."+curRow, rowlist);
+    }
 
     /**只遍历一个电子表格，其中sheetId为要遍历的sheet索引，从1开始，1-3
      * @param filename
@@ -79,7 +83,7 @@ public class POIReadExcel07WithEventModel extends DefaultHandler {
      * @param filename
      * @throws Exception
      */
-    public void processAllSheet(String filename) throws Exception {
+    public void process(String filename) throws Exception {
         OPCPackage pkg = OPCPackage.open(filename);
         XSSFReader r = new XSSFReader(pkg);
         SharedStringsTable sst = r.getSharedStringsTable();
@@ -95,14 +99,17 @@ public class POIReadExcel07WithEventModel extends DefaultHandler {
         }
     }
 
-    public XMLReader fetchSheetParser(SharedStringsTable sst) throws SAXException {
-        XMLReader parser = XMLReaderFactory.createXMLReader("org.apache.xerces.parsers.SAXParser");
+    public XMLReader fetchSheetParser(SharedStringsTable sst)
+            throws SAXException {
+        XMLReader parser = XMLReaderFactory
+                .createXMLReader("org.apache.xerces.parsers.SAXParser");
         this.sst = sst;
         parser.setContentHandler(this);
         return parser;
     }
 
-    public void startElement(String uri, String localName, String name, Attributes attributes) throws SAXException {
+    public void startElement(String uri, String localName, String name,
+                             Attributes attributes) throws SAXException {
 
         // c => 单元格
         if ("c".equals(name)) {
@@ -139,14 +146,16 @@ public class POIReadExcel07WithEventModel extends DefaultHandler {
         lastContents = "";
     }
 
-    public void endElement(String uri, String localName, String name) throws SAXException {
+    public void endElement(String uri, String localName, String name)
+            throws SAXException {
 
         // 根据SST的索引值的到单元格的真正要存储的字符串
         // 这时characters()方法可能会被调用多次
         if (nextIsString) {
             try {
                 int idx = Integer.parseInt(lastContents);
-                lastContents = new XSSFRichTextString(sst.getEntryAt(idx)).toString();
+                lastContents = new XSSFRichTextString(sst.getEntryAt(idx))
+                        .toString();
             } catch (Exception e) {
 
             }
@@ -157,15 +166,16 @@ public class POIReadExcel07WithEventModel extends DefaultHandler {
             rowlist.add(curCol, value);
             curCol++;
             isTElement = false;
-        } else if ("v".equals(name)) {
             // v => 单元格的值，如果单元格是字符串则v标签的值为该字符串在SST中的索引
             // 将单元格内容加入rowlist中，在这之前先去掉字符串前后的空白符
+        } else if ("v".equals(name)) {
             String value = lastContents.trim();
             value = value.equals("")?" ":value;
             //日期格式处理
             if(dateFlag){
                 Date date = HSSFDateUtil.getJavaDate(Double.valueOf(value));
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                SimpleDateFormat dateFormat = new SimpleDateFormat(
+                        "dd/MM/yyyy");
                 value = dateFormat.format(date);
             }
             //数字类型处理
@@ -178,28 +188,22 @@ public class POIReadExcel07WithEventModel extends DefaultHandler {
         }else {
             //如果标签名称为 row ，这说明已到行尾，调用 optRows() 方法
             if (name.equals("row")) {
-                // 每行结束时， 调用getRows() 方法
-                //rowReader.getRows(sheetIndex,curRow,rowlist);
-                // 每行结束时， 保存读取到的内容
-                excelContent.put(sheetIndex+"."+curRow, rowlist);
-
+                this.putRows(sheetIndex,curRow,rowlist);
                 rowlist.clear();
                 curRow++;
                 curCol = 0;
             }
         }
+
     }
 
-    public void characters(char[] ch, int start, int length) throws SAXException {
+    public void characters(char[] ch, int start, int length)
+            throws SAXException {
         //得到单元格内容的值
         lastContents += new String(ch, start, length);
     }
 
     public HashMap<String, List<String>> getExcelContent() {
         return excelContent;
-    }
-
-    public void setExcelContent(HashMap<String, List<String>> excelContent) {
-        this.excelContent = excelContent;
     }
 }

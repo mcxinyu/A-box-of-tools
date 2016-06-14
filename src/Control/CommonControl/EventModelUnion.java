@@ -16,27 +16,42 @@ public class EventModelUnion {
 
     /**
      * 读取Excel文件，可能是03也可能是07版本
+     * @param fileName
+     * @throws Exception
+     */
+
+    /**
+     * 读取Excel文件，可能是03也可能是07版本
      * @param excelFile
      * @throws Exception
      */
-    public HashMap<String,List<String>> readerUtilWithEventModel(File excelFile) throws Exception{
-        HashMap<String,List<String>> excelContent = new HashMap<String, List<String>>();
+    public static HashMap<String, List<String>> readerUtilWithEventModel(File excelFile) throws Exception{
+        String fileName = excelFile.getAbsolutePath();
+        //System.out.println(fileName);
 
-        String fileName = excelFile.getName();
+        HashMap<String, List<String>> excelContent = null;
         // 处理excel2003文件
         if (fileName.endsWith(EXCEL03_EXTENSION)){
             POIReadExcel03WithEventModel excel03 = new POIReadExcel03WithEventModel();
-            excel03.processAllSheet(fileName);
+            //excel03.setRowReader(reader);
+            excel03.process(fileName);
             excelContent = excel03.getExcelContent();
             // 处理excel2007文件
         } else if (fileName.endsWith(EXCEL07_EXTENSION)){
             POIReadExcel07WithEventModel excel07 = new POIReadExcel07WithEventModel();
-            excel07.processAllSheet(fileName);
+            //excel07.setRowReader(reader);
+            excel07.process(fileName);
             excelContent = excel07.getExcelContent();
         } else {
             throw new  Exception("文件格式错误，只能处理.xls或.xlsx文件。");
         }
         return excelContent;
     }
+
+    //public static void main(String[] args) throws Exception {
+    //    IRowReader reader = new RowReader();
+    //    //ExcelReaderUtil.readExcel(reader, "F://te03.xls");
+    //    EventModelUnion.readerUtilWithEventModel(reader, "F://test07.xlsx");
+    //}
 
 }

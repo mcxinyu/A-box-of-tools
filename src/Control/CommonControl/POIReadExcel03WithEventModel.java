@@ -37,7 +37,7 @@ public  class POIReadExcel03WithEventModel implements HSSFListener {
     //excel2003工作薄
     private HSSFWorkbook stubWorkbook;
 
-    // Records we pick up as we processAllSheet
+    // Records we pick up as we process
     private SSTRecord sstRecord;
     private FormatTrackingHSSFListener formatListener;
 
@@ -54,14 +54,18 @@ public  class POIReadExcel03WithEventModel implements HSSFListener {
     //当前行
     private int curRow = 0;
     //存储行记录的容器
-    private List<String> rowlist = new ArrayList<String>();;
+    private List<String> rowlist = new ArrayList<String>();
     @SuppressWarnings( "unused")
     private String sheetName;
 
-    HashMap<String,List<String>> excelContent = new HashMap<String, List<String>>();
+    public static HashMap<String,List<String>> excelContent = new HashMap<String, List<String>>();
+
+    public void putRows(int sheetIndex, int curRow, List<String> rowlist) {
+        excelContent.put(sheetIndex+"."+curRow, rowlist);
+    }
 
     //private IRowReader rowReader;
-
+    //
     //public void setRowReader(IRowReader rowReader){
     //    this.rowReader = rowReader;
     //}
@@ -70,7 +74,7 @@ public  class POIReadExcel03WithEventModel implements HSSFListener {
      * 遍历excel下所有的sheet
      * @throws IOException
      */
-    public void processAllSheet(String fileName) throws IOException {
+    public void process(String fileName) throws IOException {
         this.fs = new POIFSFileSystem(new FileInputStream(fileName));
         MissingRecordAwareHSSFListener listener = new MissingRecordAwareHSSFListener(this);
         formatListener = new FormatTrackingHSSFListener(listener);
@@ -79,7 +83,8 @@ public  class POIReadExcel03WithEventModel implements HSSFListener {
         if (outputFormulaValues) {
             request.addListenerForAllRecords(formatListener);
         } else {
-            workbookBuildingListener = new EventWorkbookBuilder.SheetRecordCollectingListener(formatListener);
+            workbookBuildingListener = new EventWorkbookBuilder.SheetRecordCollectingListener(
+                    formatListener);
             request.addListenerForAllRecords(workbookBuildingListener);
         }
         factory.processWorkbookEvents(request, fs);
@@ -150,8 +155,7 @@ public  class POIReadExcel03WithEventModel implements HSSFListener {
                         thisStr = formatListener.formatNumberDateCell(frec);
                     }
                 } else {
-                    thisStr = '"' + HSSFFormulaParser.toFormulaString(stubWorkbook,
-                            frec.getParsedExpression()) + '"';
+                    thisStr = '"' + HSSFFormulaParser.toFormulaString(stubWorkbook, frec.getParsedExpression()) + '"';
                 }
                 rowlist.add(thisColumn,thisStr);
                 break;
@@ -171,7 +175,7 @@ public  class POIReadExcel03WithEventModel implements HSSFListener {
                 thisColumn = lrec.getColumn();
                 value = lrec.getValue().trim();
                 value = value.equals("")?" ":value;
-                this.rowlist.add(thisColumn, value);
+                rowlist.add(thisColumn, value);
                 break;
             case LabelSSTRecord.sid:  //单元格为字符串类型
                 LabelSSTRecord lsrec = (LabelSSTRecord) record;
@@ -227,11 +231,8 @@ public  class POIReadExcel03WithEventModel implements HSSFListener {
                 }
             }
             lastColumnNumber = -1;
-            // 每行结束时， 调用getRows() 方法
-            //rowReader.getRows(sheetIndex,curRow, rowlist);
-
-            // 每行结束时， 保存读取到的内容
-            excelContent.put(sheetIndex+"."+curRow, rowlist);
+            // 每行结束时， 调用putRows() 方法
+            this.putRows(sheetIndex,curRow, rowlist);
 
             // 清空容器
             rowlist.clear();
@@ -240,9 +241,5 @@ public  class POIReadExcel03WithEventModel implements HSSFListener {
 
     public HashMap<String, List<String>> getExcelContent() {
         return excelContent;
-    }
-
-    public void setExcelContent(HashMap<String, List<String>> excelContent) {
-        this.excelContent = excelContent;
     }
 }
