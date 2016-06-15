@@ -1,7 +1,7 @@
 package Control.Cdd2ForteControl;
 
 import Common.enumClass;
-import Control.CommonControl.EventModelUnion;
+import Control.CommonControl.POI.EventModelUnion;
 
 import java.io.File;
 import java.util.*;

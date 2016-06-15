@@ -1,4 +1,4 @@
-package Control.CommonControl;
+package Control.CommonControl.POI;
 
 import java.io.File;
 import java.util.HashMap;
@@ -32,8 +32,9 @@ public class EventModelUnion {
         HashMap<String, List<String>> excelContent = null;
         // 处理excel2003文件
         if (fileName.endsWith(EXCEL03_EXTENSION)){
+            //RowReader rowReader = new RowReader();
             POIReadExcel03WithEventModel excel03 = new POIReadExcel03WithEventModel();
-            //excel03.setRowReader(reader);
+            //excel03.setRowReader(rowReader);
             excel03.process(fileName);
             excelContent = excel03.getExcelContent();
             // 处理excel2007文件

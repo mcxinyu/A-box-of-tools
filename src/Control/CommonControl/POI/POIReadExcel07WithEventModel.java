@@ -1,4 +1,4 @@
-package Control.CommonControl;
+package Control.CommonControl.POI;
 
 /**
  * Created by 跃峰 on 2016/6/8.
