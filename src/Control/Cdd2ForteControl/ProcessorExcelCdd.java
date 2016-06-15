@@ -1,7 +1,7 @@
 package Control.Cdd2ForteControl;
 
 import Common.enumClass;
-import Control.CommonControl.POI.EventModelUnion;
+import Control.Cdd2ForteControl.POI.EventModelUnion;
 
 import java.io.File;
 import java.util.*;
@@ -27,7 +27,7 @@ public class ProcessorExcelCdd {
         ProcessorExcelCdd processorExcelCdd = new ProcessorExcelCdd();
         HashMap<enumClass.excelType, HashMap> allContent = processorExcelCdd.get3Content(excel);
 
-        ArrayList[][] forteArray = processorExcelCdd.createForteArray(excel, allContent, coordinate);
+        ArrayList[][] forteArray = processorExcelCdd.createForteArray(allContent, coordinate);
         ProcessorTxtCdd processorTxtCdd = new ProcessorTxtCdd();
         processorTxtCdd.createForteFile(forteArray,exportPath);
     }
@@ -142,7 +142,7 @@ public class ProcessorExcelCdd {
      * @return
      */
     public ArrayList createSectors(HashMap<enumClass.excelType, HashMap> excelContent, String[][] coordiantes){
-        System.out.println("createSectors");
+        System.out.println("createSectors-start");
         ArrayList sectorslist = new ArrayList();
 
         //String sectorHead = "MSC\tBSC\tVendor\tSite\tLatitude\tLongitude\tSector\tID\tMaster\tLAC\tCI\tKeywords\tAzimuth\tBCCH frequency\tBSIC\tIntracell HO\tSynchronization group\tAMR HR Allocation\tAMR HR Threshold\tHR Allocation\tHR Threshold\tTCH allocation priority\tGPRS allocation priority\tRemote\tMCC\tMNC";
@@ -180,6 +180,7 @@ public class ProcessorExcelCdd {
                 //System.out.println(sectorLine);
             }
         }
+        System.out.println("createSectors-end");
         return sectorslist;
     }
 
@@ -189,7 +190,7 @@ public class ProcessorExcelCdd {
      * @return
      */
     public ArrayList createChannels(HashMap<enumClass.excelType, HashMap> excelContent, String[][] coordiantes){
-        System.out.println("createChannels");
+        System.out.println("createChannels-start");
         ArrayList channelGroupslist = new ArrayList();
 
         //String channelGroupHead = "Sector\tChannel Group\tSubcell\tBand\tExtended\tHopping method\tContains BCCH\tHSN\tDTX\tPower control\tSubcell Signal Threshold\tSubcell Tx Power\t# TRXs\t# SDCCH TSs\t# Fixed GPRS TSs\tPriority\tTCH 1\tTCH 2\tTCH 3\tTCH 4\tTCH 5\tTCH 6\tTCH 7\tTCH 8\tTCH 9\tTCH 10\tTCH 11\tTCH 12\tTCH 13\tTCH 14\tTCH 15\tTCH 16\tTCH 17\tTCH 18\tTCH 19\tTCH 20\tTCH 21\tTCH 22\tTCH 23\tTCH 24\tTCH 25\tTCH 26\tTCH 27\tTCH 28\tTCH 29\tTCH 30\tTCH 31\tTCH 32\tTCH 33\tTCH 34\tTCH 35\tTCH 36\tTCH 37\tTCH 38\tTCH 39\tTCH 40\tTCH 41\tTCH 42\tTCH 43\tTCH 44\tTCH 45\tTCH 46\tTCH 47\tTCH 48\tTCH 49\tTCH 50\tTCH 51\tTCH 52\tTCH 53\tTCH 54\tTCH 55\tTCH 56\tTCH 57\tTCH 58\tTCH 59\tTCH 60\tTCH 61\tTCH 62\tTCH 63\tTCH 64\tMAIO 1\tMAIO 2\tMAIO 3\tMAIO 4\tMAIO 5\tMAIO 6\tMAIO 7\tMAIO 8\tMAIO 9\tMAIO 10\tMAIO 11\tMAIO 12\tMAIO 13\tMAIO 14\tMAIO 15\tMAIO 16";
@@ -211,7 +212,7 @@ public class ProcessorExcelCdd {
 
             // 判断信道存储的频率为什么类型：1~124 PGSM、975~1024 EGSM、N/A
             String extended = "N/A";
-            String[] channel_tch = strings[6].split(",");
+            String[] channel_tch = strings[5].split(",");
             for (String s : channel_tch) {
                 if (Integer.parseInt(s) != 0 && Integer.parseInt(s) <= 124){
                     extended = "PGSM";
@@ -224,7 +225,7 @@ public class ProcessorExcelCdd {
 
             // 判断跳频方式
             String hoppingMethod = "Non hopping";
-            if (strings[10].equals("ON")) {
+            if (strings[9].equals("ON")) {
                 hoppingMethod = "Base band";
             }
 
@@ -285,11 +286,13 @@ public class ProcessorExcelCdd {
 
             for (String[] coordiante : coordiantes) {
                 if (coordiante[0].equals(strings[0])){
+                    System.out.println(strings[0]);
                     channelGroupslist.add(channelGroupLine);
                     //System.out.println(channelGroupLine);
                 }
             }
         }
+        System.out.println("createChannels-end");
         return channelGroupslist;
     }
 
@@ -328,24 +331,21 @@ public class ProcessorExcelCdd {
 
     /**
      * 通过 ExcelContent 生成 forte 文件
-     * @param excel
      * @param excelContent
      * @param coordiantes
      * @return
      */
-    public ArrayList[][] createForteArray(File[] excel, HashMap<enumClass.excelType, HashMap> excelContent, String[][] coordiantes){
+    public ArrayList[][] createForteArray(HashMap<enumClass.excelType, HashMap> excelContent, String[][] coordiantes){
         System.out.println("createForteArray");
         ArrayList[][] forteArray = null;
 
         if (coordiantes != null) {
             // excel 分别顺序包含:sector/channelGroup/handover
-            forteArray = new ArrayList[3][excel.length];
+            forteArray = new ArrayList[3][1];
 
-            if (excel[0].isFile() && excel[1].isFile()) {
-                forteArray[0][0] = createSectors(excelContent, coordiantes);
-                forteArray[1][0] = createChannels(excelContent, coordiantes);
-                forteArray[2][0] = createHandovers(excelContent, coordiantes);
-            }
+            forteArray[0][0] = createSectors(excelContent, coordiantes);
+            forteArray[1][0] = createChannels(excelContent, coordiantes);
+            //forteArray[2][0] = createHandovers(excelContent, coordiantes);
             System.out.println("cdd 文件处理完毕！");
         }else {
             System.out.println("读取文件出错");

@@ -1,4 +1,4 @@
-package Control.CommonControl.POI;
+package Control.Cdd2ForteControl.POI;
 
 /**
  * Created by 跃峰 on 2016/6/8.

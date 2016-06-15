@@ -1,4 +1,4 @@
-package Control.CommonControl.POI;
+package Control.Cdd2ForteControl.POI;
 
 import java.util.HashMap;
 import java.util.List;

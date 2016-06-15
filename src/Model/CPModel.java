@@ -3,8 +3,8 @@ package Model;
  * Created by 跃峰 on 2015/12/30.
  * 完成信息的查询逻辑
  */
-import Database.SqlHelper;
-import javax.swing.*;
+import Common.SQLHelper.SqlHelper;
+
 import javax.swing.table.*;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
