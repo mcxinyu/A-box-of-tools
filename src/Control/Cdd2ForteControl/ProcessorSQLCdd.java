@@ -3,15 +3,13 @@ package Control.Cdd2ForteControl;
 import Common.SQLHelper.SqlHelper;
 import Common.enumClass;
 
+import javax.swing.*;
 import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
-import static Common.enumClass.excelType.cdd;
-import static Common.enumClass.excelType.channel;
-import static Common.enumClass.excelType.handover;
+import static Common.enumClass.excelType.*;
 
 /**
  * Created by 跃峰 on 2016/6/15.
@@ -21,6 +19,9 @@ public class ProcessorSQLCdd {
     public static final String queryCdd = "SELECT CELL, BSC, MSC, SITE, lac, ci, bcchno, bsic, TCH, tchnum, mcc, mnc, bspwrb, CDate FROM WYZJ.dbo.S_cdd_Internal WHERE cell_name IS NOT NULL and 1 = ?";
     public static final String queryChannel = "SELECT cell, ch_group, bsc, chgr_tg, band, channel_tch, hsn, sdcch, tchnum, hop, CDate FROM WYZJ.dbo.S_cdd_Channel WHERE cell_name IS NOT NULL and 1 = ?";
     public static final String queryHandover = "SELECT CELL, BSC, n_cell, n_bsc, hihyst, khyst, koffset, CDate FROM WYZJ.dbo.S_cdd_Nrel WHERE cell_name IS NOT NULL and 1 = ?";
+
+    boolean isConnected = false;
+    String CDate = "";
 
     /**
      * 获取 ExcelContent，避免每次都读取。
@@ -38,6 +39,7 @@ public class ProcessorSQLCdd {
         resultSets[2] = sqlHelper.query(queryHandover, new String[]{"1"});
         System.out.println("数据库查询完毕");
 
+
         try {
             HashMap<String, String[]> paramContentCdd = new HashMap<>();
             while (resultSets[0].next()){
@@ -45,6 +47,7 @@ public class ProcessorSQLCdd {
                 for (int j = 0; j < row.length; j++) {
                     row[j] = resultSets[0].getString(j+1);
                 }
+                CDate = resultSets[0].getString("CDate").split(" ")[0];
                 paramContentCdd.put(resultSets[0].getString("CELL"),row);
             }
             content.put(cdd,paramContentCdd);
@@ -68,11 +71,17 @@ public class ProcessorSQLCdd {
                 paramContentHandover.put(resultSets[2].getString("CELL") + resultSets[2].getString("n_cell"),row);
             }
             content.put(handover,paramContentHandover);
-
         } catch (SQLException e) {
             e.printStackTrace();
         }finally {
             sqlHelper.close();
+        }
+
+        isConnected = sqlHelper.isConnected();
+        if (isConnected){
+            JOptionPane.showMessageDialog(null,"数据库连接成功，读取到 " + CDate +" 的数据。");
+        }else {
+            JOptionPane.showMessageDialog(null,"数据库连接失败，请确认数据库连接正常后再试一次。");
         }
 
         return content;
@@ -89,10 +98,10 @@ public class ProcessorSQLCdd {
         ProcessorSQLCdd readSQLData = new ProcessorSQLCdd();
         HashMap<enumClass.excelType, HashMap> query = readSQLData.get3Query();
 
-        ProcessorExcelCdd processorExcelCdd = new ProcessorExcelCdd();
-        ArrayList[][] forteArray = processorExcelCdd.createForteArray(query, coordinate);
-
-        ProcessorTxtCdd processorTxtCdd = new ProcessorTxtCdd();
-        processorTxtCdd.createForteFile(forteArray,exportPath);
+        //ProcessorExcelCdd processorExcelCdd = new ProcessorExcelCdd();
+        //ArrayList[][] forteArray = processorExcelCdd.createForteArray(query, coordinate);
+        //
+        //ProcessorTxtCdd processorTxtCdd = new ProcessorTxtCdd();
+        //processorTxtCdd.createForteFile(forteArray,exportPath);
     }
 }

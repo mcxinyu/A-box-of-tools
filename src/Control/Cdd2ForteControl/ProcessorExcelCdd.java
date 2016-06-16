@@ -200,6 +200,7 @@ public class ProcessorExcelCdd {
 
         //String[] targetTitle = new String[]{"cell", "ch_group", "bsc", "chgr_tg", "band", "bccd", "channel_tch", "hsn", "sdcch", "tchnum", "hop"};
 
+
         String tab = "\t";
         String MAIO = "\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A\tN/A";
 
@@ -273,22 +274,21 @@ public class ProcessorExcelCdd {
                     extended + tab +
                     hoppingMethod + tab +
                     ContainsBCCH + tab +
-                    strings[7] + tab +
+                    strings[6] + tab +
                     "Downlink and Uplink" + tab +
                     "Downlink and Uplink" + tab +
                     "N/A" + tab +
                     subcellTxPower + tab +
-                    strings[9] + tab +
                     strings[8] + tab +
+                    strings[7] + tab +
                     "1" + tab +
                     "Normal" +
                     tchFrequency + MAIO;
 
+
             for (String[] coordiante : coordiantes) {
                 if (coordiante[0].equals(strings[0])){
-                    System.out.println(strings[0]);
                     channelGroupslist.add(channelGroupLine);
-                    //System.out.println(channelGroupLine);
                 }
             }
         }

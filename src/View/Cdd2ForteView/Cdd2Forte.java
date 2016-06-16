@@ -1,6 +1,9 @@
 package View.Cdd2ForteView;
 
 import Common.*;
+import Common.TEST.progressBar;
+import Control.Cdd2ForteControl.ProcessorExcelCdd;
+import Control.Cdd2ForteControl.ProcessorSQLCdd;
 import Control.Cdd2ForteControl.ProcessorTxtCdd;
 import Control.Cdd2ForteControl.ProcessorCoordinate;
 import Control.CommonControl.ReadFile;
@@ -13,6 +16,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
@@ -33,8 +37,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
     ProcessorTxtCdd pl = null;
     String path = null;
     String[][] cellCoordinate = null;
-    ArrayList[][] cddLogArray = null;
-    ArrayList[][] WYZJArray = null;
+    ArrayList[][] forteArray = null;
     String coorPath = null;
 
     public static void main(String[] args) {
@@ -201,7 +204,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
                 if(response==0) {
                     coorPath = null;
                     cellCoordinate = null;
-                    cddLogArray = null;
+                    forteArray = null;
                     readCddBtn.setEnabled(false);
                     export2ForteBtn.setEnabled(false);
                     saveCoordinateBtn.setEnabled(false);
@@ -243,16 +246,16 @@ public class Cdd2Forte extends JFrame implements ActionListener{
                 }
             }
         }else if (e.getActionCommand() == "readCddBtn"){
-            if (cddLogArray != null){
+            if (forteArray != null){
                 Object[] options = {"确定","我手贱"};
                 int response=JOptionPane.showOptionDialog(this, "再次读取该数据会清空上一次的数据！", "thinkPad",JOptionPane.YES_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
                 if(response==0) {
-                    cddLogArray = null;
+                    forteArray = null;
                     export2ForteBtn.setEnabled(false);
                 }else if(response==1) {
                 }
             }
-            if (cddLogArray == null){
+            if (forteArray == null){
                 int state;
                 progressBar2.setVisible(true);
                 progressBar2.setText("正在处理 cdd-log 文件...");
@@ -265,7 +268,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
                     if (fileList != null) {
                         try {
                             long startTime=System.currentTimeMillis();
-                            cddLogArray = pl.processorMultiLog(fileList, cellCoordinate);
+                            forteArray = pl.processorMultiLog(fileList, cellCoordinate);
                             long endTime=System.currentTimeMillis();
                             System.out.println("cdd读取时间： "+(endTime-startTime)/1000+"s");
                             JOptionPane.showMessageDialog(null,"cdd-log 读取成功");
@@ -278,11 +281,11 @@ public class Cdd2Forte extends JFrame implements ActionListener{
                             JOptionPane.showMessageDialog(null,"cdd-log 读取失败，文件错误！");
                         }
                         if (pl.getNotice().contains("错误")){
-                            cddLogArray = null;
+                            forteArray = null;
                             progressBar2.setVisible(true);
                             progressBar2.setText("cdd-log 文件错误！");
                         }
-                        if (cddLogArray != null) {
+                        if (forteArray != null) {
                             export2ForteBtn.setEnabled(true);
                         }
                     }else {
@@ -297,7 +300,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
             saveFile save = new saveFile();
             int state = save.saveFile("导出 forte 环境",1,this);
             if (state == 0){
-                pl.createForteFile(cddLogArray,save.getFile().getPath());
+                pl.createForteFile(forteArray,save.getFile().getPath());
             }else if (state == 1){
             }
         }else if (e.getActionCommand() == "aboutBtn"){
@@ -323,7 +326,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
                     if(response==0) {
                         coorPath = null;
                         cellCoordinate = null;
-                        cddLogArray = null;
+                        forteArray = null;
                         progressBar2.setVisible(false);
                         progressBar2.setText("");
                         saveCoordinateBtn.setEnabled(false);
@@ -358,11 +361,11 @@ public class Cdd2Forte extends JFrame implements ActionListener{
                     }
                 }
             }else {
-                if (cddLogArray != null){
+                if (forteArray != null){
                     Object[] options = {"确定","我手贱"};
                     int response=JOptionPane.showOptionDialog(this, "再次读取该数据会清空上一次的数据！", "thinkPad",JOptionPane.YES_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
                     if(response==0) {
-                        cddLogArray = null;
+                        forteArray = null;
                         export2ForteBtn.setEnabled(false);
                         progressBar2.setVisible(false);
                         progressBar2.setText("");
@@ -370,7 +373,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
                         useOldCoordinates.setSelected(true);
                     }
                 }
-                if (cddLogArray == null) {
+                if (forteArray == null) {
                     readCoordinateBtn.setEnabled(true);
                     readCddBtn.setEnabled(false);
                     useWyzjData.setEnabled(false);
@@ -384,7 +387,7 @@ public class Cdd2Forte extends JFrame implements ActionListener{
                     readExcelChannel.setEnabled(false);
                     readExcelHandover.setEnabled(false);
                     cellCoordinate = null;
-                    cddLogArray = null;
+                    forteArray = null;
                     progressBar1.setText("未选择坐标文件");
                 }
             }
@@ -400,7 +403,8 @@ public class Cdd2Forte extends JFrame implements ActionListener{
                 if (selectDataSource.getSelectedIndex()==0){
                     readExcelCDD.setEnabled(true);
                     readExcelChannel.setEnabled(true);
-                    readExcelHandover.setEnabled(true);
+                    //readExcelHandover.setEnabled(true);
+                    readExcelHandover.setEnabled(false);
                 }else {
                     readExcelCDD.setEnabled(false);
                     readExcelChannel.setEnabled(false);
@@ -423,7 +427,8 @@ public class Cdd2Forte extends JFrame implements ActionListener{
                 readExcelHandover.setVisible(true);
                 readExcelCDD.setEnabled(true);
                 readExcelChannel.setEnabled(true);
-                readExcelHandover.setEnabled(true);
+                //readExcelHandover.setEnabled(true);
+                readExcelHandover.setEnabled(false);
                 export2ForteBtn.setEnabled(false);
             }else if (selectDataSource.isVisible() && selectDataSource.getSelectedIndex()==1){
                 readExcelCDD.setVisible(false);
@@ -432,11 +437,20 @@ public class Cdd2Forte extends JFrame implements ActionListener{
                 readExcelCDD.setEnabled(false);
                 readExcelChannel.setEnabled(false);
                 readExcelHandover.setEnabled(false);
-                JOptionPane.showMessageDialog(null,"数据库连接成功");
                 export2ForteBtn.setEnabled(true);
+
+                ProcessorSQLCdd readSQLData = new ProcessorSQLCdd();
+                HashMap<enumClass.excelType, HashMap> query = readSQLData.get3Query();
+                ProcessorExcelCdd processorExcelCdd = new ProcessorExcelCdd();
+                forteArray = processorExcelCdd.createForteArray(query, cellCoordinate);
+
+                progressBar progressBar = new progressBar("正在处理数据...");
+                Thread t = new Thread(progressBar);
+                t.start();
+
             }
         }else if (e.getActionCommand().equals("readExcelCDD")){
-            if (WYZJArray == null){
+            if (forteArray == null){
                 int state;
                 progressBar2.setVisible(true);
                 progressBar2.setText("正在处理 现网cdd 文件...");
@@ -451,7 +465,20 @@ public class Cdd2Forte extends JFrame implements ActionListener{
                 }
             }
         }else if (e.getActionCommand().equals("readExcelChannel")){
+            if (forteArray == null){
+                int state;
+                progressBar2.setVisible(true);
+                progressBar2.setText("正在处理 现网cdd 文件...");
 
+                selectFile select = new selectFile();
+                state = select.selectFile("读取 现网cdd","xls",JFileChooser.FILES_ONLY,false,this);
+                File[] fileList = new ReadFile().readMultiText(select.getFile());
+                if (state == 0){
+                }else if (state == 1) {
+                    progressBar2.setVisible(true);
+                    progressBar2.setText("未选择 现网cdd 文件");
+                }
+            }
         }
     }
 }

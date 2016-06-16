@@ -11,6 +11,7 @@ public class SqlHelper {
     PreparedStatement preparedStatement =null;
     ResultSet resultSet =null;
     Connection connection=null;
+    boolean isConnected = false;
 
     String driverName="com.microsoft.sqlserver.jdbc.SQLServerDriver";
     String ConnectionUrl="jdbc:sqlserver://localhost:1433;databaseName=WYZJ;user=sa;password=0897Mssql;";
@@ -21,6 +22,14 @@ public class SqlHelper {
             //加载驱动
             Class.forName(driverName);
             connection = DriverManager.getConnection(ConnectionUrl);
+            isConnected = true;
+            System.out.println("数据库连接成功");
+            System.out.println(connection);
+        } catch (SQLException se){
+            isConnected = false;
+            System.out.println("数据库连接失败");
+            System.out.println(connection);
+            se.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -66,5 +75,9 @@ public class SqlHelper {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean isConnected() {
+        return isConnected;
     }
 }
